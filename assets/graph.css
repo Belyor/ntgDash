@@ -1,0 +1,23 @@
+.graph-div{
+    width: 98%;}
+.graph{
+    width: 100%;
+    display: inline-block;
+    margin-left: 32px;
+    margin-right: 32px;
+    margin-bottom: 16px;
+    margin-top: 16px;
+}
+
+.graph-range-slider--yaxis{
+    width: 4%;
+    height: 640px;
+    display: inline-block;
+}
+
+.graph-graph{
+    width: 95%;
+    height: 640px;
+    display: inline-block;
+}
+

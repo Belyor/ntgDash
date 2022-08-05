@@ -1,0 +1,27 @@
+:root {
+    --plum: #965F77;
+    --heather: #B4A0AA;
+    --sunny: #FED542;
+    --azure: #7896CF;
+    --mint: #6ABA9C;
+    --orange: #EA7C5A;
+    --graphite: #3C3C4C;
+    --mokka: #645A5A;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: var(--heather);
+}
+
+h1 {
+    color: var(--graphite);
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--mokka)
+}

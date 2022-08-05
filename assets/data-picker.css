@@ -1,0 +1,48 @@
+.data-picker{
+    width: 28%;
+    align-items: baseline;
+    background: fixed;
+    background-color: var(--mint);
+}
+
+.data-picker--xaxis{
+    width: 35%;
+    align-items: baseline;
+    display: inline-block;
+    margin-left: 16px;
+}
+
+.data-picker--xaxis-type{
+    align-items: baseline;
+    width:30%;
+    font-family: system-ui, sans-serif;
+    font-size: 10pt;
+    line-height: 1.1;
+}
+
+.data-picker--yaxis{
+    width: 40%;
+    align-items: baseline;
+    display: inline-block;
+    margin-right: 16px;
+}
+
+.data-picker--yaxis-type{
+    align-items: baseline;
+    width:30%;
+    font-family: system-ui, sans-serif;
+    font-size: 10pt;
+    line-height: 1.1;
+}
+
+.data-picker-colorscale{
+    width: 51%;
+    align-items: baseline;
+    background-color: var(--plum);
+}
+
+.data-picker-colorscale-div{
+    width: 100%;
+    align-items: baseline;
+    background-color: var(--plum);
+}
