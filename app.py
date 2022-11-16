@@ -75,10 +75,6 @@ app.layout = html.Div([
     html.Div([
         html.Div([
             html.Div([
-                dcc.RangeSlider(min=-40, max=0, step=0.25, value=[-2, 2], vertical=True,
-                                tooltip={"placement": "left", "always_visible": True}, id='yrange-slider')],
-                                className="graph-range-slider--yaxis"),
-            html.Div([
                 dcc.Graph(id="indicator-graphic")],className="graph-graph"),
         ], className="graph"),
 
@@ -97,25 +93,6 @@ app.layout = html.Div([
 ])
 
 
-@ app.callback(
-    Output('yrange-slider', 'min'),
-    Output('yrange-slider', 'max'),
-    Input('yaxis-data', 'value'),
-)
-def update_yminmax(yaxis_data_name):
-    if yaxis_data_name == "Total Energy":
-        return -5, 5
-    else:
-        tmp_min=[]
-        tmp_max=[]
-        for key in df:
-            tmp_min.append(min(df[key][yaxis_data_name]))
-            tmp_max.append(max(df[key][yaxis_data_name]))
-        y_min=min(tmp_min)-0.05*min(tmp_min)
-        y_max=max(tmp_max)+0.05*max(tmp_max)
-
-        return y_min, y_max
-
 
 def range_plus(start, stop, num_steps):
     range_size=stop-start
@@ -125,27 +102,14 @@ def range_plus(start, stop, num_steps):
 
 
 @ app.callback(
-    Output('yrange-slider', 'marks'),
-    Input('yrange-slider', 'min'),
-    Input('yrange-slider', 'max'))
-def update_marks(ymin_value, ymax_value):
-    marks={}
-    for i in range_plus(math.ceil(ymin_value), math.ceil(ymax_value), 12):
-        marks[i]=str(math.ceil(i))
-    return marks
-
-
-@ app.callback(
     Output('indicator-graphic', 'figure'),
     Input('xaxis-data', 'value'),
     Input('yaxis-data', 'value'),
     Input('xaxis-type', 'value'),
     Input('yaxis-type', 'value'),
-    Input('yrange-slider', 'value'),
     Input('colorscale', 'value'))
 def update_graph(xaxis_data_name, yaxis_data_name,
                  xaxis_type, yaxis_type,
-                 yrange_value,
                  colorscale):
 
     if colorscale == 'ntg':
@@ -193,7 +157,6 @@ def update_graph(xaxis_data_name, yaxis_data_name,
 
     fig.update_yaxes(title=dict(text=yaxis_data_name,
                                 font=dict(size=20, family="Times New Roman")),
-                     range=yrange_value,
                      type=yaxis_type, linewidth=4, mirror=True, side='left',
                      ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
                      minor=dict(ticklen=10, tickwidth=2))
