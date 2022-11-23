@@ -73,23 +73,9 @@ app.layout = html.Div([
 
     # Graph
     html.Div([
-        html.Div([
-            html.Div([
                 dcc.Graph(id="indicator-graphic")],className="graph-graph"),
-        ], className="graph"),
-
-        # html.Div([
-        #     dcc.Slider(
-        #         df[0]['Total Energy'].min(),
-        #         df[0]['Total Energy'].max(),
-        #         step=None,
-        #         id='xrange-slider',
-        #         value=df['Total Energy'].max(),
-        #         marks=None,
-        #     )
-        # ], style={'width': '80%', 'flush': 'center', 'display': 'inline-block',
-        #           'marginLeft': '32px', 'marginRight': '32px', 'marginBottom': '16px', 'marginTop': '8px'}),
-    ],className="graph-div"),  # Graph
+        # ] #className="graph"
+    #,className="graph-div"),  # Graph
 ])
 
 
