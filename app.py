@@ -133,10 +133,12 @@ app.layout = html.Div([
         #Filters menu
         html.Div([
             html.Div([html.H2("Filters")],className="filters--header")
-        ],className="filters")    
-    ],className="menu"
-
-    )
+        ],className="filters") 
+    ],className="menu"),
+    html.Div([
+        html.H2("List of graphs", className="list-of-graphs--header"),
+        dcc.Dropdown([],'',id='list-of-graphs',multi=True,className='list-of-graphs--list')
+    ])  
 #    # Data Picker
 #    html.Div([
 #        html.Div([
