@@ -1,0 +1,46 @@
+.graph-picker{
+    height: auto;
+    flex: 5;
+    border-style: outset;
+    padding: 5px;
+    background: fixed;
+    background-color: var(--mint);
+}
+
+.graph-picker--header{
+    text-align: center;
+}
+
+.graph-picker--options {
+    display: flex;
+    flex-direction: row;
+}
+
+.graph-picker--column {
+    flex: 1
+}
+
+.graph-picker--data{
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+    height: auto;
+    border-style: outset none inset none;
+}
+
+.graph-picker--list{
+    flex: 5;
+    height: auto;
+    padding: 5px;
+}
+
+.graph-picker--radio-items{
+    flex: 5;
+    padding: 5px;
+}
+
+.graph-picker--button {
+    flex: 1;
+    height: auto;
+    align-items: center;
+}

@@ -1,0 +1,13 @@
+.filters{
+    height: auto;
+    flex: 4;
+    border-style: outset;
+    padding: 5px;
+    background: fixed;
+    background-color: var(--plum);
+}
+
+.filters--header{
+    text-align: center;
+    color: white;
+}
