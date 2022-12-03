@@ -132,8 +132,52 @@ app.layout = html.Div([
             ],className="graph-picker"),
         #Filters menu
         html.Div([
-            html.Div([html.H2("Filters")],className="filters--header")
-        ],className="filters") 
+            #headline
+            html.Div([html.H2("Filters")],className="filters--header"),
+            #options
+                html.Div([
+                    #1st column
+                    html.Div([
+                                html.Div([html.H3("System"),
+                                        html.Div([
+                                            html.Div([dcc.Dropdown([],'',id='list-of-filters',multi=True)],className="filters--list"),
+                                                ])
+                                        ])
+                   
+                            ],className="filters--column")
+                    ,
+                     #2st column
+                    html.Div([
+                                html.Div([html.H3("Method"),
+                                    html.Div([
+                                            html.Div([dcc.RadioItems(
+                                                ['1', '2'],
+                                                '1',
+                                                id = '???',labelStyle={'display': 'block'}
+                                                )],className="filtersr--radio-items")
+                                            ])
+                                ])
+
+                   
+                            ],className="filters--column")
+                            ,
+                    # 3rd column
+                    html.Div([
+                                html.Div([html.H3("Filters"),
+                            html.Div([
+                                html.Div([dcc.Dropdown([],'',id='middle',multi=True)],className="filters--list2"),
+                                    ])
+                                        ])
+                            ],className="filters--column")
+               
+                ],className="filters--options")    
+                 ,html.H3("Ecm", className="filters--text"), #dcc.RangeSlider(0, 20, tooltip = { 'always_visible': True }, value=20,className="filter--slider")
+                  dcc.RangeSlider(0, 20,tooltip = { 'always_visible': True }, value=[4, 16])
+                ,html.H3("Phase",className="filters--text"), dcc.Slider(0, 6.28 , tooltip = { 'always_visible': True },value=10,className="filter--slider") #2*math.pi
+                ,html.H3("D",className="filters--text")
+                 , dcc.Slider(0,4 , tooltip = { 'always_visible': True }, value=10,className="filter--slider")  
+                 ,html.Button('Apply', className="filters--button")
+        ],className="filters")           
     ],className="menu"),
     html.Div([
         html.H2("List of graphs", className="list-of-graphs--header"),
