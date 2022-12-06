@@ -7,40 +7,62 @@
     background-color: var(--mint);
 }
 
-.graph-picker--header{
-    text-align: center;
-}
 
 .graph-picker--options {
-    display: flex;
-    flex-direction: row;
+    display: block;
 }
 
-.graph-picker--column {
-    flex: 1
-}
-
-.graph-picker--data{
+.graph-picker--container{
     display: flex;
-    flex-direction: row;
     padding: 5px;
     height: auto;
-    border-style: outset none inset none;
+}
+
+.graph-picker--header{
+    flex: 2;
+    padding-left: 5px;
+}
+
+.graph-picker--text{
+    flex: 1;
+    text-align: right;
 }
 
 .graph-picker--list{
-    flex: 5;
+    flex: 4;
     height: auto;
-    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
 }
 
-.graph-picker--radio-items{
-    flex: 5;
-    padding: 5px;
+.graph-picker--radioItemsOneOption{
+    flex: 2;
+    padding-left: 20px;
+    padding-right: 10px;
+    padding-top: 20px;
 }
 
-.graph-picker--button {
+.graph-picker--radioItemsTwoOptions{
+    flex: 2;
+    padding-left: 20px;
+    padding-right: 10px;
+    padding-top: 10px;
+}
+
+.graph-picker--radioItemsThreeOptions{
+    flex: 2;
+    padding-left: 20px;
+    padding-right: 10px;
+}
+
+.graph-picker--radioItems-labelStyle{
+    display: block;
+}
+
+.graph-picker--addButton {
     flex: 1;
+    display: inline-block;
     height: auto;
     align-items: center;
 }
