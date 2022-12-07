@@ -11,17 +11,17 @@ col_results = ["Time", "Total Energy", "Number of Protons", "Number of Neutrons"
                "Beta", "Flow Energy", "Ground State Enrgy",
                "Quadrupole Moment Q20", "Octupole Moment Q30", "Hexadecupole Moment Q40",
                "Pairing gap for Protons", "Pairing gap for  Neutrons", "Center of Mass Energy"]
-col_postprocess = ["time", "total_E", "total_E_TF", "total_E_TF_w-corr", "total_E_TF_w-corr_w-pair",
-                   "N_p", "N_n",
-                   "x_rcm", "y_rcm", "z_rcm",
-                   "x_rcm_p", "y_rcm_p", "z_rcm_p",
-                   "x_rcm_n", "y_rcm_n", "z_rcm_n",
-                   "beta", "E_flow", "Q_20",
-                   "vcm_x", "vcm_y", "vcm_z",
-                   "Q_30", "Q_40", "something", "nonaxial_Q22",
-                   "triax_x", "triax_y", "triax_z",
-                   "av_Delta_n", "av_Delta_p", "delta_grad_p", "delta_grad_n",
-                   "cf", "tke", "txe", "distance"]
+col_postprocess = ["time", "Total Energy", "Total Fermi Energy", "Total Fermi Energy 1st correction", "Total Fermi Energy with Pairing and 1st correction",
+                   "Number of Protons", "Number of Neutrons",
+                   "X_cm of the System", "Y_cm of the System", "Z_cm of the System",
+                   "X_cm for Protons", "Y_cm for Protons", "Z_cm for Protons",
+                   "X_cm for Neutrons", "Y_cm for Neutrons", "Z_cm for Neutrons",
+                   "Beta", "Flow Energy", "Quadrupole Moment Q20",
+                   "Velocity in X_cm", "Velocity in Y_cm", "Velocity in Z_cm",
+                   "Octupole Moment Q30", "Hexadecupole Moment Q40", "something", "Quadrupole Moment Q22",
+                   "Triaxial X", "Triaxial Y", "Triaxial Z",
+                   "Pairing gap for Neutrons", "Pairing gap for Protons", "Gradient of Delta for Protons", "Gradient of Delta for Neutrons",
+                   "Coulomb Force", "Total Kinetic Energy", "Total Excitation Energy", "CM Distance"]
 
 
 def load_data():
