@@ -11,7 +11,7 @@ col_results = ["Time", "Total Energy", "Number of Protons", "Number of Neutrons"
                "Beta", "Flow Energy", "Ground State Enrgy",
                "Quadrupole Moment Q20", "Octupole Moment Q30", "Hexadecupole Moment Q40",
                "Pairing gap for Protons", "Pairing gap for  Neutrons", "Center of Mass Energy"]
-col_postprocess = ["time", "Total Energy", "Total Fermi Energy", "Total Fermi Energy 1st correction", "Total Fermi Energy with Pairing and 1st correction",
+col_postprocess = ["Time", "Total Energy", "Total Fermi Energy", "Total Fermi Energy 1st correction", "Total Fermi Energy with Pairing and 1st correction",
                    "Number of Protons", "Number of Neutrons",
                    "X_cm of the System", "Y_cm of the System", "Z_cm of the System",
                    "X_cm for Protons", "Y_cm for Protons", "Z_cm for Protons",

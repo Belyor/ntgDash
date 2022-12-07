@@ -8,6 +8,9 @@ import numpy as np
 import math
 import os
 
+import utils.ntg_colors as ntg_colors
+colorscales=ntg_colors.colorscales
+
 #Types of available data
 symbols = {
     #Conservation
@@ -63,7 +66,7 @@ def create_element(data, x_type, y_type, list_options, list_values):
         return options, values
 
 
-def get_callbacks(app: Dash, df: pd.DataFrame, colorscales: list[str]):
+def get_callbacks(app: Dash, df: pd.DataFrame):
     #Updating list of graphs
     @app.callback(
         #list of graphs

@@ -10,7 +10,6 @@ import os
 
 # Project
 import utils.ntg_data as ntg_data
-import utils.ntg_colors as ntg_colors
 import utils.graph as graph
 
 app = Dash(__name__)
@@ -257,7 +256,7 @@ app.layout = html.Div([
 ])
 
 
-graph.get_callbacks(app, df, ntg_colors.colorscales)
+graph.get_callbacks(app, df)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
