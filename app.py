@@ -140,7 +140,7 @@ app.layout = html.Div([
                     html.Div([
                                 html.Div([html.H3("System"),
                                         html.Div([
-                                            html.Div([dcc.Dropdown([],'',id='list-of-filters',multi=True)],className="filters--list"),
+                                            html.Div([dcc.Dropdown([],'',id='filters_system',multi=True)],className="filters--list"),
                                                 ])
                                         ])
                    
@@ -150,11 +150,9 @@ app.layout = html.Div([
                     html.Div([
                                 html.Div([html.H3("Method"),
                                     html.Div([
-                                            html.Div([dcc.RadioItems(
-                                                ['1', '2'],
-                                                '1',
-                                                id = '???',labelStyle={'display': 'block'}
-                                                )],className="filtersr--radio-items")
+                                            html.Div([dcc.Checklist(
+    ['HF', 'HFB'],labelStyle={'display': 'block'}
+)],className="filtersr--radio-items")
                                             ])
                                 ])
 
@@ -163,23 +161,35 @@ app.layout = html.Div([
                             ,
                     # 3rd column
                     html.Div([
-                                html.Div([html.H3("Filters"),
+                                html.Div([html.H3("Functional"),
                             html.Div([
-                                html.Div([dcc.Dropdown([],'',id='middle',multi=True)],className="filters--list2"),
+                                html.Div([dcc.Dropdown([],'',id='filter_filter',multi=True)],className="filters--list2"),
                                     ])
                                         ])
                             ],className="filters--column")
                
                 ],className="filters--options")    
-                 ,html.H3("Ecm", className="filters--text"), #dcc.RangeSlider(0, 20, tooltip = { 'always_visible': True }, value=20,className="filter--slider")
-                  dcc.RangeSlider(0, 20,tooltip = { 'always_visible': True }, value=[4, 16])
-                ,html.H3("Phase",className="filters--text"), dcc.Slider(0, 6.28 , tooltip = { 'always_visible': True },value=10,className="filter--slider") #2*math.pi
-                ,html.H3("D",className="filters--text")
-                 , dcc.Slider(0,4 , tooltip = { 'always_visible': True }, value=10,className="filter--slider")  
-                 ,html.Button('Apply', className="filters--button")
+                 ,html.H3("Ecm [MeV]", className="filters--text"), #dcc.RangeSlider(0, 20, tooltip = { 'always_visible': True }, value=20,className="filter--slider")
+            dcc.RangeSlider(0, 20,tooltip = { 'always_visible': True, "placement": "bottom" }, value=[0, 20],id='filter_ecms',marks=None)
+                ,html.H3("Phase",className="filters--text"), dcc.Slider(0, 2*math.pi , tooltip = { 'always_visible': True, "placement": "bottom" },value=2*math.pi,className="filter--slider",id='filter_phase',marks={
+        0: {'label': '0', 'style': {'color': 'black'}},
+        math.pi/2: {'label': 'π/2','style': {'color': 'black'} },
+        math.pi: {'label': 'π','style': {'color': 'black'}},
+        3*math.pi/2: {'label': '3π/2','style': {'color': 'black'}},
+        2*math.pi: {'label': '2π', 'style': {'color': 'black'}}
+    }) #2*math.pi
+                ,html.H3("b",className="filters--text")
+                 , dcc.Slider(0,4 , tooltip = { 'always_visible': True , "placement": "bottom"}, value=10,className="filter--slider", id='filter_D', marks={
+        0: {'label': '0', 'style': {'color': 'black'}},
+        1: {'label': '1','style': {'color': 'black'} },
+        2: {'label': '2','style': {'color': 'black'}},
+        3: {'label': '3','style': {'color': 'black'}},
+        4: {'label': '4','style': {'color': 'black'}}})  
+                 ,html.Button('Apply', id ='apply' ,n_clicks=0 ,className="filters--button")
         ],className="filters")           
     ],className="menu"),
     html.Div([
+
         html.H2("List of graphs", className="list-of-graphs--header"),
         dcc.Dropdown([],'',id='list-of-graphs',multi=True,className='list-of-graphs--list')
     ])  
@@ -238,6 +248,7 @@ app.layout = html.Div([
 #                dcc.Graph(id="indicator-graphic")],className="graph-graph"),
 #        # ] #className="graph"
 #    #,className="graph-div"),  # Graph
+
 ])
 
 
@@ -310,7 +321,13 @@ app.layout = html.Div([
 #                     minor=dict(ticklen=10, tickwidth=2))
 #
 #    return fig
-
+#@app.callback(
+ #   Input('filter_systems', 'systems'),
+ #   Input('filter_ecms', 'ecms'),
+ #   Input('filter_D', 'D'),
+ ##   Input('filter_systems', 'systems'),
+  #  Input('filter_ecms', 'ecms'),
+#)
 
 if __name__ == '__main__':
     app.run_server(debug=True)

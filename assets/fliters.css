@@ -4,7 +4,7 @@
     border-style:  outset;
     padding: 2px;
     background: fixed;
-    background-color: var(--mint);
+    background-color: var(--azure);
 }
 
 .filters--header{
@@ -50,6 +50,7 @@
     margin-left: 300px;
     height: 5;
     align-items: right;
+    color: 'black';
 }
 
 .filters--text {
