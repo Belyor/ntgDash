@@ -1,7 +1,7 @@
 from pydoc import classname
 from dash import Dash, dcc, html, Input, Output
 import math
-from utils.graph import GraphSettingsAIO
+from utils.ntg_graph import GraphSettingsAIO
 
 #sets application's layout
 def set(app: Dash):
@@ -147,7 +147,7 @@ def set(app: Dash):
                             GraphSettingsAIO(
                                 data_type_props = {'children':'Pairing'},
                                 data_props = {'options':["Pairing gap for Protons",
-                                        "Pairing gap for  Neutrons"]},
+                                        "Pairing gap for Neutrons"]},
                                 x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
                                 y_axis_type_props = {'options':['linear','log']},
                                 is_picker = True,
@@ -166,7 +166,7 @@ def set(app: Dash):
                             #html.Div([
                             #    dcc.Dropdown(
                             #        ["Pairing gap for Protons",
-                            #            "Pairing gap for  Neutrons"],
+                            #            "Pairing gap for Neutrons"],
                             #        'Pairing gap for Protons',
                             #        id='pairing-data'
                             #    )

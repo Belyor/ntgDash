@@ -172,13 +172,13 @@ class GraphSettingsAIO(html.Div):
 #Types of available data
 symbols = {
     #Conservation
-    "Total Energy": "total_E",
+    "Total Energy": "Total_E",
     "Number of Protons": "N_p",
     "Number of Neutrons": "N_n",
     #Center of mass
-    "X_cm": "x_rcm",
-    "Y_cm": "y_rcm",
-    "Z_cm": "z_rcm",
+    "X_cm": "X_rcm",
+    "Y_cm": "X_rcm",
+    "Z_cm": "Z_rcm",
     "X_cm for Protons": "X_rcm_p",
     "Y_cm for Protons": "Y_rcm_p",
     "Z_cm for Protons": "Z_rcm_p",
@@ -192,8 +192,8 @@ symbols = {
     "Octupole Moment Q30": "Q30",
     "Hexadecupole Moment Q40": "Q40",
     #Pairing
-    "Pairing gap for Protons": "delta_grad_p",
-    "Pairing gap for Neutrons": "delta_grad_n",
+    "Pairing gap for Protons": "av_delta_p",
+    "Pairing gap for Neutrons": "av_delta_n",
     #x axis
     "in time": "(t)",
     "in distance": "(dist)",
@@ -208,7 +208,7 @@ groups = {
     "center of mass": ["X_cm","Y_cm","Z_cm","X_cm for Protons","Y_cm for Protons","Z_cm for Protons",
                     "X_cm for Neutrons","Y_cm for Neutrons","Z_cm for Neutrons","Center of Mass Energy"],
     "deformation": ["Beta","Quadrupole Moment Q20","Octupole Moment Q30","Hexadecupole Moment Q40"],
-    "pairing": ["Pairing gap for Protons","Pairing gap for  Neutrons"]
+    "pairing": ["Pairing gap for Protons","Pairing gap for Neutrons"]
 }
 
 #function returning an element for the list of graphs
@@ -363,7 +363,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             elif info[2] == 'in distance':
                 xaxis_data_name = 'Distance'
             elif info[2] == 'as maps':
-                xaxis_data_name = 'maps'
+                xaxis_data_name = 'Maps'
             
             colorscale = colorscales[-4]
 
@@ -373,18 +373,24 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             fig=go.Figure()
             for key, it in zip(dff, range(len(dff))):
                 dataname=key.split(".")[0].split(os.sep)[1].split("_")
+                # Choose the plot type. Relative or not. Relative is in `if` statement,
+                # while Normal is right below. 
+                # # todo 1 this would also be in the Div graph option - the one that appears after plotting. 
+                # # todo 1 For some reason User might use it for plotting.
+                # # todo 2 This is somehow unoptimized. Loading data should return a list, also this done for every 
+                # # todo 2 data point instead of reducing whole list as one. Try having np.array in dict (`dff`) isntead of lists
                 ydata=list(dff[key][yaxis_data_name])
                 if yaxis_data_name == "Total Energy":
+                    print(key)
                     for i in range(len(ydata)):
                         ydata[i] -= dff[key][yaxis_data_name][0]
                 fig.add_trace(go.Scatter(
                     x=list(dff[key][xaxis_data_name]),
                     y=ydata,
-                    mode='lines',
+                    mode='lines', # todo this might be added to graph options (the one appears after plotting)
                     line=dict(width=5, color=px.colors.sample_colorscale(
                         colorscale, it/len(dff))[0]),
                     name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
-                    # hover_name=dff[key][yaxis_data_name]
                     )
                 )
                 xrange_max.append(max(dff[key][xaxis_data_name]))
@@ -393,7 +399,11 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                                          font=dict(size=22, family="Times New Roman")),
                               autosize=True,height=540,
                               template='simple_white',paper_bgcolor='#B4A0AA',plot_bgcolor='#B4A0AA',
-                              margin={'l': 0, 'b': 0, 't': 32, 'r': 0}, hovermode='closest')
+                              margin={'l': 0, 'b': 0, 't': 32, 'r': 0}, 
+                              hovermode='closest',
+                            #   hover_name=dff[key][yaxis_data_name],
+                            #   hover_data=[dff[key][yaxis_data_name]]
+                              )
 
             fig.update_xaxes(title=dict(text=xaxis_data_name,
                                         font=dict(size=20, family="Times New Roman")),
