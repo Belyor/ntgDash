@@ -1,6 +1,7 @@
 from pydoc import classname
 from dash import Dash, dcc, html, Input, Output
 import math
+from utils.graph import GraphSettingsAIO
 
 #sets application's layout
 def set(app: Dash):
@@ -17,161 +18,206 @@ def set(app: Dash):
                     html.Div([
                         # Conservation
                         html.Div([
-                            html.H3("Conservation: ",
-                                    className="graph-picker--header"),
-                            html.H3("Plot ", className="graph-picker--text"),
-                            html.Div([
-                                dcc.RadioItems(
-                                    ['linear', 'log'],
-                                    'linear',
-                                    id='conservation-yaxis-type',
-                                    labelClassName="graph-picker--radioItems-labelStyle"
-                                )
-                            ], className="graph-picker--radioItemsTwoOptions"),
-                            html.Div([
-                                dcc.Dropdown(
-                                    ["Total Energy", "Number of Protons",
-                                        "Number of Neutrons"],
-                                    'Total Energy',
-                                    id='conservation-data'
-                                )
-                            ], className="graph-picker--list"),
-                            html.Div([
-                                dcc.RadioItems(
-                                    ['in time'],
-                                    'in time',
-                                    id='conservation-xaxis-type',
-                                    labelClassName="graph-picker--radioItems-labelStyle"
-                                )
-                            ], className="graph-picker--radioItemsOneOption"),
+                            GraphSettingsAIO(
+                                data_type_props = {'children':'Conservation'},
+                                data_props = {'options':["Total Energy", "Number of Protons","Number of Neutrons"]},
+                                x_axis_type_props = {'options':['in time']},
+                                y_axis_type_props = {'options':['linear', 'log']},
+                                is_picker = True,
+                                aio_id = "conservation"
+                            ),
+                            #html.H3("Conservation: ",
+                            #        className="graph-picker--header"),
+                            #html.H3("Plot ", className="graph-picker--text"),
+                            #html.Div([
+                            #    dcc.RadioItems(
+                            #        ['linear', 'log'],
+                            #        'linear',
+                            #        id='conservation-yaxis-type',
+                            #        labelClassName="graph-picker--radioItems-labelStyle"
+                            #    )
+                            #], className="graph-picker--radioItemsTwoOptions"),
+                            #html.Div([
+                            #    dcc.Dropdown(
+                            #        ["Total Energy", "Number of Protons",
+                            #            "Number of Neutrons"],
+                            #        'Total Energy',
+                            #        id='conservation-data'
+                            #    )
+                            #], className="graph-picker--list"),
+                            #html.Div([
+                            #    dcc.RadioItems(
+                            #        ['in time'],
+                            #        'in time',
+                            #        id='conservation-xaxis-type',
+                            #        labelClassName="graph-picker--radioItems-labelStyle"
+                            #    )
+                            #], className="graph-picker--radioItemsOneOption"),
                             html.Button('Add', id='addButton-conservation',
                                         className="graph-picker--addButton")
                         ], className="graph-picker--container"),
                         # Center of mass
                         html.Div([
-                            html.H3("Center of mass:",
-                                    className="graph-picker--header"),
-                            html.H3("Plot ", className="graph-picker--text"),
-                            html.Div([
-                                dcc.RadioItems(
-                                    ['linear'],
-                                    'linear',
-                                    id='center-of-mass-yaxis-type',
-                                    labelClassName="graph-picker--radioItems-labelStyle"
-                                )
-                            ], className="graph-picker--radioItemsOneOption"),
-                            html.Div([
-                                dcc.Dropdown(
-                                    ["X_cm", "Y_cm", "Z_cm",
+                            GraphSettingsAIO(
+                                data_type_props = {'children':'Center of mass'},
+                                data_props = {'options':["X_cm", "Y_cm", "Z_cm",
                                     "X_cm for Protons", "Y_cm for Protons", "Z_cm for Protons",
                                     "X_cm for Neutrons", "Y_cm for Neutrons", "Z_cm for Neutrons",
-                                    "Center of Mass Energy"],
-                                    'Center of Mass Energy',
-                                    id='center-of-mass-data'
-                                )
-                            ], className="graph-picker--list"),
-                            html.Div([
-                                dcc.RadioItems(
-                                    ['in time'],
-                                    'in time',
-                                    id='center-of-mass-xaxis-type',
-                                    labelClassName="graph-picker--radioItems-labelStyle"
-                                )
-                            ], className="graph-picker--radioItemsOneOption"),
+                                    "Center of Mass Energy"]},
+                                x_axis_type_props = {'options':['in time']},
+                                y_axis_type_props = {'options':['linear']},
+                                is_picker = True,
+                                aio_id = "center-of-mass"
+                            ),
+                            #html.H3("Center of mass:",
+                            #        className="graph-picker--header"),
+                            #html.H3("Plot ", className="graph-picker--text"),
+                            #html.Div([
+                            #    dcc.RadioItems(
+                            #        ['linear'],
+                            #        'linear',
+                            #        id='center-of-mass-yaxis-type',
+                            #        labelClassName="graph-picker--radioItems-labelStyle"
+                            #    )
+                            #], className="graph-picker--radioItemsOneOption"),
+                            #html.Div([
+                            #    dcc.Dropdown(
+                            #        ["X_cm", "Y_cm", "Z_cm",
+                            #        "X_cm for Protons", "Y_cm for Protons", "Z_cm for Protons",
+                            #        "X_cm for Neutrons", "Y_cm for Neutrons", "Z_cm for Neutrons",
+                            #        "Center of Mass Energy"],
+                            #        'Center of Mass Energy',
+                            #        id='center-of-mass-data'
+                            #    )
+                            #], className="graph-picker--list"),
+                            #html.Div([
+                            #    dcc.RadioItems(
+                            #        ['in time'],
+                            #        'in time',
+                            #        id='center-of-mass-xaxis-type',
+                            #        labelClassName="graph-picker--radioItems-labelStyle"
+                            #    )
+                            #], className="graph-picker--radioItemsOneOption"),
                             html.Button('Add', id='addButton-center-of-mass',
                                         className="graph-picker--addButton")
                         ], className="graph-picker--container"),
                         # Deformation
                         html.Div([
-                            html.H3("Deformation:",
-                                    className="graph-picker--header"),
-                            html.H3("Plot ", className="graph-picker--text"),
-                            html.Div([
-                                dcc.RadioItems(
-                                    ['linear', 'log'],
-                                    'linear',
-                                    id='deformation-yaxis-type',
-                                    labelClassName="graph-picker--radioItems-labelStyle"
-                                )
-                            ], className="graph-picker--radioItemsTwoOptions"),
-                            html.Div([
-                                dcc.Dropdown(
-                                    ["Beta", "Quadrupole Moment Q20",
-                                    "Octupole Moment Q30", "Hexadecupole Moment Q40"],
-                                    'Beta',
-                                    id='deformation-data'
-                                )
-                            ], className="graph-picker--list"),
-                            html.Div([
-                                dcc.RadioItems(
-                                    ['in time', 'in distance', 'as maps'],
-                                    'in time',
-                                    id='deformation-xaxis-type',
-                                    labelClassName="graph-picker--radioItems-labelStyle"
-                                )
-                            ], className="graph-picker--radioItemsThreeOptions"),
+                            GraphSettingsAIO(
+                                data_type_props = {'children':'Deformation'},
+                                data_props = {'options':["Beta", "Quadrupole Moment Q20",
+                                    "Octupole Moment Q30", "Hexadecupole Moment Q40"]},
+                                x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
+                                y_axis_type_props = {'options':['linear','log']},
+                                is_picker = True,
+                                aio_id = "deformation"
+                            ),
+                            #html.H3("Deformation:",
+                            #        className="graph-picker--header"),
+                            #html.H3("Plot ", className="graph-picker--text"),
+                            #html.Div([
+                            #    dcc.RadioItems(
+                            #        ['linear', 'log'],
+                            #        'linear',
+                            #        id='deformation-yaxis-type',
+                            #        labelClassName="graph-picker--radioItems-labelStyle"
+                            #    )
+                            #], className="graph-picker--radioItemsTwoOptions"),
+                            #html.Div([
+                            #    dcc.Dropdown(
+                            #        ["Beta", "Quadrupole Moment Q20",
+                            #        "Octupole Moment Q30", "Hexadecupole Moment Q40"],
+                            #        'Beta',
+                            #        id='deformation-data'
+                            #    )
+                            #], className="graph-picker--list"),
+                            #html.Div([
+                            #    dcc.RadioItems(
+                            #        ['in time', 'in distance', 'as maps'],
+                            #        'in time',
+                            #        id='deformation-xaxis-type',
+                            #        labelClassName="graph-picker--radioItems-labelStyle"
+                            #    )
+                            #], className="graph-picker--radioItemsThreeOptions"),
                             html.Button('Add', id='addButton-deformation',
                                         className="graph-picker--addButton")
                         ], className="graph-picker--container"),
                         # Pairing
                         html.Div([
-                            html.H3("Pairing:", className="graph-picker--header"),
-                            html.H3("Plot ", className="graph-picker--text"),
-                            html.Div([
-                                dcc.RadioItems(
-                                    ['linear', 'log'],
-                                    'linear',
-                                    id='pairing-yaxis-type',
-                                    labelClassName="graph-picker--radioItems-labelStyle"
-                                )
-                            ], className="graph-picker--radioItemsTwoOptions"),
-                            html.Div([
-                                dcc.Dropdown(
-                                    ["Pairing gap for Protons",
-                                        "Pairing gap for  Neutrons"],
-                                    'Pairing gap for Protons',
-                                    id='pairing-data'
-                                )
-                            ], className="graph-picker--list"),
-                            html.Div([
-                                dcc.RadioItems(
-                                    ['in time', 'in distance', 'as maps'],
-                                    'in time',
-                                    id='pairing-xaxis-type',
-                                    labelClassName="graph-picker--radioItems-labelStyle"
-                                )
-                            ], className="graph-picker--radioItemsThreeOptions"),
+                            GraphSettingsAIO(
+                                data_type_props = {'children':'Pairing'},
+                                data_props = {'options':["Pairing gap for Protons",
+                                        "Pairing gap for  Neutrons"]},
+                                x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
+                                y_axis_type_props = {'options':['linear','log']},
+                                is_picker = True,
+                                aio_id = "pairing"
+                            ),
+                            #html.H3("Pairing:", className="graph-picker--header"),
+                            #html.H3("Plot ", className="graph-picker--text"),
+                            #html.Div([
+                            #    dcc.RadioItems(
+                            #        ['linear', 'log'],
+                            #        'linear',
+                            #        id='pairing-yaxis-type',
+                            #        labelClassName="graph-picker--radioItems-labelStyle"
+                            #    )
+                            #], className="graph-picker--radioItemsTwoOptions"),
+                            #html.Div([
+                            #    dcc.Dropdown(
+                            #        ["Pairing gap for Protons",
+                            #            "Pairing gap for  Neutrons"],
+                            #        'Pairing gap for Protons',
+                            #        id='pairing-data'
+                            #    )
+                            #], className="graph-picker--list"),
+                            #html.Div([
+                            #    dcc.RadioItems(
+                            #        ['in time', 'in distance', 'as maps'],
+                            #        'in time',
+                            #        id='pairing-xaxis-type',
+                            #        labelClassName="graph-picker--radioItems-labelStyle"
+                            #    )
+                            #], className="graph-picker--radioItemsThreeOptions"),
                             html.Button('Add', id='addButton-pairing',
                                         className="graph-picker--addButton")
                         ], className="graph-picker--container"),
                         # Miscellaneous
                         html.Div([
-                            html.H3("Miscellaneous:",
-                                    className="graph-picker--header"),
-                            html.H3("Plot ", className="graph-picker--text"),
-                            html.Div([
-                                dcc.RadioItems(
-                                    ['linear', 'log'],
-                                    'linear',
-                                    id='miscellaneous-yaxis-type',
-                                    labelClassName="graph-picker--radioItems-labelStyle"
-                                )
-                            ], className="graph-picker--radioItemsTwoOptions"),
-                            html.Div([
-                                dcc.Dropdown(
-                                    ["?"],
-                                    '?',
-                                    id='miscellaneous-data'
-                                )
-                            ], className="graph-picker--list"),
-                            html.Div([
-                                dcc.RadioItems(
-                                    ['in time', 'in distance', 'as maps'],
-                                    'in time',
-                                    id='miscellaneous-xaxis-type',
-                                    labelClassName="graph-picker--radioItems-labelStyle"
-                                )
-                            ], className="graph-picker--radioItemsThreeOptions"),
+                            GraphSettingsAIO(
+                                data_type_props = {'children':'Miscellaneous'},
+                                data_props = {'options':["?"]},
+                                x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
+                                y_axis_type_props = {'options':['linear','log']},
+                                is_picker = True,
+                                aio_id = "misc"
+                            ),
+                            #html.H3("Miscellaneous:",
+                            #        className="graph-picker--header"),
+                            #html.H3("Plot ", className="graph-picker--text"),
+                            #html.Div([
+                            #    dcc.RadioItems(
+                            #        ['linear', 'log'],
+                            #        'linear',
+                            #        id='miscellaneous-yaxis-type',
+                            #        labelClassName="graph-picker--radioItems-labelStyle"
+                            #    )
+                            #], className="graph-picker--radioItemsTwoOptions"),
+                            #html.Div([
+                            #    dcc.Dropdown(
+                            #        ["?"],
+                            #        '?',
+                            #        id='miscellaneous-data'
+                            #    )
+                            #], className="graph-picker--list"),
+                            #html.Div([
+                            #    dcc.RadioItems(
+                            #        ['in time', 'in distance', 'as maps'],
+                            #        'in time',
+                            #        id='miscellaneous-xaxis-type',
+                            #        labelClassName="graph-picker--radioItems-labelStyle"
+                            #    )
+                            #], className="graph-picker--radioItemsThreeOptions"),
                             html.Button('Add', id='addButton-miscellaneous',
                                         className="graph-picker--addButton")
                         ], className="graph-picker--container")

@@ -18,8 +18,14 @@
     height: auto;
 }
 
+.graph-picker--settings{
+    display: flex;
+    height: auto;
+    flex-grow: 5;
+}
+
 .graph-picker--header{
-    flex: 2;
+    flex: 3;
     padding-left: 5px;
 }
 
@@ -61,8 +67,6 @@
 }
 
 .graph-picker--addButton {
-    flex: 1;
-    display: inline-block;
+    flex-grow: 1;
     height: auto;
-    align-items: center;
 }

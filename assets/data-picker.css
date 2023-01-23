@@ -3,6 +3,7 @@
     align-items: baseline;
     background: fixed;
     background-color: var(--mint);
+    
 }
 
 .data-picker--xaxis{
