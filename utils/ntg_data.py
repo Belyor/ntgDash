@@ -4,6 +4,9 @@ import pandas as pd
 import os
 
 DATA = 1  # 1: Test Data, 0: All NTG data
+global col_results
+global col_postprocess
+
 col_results = ["Time", "Total Energy", "Number of Protons", "Number of Neutrons",
                "X_cm", "Y_cm", "Z_cm",
                "X_cm for Protons", "Y_cm for Protons", "Z_cm for Protons",

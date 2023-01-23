@@ -35,7 +35,7 @@ symbols = {
     "Hexadecupole Moment Q40": "Q40",
     #Pairing
     "Pairing gap for Protons": "delta_grad_p",
-    "Pairing gap for  Neutrons": "delta_grad_n",
+    "Pairing gap for Neutrons": "delta_grad_n",
     #x axis
     "in time": "(t)",
     "in distance": "(dist)",
@@ -263,7 +263,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             if info[2] == 'in time':
                 xaxis_data_name = 'Time'
             elif info[2] == 'in distance':
-                xaxis_data_name = 'distance'
+                xaxis_data_name = 'Distance'
             elif info[2] == 'as maps':
                 xaxis_data_name = 'maps'
             
