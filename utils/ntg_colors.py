@@ -22,6 +22,6 @@ ntg_av = px.colors.make_colorscale(
 
 
 colorscales = px.colors.named_colorscales()
-colorscales.append('ntg')
-colorscales.append('ntg_map')
-colorscales.append('ntg_av')
+colorscales.append(ntg)
+colorscales.append(ntg_map)
+colorscales.append(ntg_av)

@@ -365,7 +365,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             elif info[2] == 'as maps':
                 xaxis_data_name = 'Maps'
             
-            colorscale = colorscales[-4]
+            colorscale = colorscales[-1]
 
             dff=df
             xrange_min=-50 if xaxis_data_name == 'Time' else -1
@@ -373,36 +373,41 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             fig=go.Figure()
             for key, it in zip(dff, range(len(dff))):
                 dataname=key.split(".")[0].split(os.sep)[1].split("_")
-                # Choose the plot type. Relative or not. Relative is in `if` statement,
-                # while Normal is right below. 
-                # # todo 1 this would also be in the Div graph option - the one that appears after plotting. 
-                # # todo 1 For some reason User might use it for plotting.
-                # # todo 2 This is somehow unoptimized. Loading data should return a list, also this done for every 
+                dff_data_x=dff[key][xaxis_data_name]
+                dff_data_y=dff[key][yaxis_data_name]
+                # Choose the plot type. Relative or not. 
+                # Relative: data(x) - data(x=0)
+                # Normal: data(x)
+                # # todo 1 Add 'relative' CheckBox. If so, then plot relative plot (if statement here)
+                # # todo 2 Optimize this. Loading data should return a list, also this done for every 
                 # # todo 2 data point instead of reducing whole list as one. Try having np.array in dict (`dff`) isntead of lists
-                ydata=list(dff[key][yaxis_data_name])
+                # # todo 3 this might speedup the process significantly
+                ydata=list(dff_data_y)
                 if yaxis_data_name == "Total Energy":
-                    print(key)
                     for i in range(len(ydata)):
-                        ydata[i] -= dff[key][yaxis_data_name][0]
+                        ydata[i] -= dff_data_y[0]
                 fig.add_trace(go.Scatter(
-                    x=list(dff[key][xaxis_data_name]),
+                    x=list(dff_data_x),
                     y=ydata,
-                    mode='lines', # todo this might be added to graph options (the one appears after plotting)
+                    mode='lines', # todo add to graph options (the one appears after plotting). CheckBox 'lines' and 'markers' if both are checked then 'lines+makrers'
                     line=dict(width=5, color=px.colors.sample_colorscale(
                         colorscale, it/len(dff))[0]),
                     name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
+                    hovertemplate = '%{y:12.3f}',
                     )
                 )
-                xrange_max.append(max(dff[key][xaxis_data_name]))
+                xrange_max.append(max(dff_data_x))
 
             fig.update_layout(title=dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
                                          font=dict(size=22, family="Times New Roman")),
                               autosize=True,height=540,
                               template='simple_white',paper_bgcolor='#B4A0AA',plot_bgcolor='#B4A0AA',
                               margin={'l': 0, 'b': 0, 't': 32, 'r': 0}, 
-                              hovermode='closest',
-                            #   hover_name=dff[key][yaxis_data_name],
-                            #   hover_data=[dff[key][yaxis_data_name]]
+                              hovermode='closest', # todo add to graph options. RadioItem 'x unified', 'closest'
+                              hoverlabel=dict(
+                                bgcolor='rgba(0,0,0,0)',
+                                font_size=16,
+                                font_family="Times New Roman"), # todo fix hover label. color of the hover title background should be the inverted color of the data, i.e. if colro is black then background is white
                               )
 
             fig.update_xaxes(title=dict(text=xaxis_data_name,
@@ -410,13 +415,15 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                              range=[xrange_min, max(xrange_max)],
                              type=xaxis_type, linewidth=4, mirror=True, side='bottom',
                              ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
-                             minor=dict(ticklen=10, tickwidth=2))
+                             minor=dict(ticklen=10, tickwidth=2),
+                             showspikes=True)
 
             fig.update_yaxes(title=dict(text=yaxis_data_name,
                                         font=dict(size=20, family="Times New Roman")),
                              type=yaxis_type, linewidth=4, mirror=True, side='left',
                              ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
-                             minor=dict(ticklen=10, tickwidth=2))
+                             minor=dict(ticklen=10, tickwidth=2),
+                             showspikes=True)
             
             graph_id = 'graph--' + yaxis_type + '--' + yaxis_data_name.replace(' ', '-') + '--' + info[2].replace(' ', '-')
 
