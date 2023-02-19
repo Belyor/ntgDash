@@ -12,12 +12,10 @@
     padding: 10px;
 }
 
-
 .graph-settings--yAxis {
     flex: 2;
     padding: 10px;
 }
-
 
 .graph-settings--colorscale {
     flex: 4;
@@ -28,9 +26,14 @@
     padding-right: 60px;
 }
 
+.graph-settings--additional {
+    flex: 3;
+    height: auto;
+    padding: 10px;
+}
+
 .graph-settings--updateButton {
     flex: 1;
     padding: 10px;
-    height: auto;
-    align-items: center;
+    height: 50px;
 }

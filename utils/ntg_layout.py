@@ -1,7 +1,7 @@
 from pydoc import classname
 from dash import Dash, dcc, html, Input, Output
 import math
-from utils.ntg_graph import GraphSettingsAIO
+from utils.ntg_graph import GraphPickerAIO
 
 #sets application's layout
 def set(app: Dash):
@@ -17,75 +17,50 @@ def set(app: Dash):
                     # Options
                     html.Div([
                         # Conservation
-                        html.Div([
-                            GraphSettingsAIO(
-                                data_type_props = {'children':'Conservation'},
-                                data_props = {'options':["Total Energy", "Number of Protons","Number of Neutrons"]},
-                                x_axis_type_props = {'options':['in time']},
-                                y_axis_type_props = {'options':['linear', 'log']},
-                                is_picker = True,
-                                aio_id = "conservation"
-                            ),
-                            html.Button('Add', id='addButton-conservation',
-                                        className="graph-picker--addButton")
-                        ], className="graph-picker--container"),
+                        GraphPickerAIO(
+                            data_type_props = {'children':'Conservation'},
+                            data_props = {'options':["Total Energy", "Number of Protons","Number of Neutrons"]},
+                            x_axis_type_props = {'options':['in time']},
+                            y_axis_type_props = {'options':['linear', 'log']},
+                            aio_id = "conservation"
+                        ),
                         # Center of mass
-                        html.Div([
-                            GraphSettingsAIO(
-                                data_type_props = {'children':'Center of mass'},
-                                data_props = {'options':["X_cm", "Y_cm", "Z_cm",
-                                    "X_cm for Protons", "Y_cm for Protons", "Z_cm for Protons",
-                                    "X_cm for Neutrons", "Y_cm for Neutrons", "Z_cm for Neutrons",
-                                    "Center of Mass Energy"]},
-                                x_axis_type_props = {'options':['in time']},
-                                y_axis_type_props = {'options':['linear']},
-                                is_picker = True,
-                                aio_id = "center-of-mass"
-                            ),
-                            html.Button('Add', id='addButton-center-of-mass',
-                                        className="graph-picker--addButton")
-                        ], className="graph-picker--container"),
+                        GraphPickerAIO(
+                            data_type_props = {'children':'Center of mass'},
+                            data_props = {'options':["X_cm", "Y_cm", "Z_cm",
+                                "X_cm for Protons", "Y_cm for Protons", "Z_cm for Protons",
+                                "X_cm for Neutrons", "Y_cm for Neutrons", "Z_cm for Neutrons",
+                                "Center of Mass Energy"]},
+                            x_axis_type_props = {'options':['in time']},
+                            y_axis_type_props = {'options':['linear']},
+                            aio_id = "center-of-mass"
+                        ),
                         # Deformation
-                        html.Div([
-                            GraphSettingsAIO(
-                                data_type_props = {'children':'Deformation'},
-                                data_props = {'options':["Beta", "Quadrupole Moment Q20",
-                                    "Octupole Moment Q30", "Hexadecupole Moment Q40"]},
-                                x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
-                                y_axis_type_props = {'options':['linear','log']},
-                                is_picker = True,
-                                aio_id = "deformation"
-                            ),
-                            html.Button('Add', id='addButton-deformation',
-                                        className="graph-picker--addButton")
-                        ], className="graph-picker--container"),
+                        GraphPickerAIO(
+                            data_type_props = {'children':'Deformation'},
+                            data_props = {'options':["Beta", "Quadrupole Moment Q20",
+                                "Octupole Moment Q30", "Hexadecupole Moment Q40"]},
+                            x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
+                            y_axis_type_props = {'options':['linear','log']},
+                            aio_id = "deformation"
+                        ),
                         # Pairing
-                        html.Div([
-                            GraphSettingsAIO(
-                                data_type_props = {'children':'Pairing'},
-                                data_props = {'options':["Pairing gap for Protons",
-                                        "Pairing gap for Neutrons"]},
-                                x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
-                                y_axis_type_props = {'options':['linear','log']},
-                                is_picker = True,
-                                aio_id = "pairing"
-                            ),
-                            html.Button('Add', id='addButton-pairing',
-                                        className="graph-picker--addButton")
-                        ], className="graph-picker--container"),
+                        GraphPickerAIO(
+                            data_type_props = {'children':'Pairing'},
+                            data_props = {'options':["Pairing gap for Protons",
+                                    "Pairing gap for Neutrons"]},
+                            x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
+                            y_axis_type_props = {'options':['linear','log']},
+                            aio_id = "pairing"
+                        ),
                         # Miscellaneous
-                        html.Div([
-                            GraphSettingsAIO(
-                                data_type_props = {'children':'Miscellaneous'},
-                                data_props = {'options':["?"]},
-                                x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
-                                y_axis_type_props = {'options':['linear','log']},
-                                is_picker = True,
-                                aio_id = "misc"
-                            ),
-                            html.Button('Add', id='addButton-miscellaneous',
-                                        className="graph-picker--addButton")
-                        ], className="graph-picker--container")
+                        GraphPickerAIO(
+                            data_type_props = {'children':'Miscellaneous'},
+                            data_props = {'options':["?"]},
+                            x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
+                            y_axis_type_props = {'options':['linear','log']},
+                            aio_id = "misc"
+                        )
                     ], className="graph-picker--options")
                 ], className="graph-picker"),
                 # Filters menu
