@@ -12,163 +12,6 @@ import uuid
 from . import ntg_colors
 colorscales=ntg_colors.colorscales
 
-class GraphSettingsAIO(html.Div):
-    class ids:
-        data_type = lambda aio_id: {
-            'component': 'GraphSettingsAIO',
-            'subcomponent': 'markdown',
-            'aio_id': aio_id
-        }
-        y_axis_type = lambda aio_id: {
-            'component': 'GraphSettingsAIO',
-            'subcomponent': 'yRadioItems',
-            'aio_id': aio_id
-        }
-        data = lambda aio_id: {
-            'component': 'GraphSettingsAIO',
-            'subcomponent': 'dataDropdown',
-            'aio_id': aio_id
-        }
-        x_axis_type = lambda aio_id: {
-            'component': 'GraphSettingsAIO',
-            'subcomponent': 'xRadioItems',
-            'aio_id': aio_id
-        }
-        colorscale = lambda aio_id: {
-            'component': 'GraphSettingsAIO',
-            'subcomponent': 'colorscaleDropdown',
-            'aio_id': aio_id
-        }
-        update = lambda aio_id: {
-            'component': 'GraphSettingsAIO',
-            'subcomponent': 'button',
-            'aio_id': aio_id
-        }
-    ids = ids #public class
-
-    #Arguments definition
-    def __init__(
-        self,
-        #properties
-        data_type_props = None, #one of five: conservation, center of mass, deformation, pairing, misc
-        data_props = None, #available datas for certain data type
-        x_axis_type_props = None, #one of three: in time, in distance, as maps
-        y_axis_type_props = None, #one of two: linear, log
-        colorscale_props = None, #dropdown with available colorscales in ntg_colors
-        update_props = None, #update button
-        is_picker = False, #weather graph_settings component is located under a graph or in graph picker
-        aio_id = None #id of All-in-one component
-    ):
-        #set components properties
-        data_type_props = data_type_props.copy() if data_type_props else {}
-        if 'style' not in data_type_props:
-            data_type_props['style'] = {'color': 'black'}
-        if 'children' not in data_type_props:
-            data_type_props['children'] = 'No data type'
-
-        data_props = data_props.copy() if data_props else {}
-        if 'options' not in data_props:
-            data_props['options'] = ["?"]
-        if 'value' not in data_props:
-            data_props['value'] = data_props['options'][0]
-
-        data = data_props['value'][0]
-        
-        x_axis_type_props = x_axis_type_props.copy() if x_axis_type_props else {}
-        if 'options' not in x_axis_type_props:
-            x_axis_type_props['options'] = {'disabled': False, 'label': 'in time', 'value': 'in time'}
-        if 'value' not in x_axis_type_props:
-            x_axis_type_props['value'] = x_axis_type_props['options'][0]
-
-        xaxis = x_axis_type_props['value'][0]
-
-        y_axis_type_props = y_axis_type_props.copy() if y_axis_type_props else {}
-        if 'options' not in y_axis_type_props:
-            y_axis_type_props['options'] = {'disabled': False, 'label': 'linear', 'value': 'linear'}
-        if 'value' not in y_axis_type_props:
-            y_axis_type_props['value'] = y_axis_type_props['options'][0]
-        
-        yaxis = y_axis_type_props['value'][0]
-
-        colorscale_props = colorscale_props.copy() if colorscale_props else {}
-        if 'options' not in colorscale_props:
-            colorscale_props['options'] = colorscales
-        if 'value' not in colorscale_props:
-            colorscale_props['value'] = 'ntg'
-
-        update_props = update_props.copy() if update_props else {}
-        if 'children' not in update_props:
-            update_props['children'] = 'Update'
-
-        if aio_id is None:
-            aio_id = str(uuid.uuid4())
-
-        #id of a graph
-        self.graph_id = "graph--" + yaxis + "--" + data.replace(' ', '-') + "--" + xaxis.replace(' ', '-')
-
-        radio_items_class_x = ''
-        radio_items_class_y = ''
-
-        if len(x_axis_type_props['options']) == 3:
-            radio_items_class_x = "graph-picker--radioItemsThreeOptions"
-        elif len(x_axis_type_props['options']) == 1:
-            radio_items_class_x = "graph-picker--radioItemsOneOption"
-        
-        if len(y_axis_type_props['options']) == 3:
-            radio_items_class_y = "graph-picker--radioItemsThreeOptions"
-        elif len(x_axis_type_props['options']) == 2:
-            radio_items_class_y = "graph-picker--radioItemsTwoOptions"
-        elif len(x_axis_type_props['options']) == 1:
-            radio_items_class_y = "graph-picker--radioItemsOneOption"
-
-        if is_picker:
-            layout = html.Div([
-                html.Div([
-                    dcc.Markdown(id = self.ids.data_type(aio_id), **data_type_props)
-                ], className = "graph-picker--header"),
-                html.Div([
-                    html.H3('Plot')
-                ], className="graph-picker--text"),
-                html.Div([
-                    dcc.RadioItems(id = self.ids.y_axis_type(aio_id), **y_axis_type_props)
-                ], className = radio_items_class_y),
-                html.Div([
-                    dcc.Dropdown(id = self.ids.data(aio_id), **data_props)
-                ], className="graph-picker--list"),
-                html.Div([
-                    dcc.RadioItems(id = self.ids.x_axis_type(aio_id), **x_axis_type_props)
-                ], className = radio_items_class_x)
-            ], className='graph-picker--settings')
-        else:
-            layout = html.Div([
-                html.Div([
-                    dcc.Markdown('Y axis:'), 
-                    dcc.RadioItems(id = self.ids.y_axis_type(aio_id), **y_axis_type_props),
-                ], className="graph-settings--yAxis"),
-                html.Div([
-                    dcc.Markdown('X axis:'),
-                    dcc.RadioItems(id = self.ids.x_axis_type(aio_id), **x_axis_type_props),
-                ], className="graph-settings--xAxis"),
-                html.Div([
-                    dcc.Markdown("Colorscale"),
-                    dcc.Dropdown(id = self.ids.colorscale(aio_id), **colorscale_props)
-                ], className = "graph-settings--colorscale"),
-                html.Button(id = self.ids.update(aio_id), **update_props, className="graph-settings--updateButton")
-            ], className = "graph-settings--container")
-
-        super().__init__(layout)
-
-    #def get_graph_id(self):
-    #    return self.graph_id
-    #
-    #@callback(
-    #    #Output(component_id=get_graph_id(), component_property='figure'),
-    #    Input(ids.update(MATCH),'n_clicks'),
-    #    State(component_id=get_graph_id(), component_property='figure')
-    #)
-    #def update_graph(clicks, figure):
-    #    print(figure)
-
 #Types of available data
 symbols = {
     #Conservation
@@ -194,6 +37,7 @@ symbols = {
     #Pairing
     "Pairing gap for Protons": "av_delta_p",
     "Pairing gap for Neutrons": "av_delta_n",
+    #Misc
     #x axis
     "in time": "(t)",
     "in distance": "(dist)",
@@ -209,7 +53,120 @@ groups = {
                     "X_cm for Neutrons","Y_cm for Neutrons","Z_cm for Neutrons","Center of Mass Energy"],
     "deformation": ["Beta","Quadrupole Moment Q20","Octupole Moment Q30","Hexadecupole Moment Q40"],
     "pairing": ["Pairing gap for Protons","Pairing gap for Neutrons"]
+    #'mics'
 }
+
+#GraphPickerAIO - a component which stores settings available in Graph Picker panel in main menu
+class GraphPickerAIO(html.Div):
+    graph_id = ""
+    class ids:
+        data_type = lambda aio_id: {
+            'component': 'GraphPickerAIO',
+            'subcomponent': 'markdown',
+            'aio_id': aio_id
+        }
+        y_axis_type = lambda aio_id: {
+            'component': 'GraphPickerAIO',
+            'subcomponent': 'yRadioItems',
+            'aio_id': aio_id
+        }
+        data = lambda aio_id: {
+            'component': 'GraphPickerAIO',
+            'subcomponent': 'dataDropdown',
+            'aio_id': aio_id
+        }
+        x_axis_type = lambda aio_id: {
+            'component': 'GraphPickerAIO',
+            'subcomponent': 'xRadioItems',
+            'aio_id': aio_id
+        }
+        add_button = lambda aio_id: {
+            'component': 'GraphPickerAIO',
+            'subcomponent': 'addButton',
+            'aio_id': aio_id
+        }
+    ids = ids #public class
+
+    #Arguments definition
+    def __init__(
+        self,
+        #properties
+        data_type_props = None, #one of five: conservation, center of mass, deformation, pairing, misc
+        data_props = None, #available datas for certain data type
+        x_axis_type_props = None, #one of three: in time, in distance, as maps
+        y_axis_type_props = None, #one of two: linear, log
+        add_button_props = None, #add button
+        aio_id = None #id of All-in-one component
+    ):
+        #set components properties
+        data_type_props = data_type_props.copy() if data_type_props else {}
+        if 'style' not in data_type_props:
+            data_type_props['style'] = {'color': 'black'}
+        if 'children' not in data_type_props:
+            data_type_props['children'] = 'No data type'
+
+        data_props = data_props.copy() if data_props else {}
+        if 'options' not in data_props:
+            data_props['options'] = ["?"]
+        if 'value' not in data_props:
+            data_props['value'] = data_props['options'][0]
+        
+        x_axis_type_props = x_axis_type_props.copy() if x_axis_type_props else {}
+        if 'options' not in x_axis_type_props:
+            x_axis_type_props['options'] = {'disabled': False, 'label': 'in time', 'value': 'in time'}
+        if 'value' not in x_axis_type_props:
+            x_axis_type_props['value'] = x_axis_type_props['options'][0]
+
+        y_axis_type_props = y_axis_type_props.copy() if y_axis_type_props else {}
+        if 'options' not in y_axis_type_props:
+            y_axis_type_props['options'] = {'disabled': False, 'label': 'linear', 'value': 'linear'}
+        if 'value' not in y_axis_type_props:
+            y_axis_type_props['value'] = y_axis_type_props['options'][0]
+
+        add_button_props = add_button_props.copy() if add_button_props else {}
+        if 'children' not in add_button_props:
+            add_button_props['children'] = 'Add'
+
+        if aio_id is None:
+            aio_id = str(uuid.uuid4())
+
+        radio_items_class_x = ''
+        radio_items_class_y = ''
+
+        if len(x_axis_type_props['options']) == 3:
+            radio_items_class_x = "graph-picker--radioItemsThreeOptions"
+        elif len(x_axis_type_props['options']) == 1:
+            radio_items_class_x = "graph-picker--radioItemsOneOption"
+        
+        if len(y_axis_type_props['options']) == 3:
+            radio_items_class_y = "graph-picker--radioItemsThreeOptions"
+        elif len(x_axis_type_props['options']) == 2:
+            radio_items_class_y = "graph-picker--radioItemsTwoOptions"
+        elif len(x_axis_type_props['options']) == 1:
+            radio_items_class_y = "graph-picker--radioItemsOneOption"
+            
+        layout = html.Div([
+            html.Div([
+                dcc.Markdown(id = self.ids.data_type(aio_id), **data_type_props)
+            ], className = "graph-picker--header"),
+            html.Div([
+                html.H3('Plot')
+            ], className="graph-picker--text"),
+            html.Div([
+                dcc.RadioItems(id = self.ids.y_axis_type(aio_id), **y_axis_type_props)
+            ], className = radio_items_class_y),
+            html.Div([
+                dcc.Dropdown(id = self.ids.data(aio_id), **data_props, clearable=False)
+            ], className="graph-picker--list"),
+            html.Div([
+                dcc.RadioItems(id = self.ids.x_axis_type(aio_id), **x_axis_type_props)
+            ], className = radio_items_class_x),
+            html.Button('Add', id=self.ids.add_button(aio_id),className="graph-picker--addButton")
+        ], className='graph-picker--settings')
+
+        super().__init__(layout)
+
+
 
 #function returning an element for the list of graphs
 def create_element(data, x_type, y_type, list_options, list_values):
@@ -233,44 +190,344 @@ def create_element(data, x_type, y_type, list_options, list_values):
 
 
 def get_callbacks(app: Dash, df: pd.DataFrame):
-    #Updating list of graphs
+
+    # GraphComponentAIO - a component which stores a graph and its settings.
+    # A component is added to the list of graphs by using a Graph Picker panel.
+    class GraphComponentAIO(html.Div):
+        class ids:
+            y_axis_type = lambda aio_id: {
+                'component': 'GraphComponentAIO',
+                'subcomponent': 'yRadioItems',
+                'aio_id': aio_id
+            }
+            x_axis_type = lambda aio_id: {
+                'component': 'GraphComponentAIO',
+                'subcomponent': 'xRadioItems',
+                'aio_id': aio_id
+            }
+            colorscale = lambda aio_id: {
+                'component': 'GraphComponentAIO',
+                'subcomponent': 'colorscaleDropdown',
+                'aio_id': aio_id
+            }
+            relative = lambda aio_id: {
+                'component': 'GraphComponentAIO',
+                'subcomponent': 'relativeCheckbox',
+                'aio_id': aio_id
+            }
+            line = lambda aio_id: {
+                'component': 'GraphComponentAIO',
+                'subcomponent': 'lineChecklist',
+                'aio_id': aio_id
+            }
+            hovermode = lambda aio_id: {
+                'component': 'GraphComponentAIO',
+                'subcomponent': 'hovermodeRadioItems',
+                'aio_id': aio_id
+            }
+            update = lambda aio_id: {
+                'component': 'GraphComponentAIO',
+                'subcomponent': 'button',
+                'aio_id': aio_id
+            }
+            graph = lambda aio_id: {
+                'component': 'GraphComponentAIO',
+                'subcomponent': 'graph',
+                'aio_id': aio_id
+            }
+        
+        ids = ids #public class
+    
+        def __init__(
+            self,
+            #properties
+            x_axis_type_props = None, # one of three: in time, in distance, as maps
+            xaxis_type = None, # type of x axis
+            xaxis_data_name = None, # data name of x axis
+            y_axis_type_props = None, # one of two: linear, log
+            yaxis_type = None, # type of y axis
+            yaxis_data_name = None, # data name of y axis
+            colorscale_props = None, # dropdown with available colorscales in ntg_colors
+            colorscale_type = None, # type of colorscale
+            relative_props = None, # relative/normal checkbox
+            line_props = None, # lines/markers checklist
+            hovermode_props = None, # x unified/closest
+            update_props = None, # update button
+            aio_id = None # id of All-in-one component
+        ):
+            # Initialize components' properties
+            x_axis_type_props = x_axis_type_props.copy() if x_axis_type_props else {}
+            if 'options' not in x_axis_type_props:
+                x_axis_type_props['options'] = {'disabled': False, 'label': 'in time', 'value': 'in time'}
+            if 'value' not in x_axis_type_props:
+                if xaxis_data_name is None:
+                    x_axis_type_props['value'] = x_axis_type_props['options'][0]
+                else:
+                    x_axis_type_props['value'] = xaxis_data_name
+    
+            y_axis_type_props = y_axis_type_props.copy() if y_axis_type_props else {}
+            if 'options' not in y_axis_type_props:
+                y_axis_type_props['options'] = {'disabled': False, 'label': 'linear', 'value': 'linear'}
+            if 'value' not in y_axis_type_props:
+                if yaxis_type is None:
+                    y_axis_type_props['value'] = y_axis_type_props['options'][0]
+                else:
+                    y_axis_type_props['value'] = yaxis_type
+    
+            colorscale_props = colorscale_props.copy() if colorscale_props else {}
+            if 'options' not in colorscale_props:
+                colorscale_props['options'] = colorscales
+            if 'value' not in colorscale_props:
+                if colorscale_type is None:
+                    colorscale_props['value'] = 'ntg_av'
+                else:
+                    colorscale_props['value'] = colorscale_type
+
+            relative_props = relative_props.copy() if relative_props else {}
+            if 'options' not in relative_props:
+                relative_props['options'] = ['relative']
+            if 'value' not in relative_props:
+                if yaxis_data_name == "Total Energy":
+                    relative_props['value'] = ['relative']
+                else:
+                    relative_props['value'] = []
+            
+            line_props = line_props.copy() if line_props else {}
+            if 'options' not in line_props:
+                line_props['options'] = ['lines', 'markers']
+            if 'value' not in line_props:
+                line_props['value'] = ['lines']
+            
+            hovermode_props = hovermode_props.copy() if hovermode_props else {}
+            if 'options' not in hovermode_props:
+                hovermode_props['options'] = ['closest', 'x unified']
+            if 'value' not in hovermode_props:
+                hovermode_props['value'] = 'closest'
+    
+            update_props = update_props.copy() if update_props else {}
+            if 'children' not in update_props:
+                update_props['children'] = 'Update'
+    
+            if aio_id is None:
+                aio_id = str(uuid.uuid4())
+
+            #create a figure
+            #[in time/in distance/as maps]
+            if xaxis_data_name == 'in time':
+                xaxis_data_name = 'Time'
+            elif xaxis_data_name == 'in distance':
+                xaxis_data_name = 'Distance'
+            elif xaxis_data_name == 'as maps':
+                xaxis_data_name = 'Maps'
+            
+            colorscale = ntg_colors.ntg_av
+
+            dff=df
+            xrange_min=-50 if xaxis_data_name == 'Time' else -1
+            xrange_max=[]
+            fig=go.Figure()
+            for key, it in zip(dff, range(len(dff))):
+                dataname=key.split(".")[0].split(os.sep)[1].split("_")
+                dff_data_x=dff[key][xaxis_data_name]
+                dff_data_y=dff[key][yaxis_data_name]
+
+                ydata=np.array(dff_data_y)
+                if relative_props['value'] == ['relative']:
+                    for i in range(len(ydata)):
+                        ydata[i] -= dff_data_y[0]
+                fig.add_trace(go.Scatter(
+                    x=np.array(dff_data_x),
+                    y=ydata,
+                    mode='lines',
+                    line=dict(width=5, color=px.colors.sample_colorscale(
+                        colorscale, it/len(dff))[0]),
+                    name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
+                    hovertemplate = '%{y:12.3f}',
+                    hoverlabel=dict(bgcolor=px.colors.sample_colorscale(
+                        colorscale, it/len(dff))[0])
+                    ) # todo hover label color
+                )
+                xrange_max.append(max(dff_data_x))
+
+            fig.update_layout(title=dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
+                                         font=dict(size=22, family="Times New Roman")),
+                              autosize=True,height=540,
+                              template='simple_white',paper_bgcolor='#B4A0AA',plot_bgcolor='#B4A0AA',
+                              margin={'l': 0, 'b': 0, 't': 32, 'r': 0}, 
+                              hovermode='closest',
+                              hoverlabel=dict(
+                                font_size=16,
+                                font_family="Times New Roman"), # todo fix hover label. color of the hover title background should be the inverted color of the data, i.e. if colro is black then background is white
+                              )
+
+            fig.update_xaxes(title=dict(text=xaxis_data_name,
+                                        font=dict(size=20, family="Times New Roman")),
+                             range=[xrange_min, max(xrange_max)],
+                             type=xaxis_type, linewidth=4, mirror=True, side='bottom',
+                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
+                             minor=dict(ticklen=10, tickwidth=2),
+                             showspikes=True)
+
+            fig.update_yaxes(title=dict(text=yaxis_data_name,
+                                        font=dict(size=20, family="Times New Roman")),
+                             type=yaxis_type, linewidth=4, mirror=True, side='left',
+                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
+                             minor=dict(ticklen=10, tickwidth=2),
+                             showspikes=True)
+
+            layout = html.Div([
+                html.Div(dcc.Graph(figure=fig, id = self.ids.graph(aio_id) ,className='graph-graph')),
+                html.Div([
+                    html.Div([
+                        dcc.Markdown('Y axis:'), 
+                        dcc.RadioItems(id = self.ids.y_axis_type(aio_id), **y_axis_type_props),
+                    ], className="graph-settings--yAxis"),
+                    html.Div([
+                        dcc.Markdown('X axis:'),
+                        dcc.RadioItems(id = self.ids.x_axis_type(aio_id), **x_axis_type_props),
+                    ], className="graph-settings--xAxis"),
+                    html.Div([
+                        dcc.Markdown("Colorscale"),
+                        dcc.Dropdown(id = self.ids.colorscale(aio_id), **colorscale_props, clearable=False)
+                    ], className = "graph-settings--colorscale"),
+                    html.Div([
+                        # todo make layout for these components
+                        dcc.Markdown("Data:"),
+                        dcc.Checklist(id = self.ids.relative(aio_id), **relative_props),
+                        dcc.Markdown("Show:"),
+                        dcc.Checklist(id = self.ids.line(aio_id), **line_props),
+                        dcc.Markdown("Hovermode:"),
+                        dcc.RadioItems(id = self.ids.hovermode(aio_id), **hovermode_props)
+                    ], className = "graph-settings--additional"),
+                    html.Button(id = self.ids.update(aio_id), **update_props, className="graph-settings--updateButton")
+                ], className = "graph-settings--container")
+            ])
+    
+            super().__init__(layout)
+    
+        @callback(
+            Output(ids.graph(MATCH), component_property='figure'),
+            Input(ids.update(MATCH),'n_clicks'),
+            State(ids.x_axis_type(MATCH), 'value'),
+            State(ids.y_axis_type(MATCH), 'value'),
+            State(ids.relative(MATCH), 'value'),
+            State(ids.line(MATCH), 'value'),
+            State(ids.hovermode(MATCH), 'value'),
+            State(ids.colorscale(MATCH), 'value'),
+            State(ids.graph(MATCH), component_property='figure'),
+            prevent_initial_call = True
+        )
+        # method for updating a graph in a GraphComponentAIO
+        def update_graph(clicks, x_data, y_type, relative, line, hovermode, colorscale ,figure: go.Figure):
+
+            fig = go.Figure(figure)
+            yaxis_data_name = figure['layout']['yaxis']['title']['text']
+            xaxis_data_name = figure['layout']['xaxis']['title']['text']
+
+            # Change x type + colorscale + lines/markers
+            if x_data == 'in time':
+                x_data = 'Time'
+            elif x_data == 'in distance':
+                x_data = 'Distance'
+            elif x_data == 'as maps':
+                x_data = 'Maps'
+
+            if xaxis_data_name != x_data:
+                xaxis_data_name = x_data
+            
+            dff=df
+            xrange_min=-50 if xaxis_data_name == 'Time' else -1
+            xrange_max=[]
+            for key, data, it in zip(dff,fig.data,range(len(dff))):
+                data['x'] = np.array(dff[key][xaxis_data_name])
+                dff_data_y = dff[key][yaxis_data_name]
+                y_data = np.array(dff_data_y)
+                if relative == ['relative']:
+                    for i in range(len(y_data)):
+                        y_data[i] -= dff_data_y[0]
+                data['y'] = y_data
+                xrange_max.append(max(data['x']))
+
+                # Change colorscale
+                if colorscale == 'ntg':
+                    colorscale = ntg_colors.ntg
+                elif colorscale == 'ntg_map':
+                    colorscale = ntg_colors.ntg_map
+                elif colorscale == 'ntg_av':
+                    colorscale = ntg_colors.ntg_av
+                # Change lines/markers
+                if 'lines' in line:
+                    data['line'] = dict(width=5, color=px.colors.sample_colorscale(
+                                    colorscale, it/len(dff))[0])
+                else:
+                    data['line'] = dict(width=0)
+                if 'markers' in line:
+                    data['marker'] = dict(size = 5, color=px.colors.sample_colorscale(
+                                    colorscale, it/len(dff))[0])
+                else:
+                    data['marker'] = dict(size = 0)
+            
+            if line == ['lines']:
+                fig.update_traces(mode='lines')
+            elif line == ['markers']:
+                fig.update_traces(mode='markers')
+            elif 'lines' in line and 'markers' in line:
+                fig.update_traces(mode='lines+markers')
+
+            #Change title of x axis
+            fig.update_xaxes(title=dict(text=xaxis_data_name,font=dict(size=20, family="Times New Roman")),
+                             range = [xrange_min,max(xrange_max)])
+
+            # Change y type
+            fig.update_yaxes(type=y_type)
+
+            # Change title of graph + change hovermode
+            fig.update_layout(title = dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
+                                font=dict(size=22, family="Times New Roman")),
+                                hovermode=hovermode)
+
+            return fig
+
+
+    # Updating list of graphs
     @app.callback(
         #list of graphs
         Output(component_id='list-of-graphs', component_property='options'),
         Output(component_id='list-of-graphs', component_property='value'),
         #conservation add button
-        Input(component_id='addButton-conservation', component_property='n_clicks'),
-        Input(component_id='addButton-center-of-mass', component_property='n_clicks'),
-        Input(component_id='addButton-deformation', component_property='n_clicks'),
-        Input(component_id='addButton-pairing', component_property='n_clicks'),
+        Input(component_id=GraphPickerAIO.ids.add_button('conservation'), component_property='n_clicks'),
+        Input(component_id=GraphPickerAIO.ids.add_button('center-of-mass'), component_property='n_clicks'),
+        Input(component_id=GraphPickerAIO.ids.add_button('deformation'), component_property='n_clicks'),
+        Input(component_id=GraphPickerAIO.ids.add_button('pairing'), component_property='n_clicks'),
         #graphs' list of options
         Input(component_id='list-of-graphs', component_property='options'),
         Input(component_id='list-of-graphs', component_property='value'),
         #conservation x-axis
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'xRadioItems', 'aio_id': 'conservation'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'xRadioItems', 'aio_id': 'conservation'}, component_property='value'),
         #conservation y-axis
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'yRadioItems', 'aio_id': 'conservation'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'yRadioItems', 'aio_id': 'conservation'}, component_property='value'),
         #conservation data
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'dataDropdown', 'aio_id': 'conservation'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'dataDropdown', 'aio_id': 'conservation'}, component_property='value'),
         #center of mass x-axis
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'xRadioItems', 'aio_id': 'center-of-mass'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'xRadioItems', 'aio_id': 'center-of-mass'}, component_property='value'),
         #center of mass y-axis
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'yRadioItems', 'aio_id': 'center-of-mass'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'yRadioItems', 'aio_id': 'center-of-mass'}, component_property='value'),
         #center of mass data
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'dataDropdown', 'aio_id': 'center-of-mass'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'dataDropdown', 'aio_id': 'center-of-mass'}, component_property='value'),
         #deformation x-axis
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'xRadioItems', 'aio_id': 'deformation'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'xRadioItems', 'aio_id': 'deformation'}, component_property='value'),
         #deformation y-axis
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'yRadioItems', 'aio_id': 'deformation'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'yRadioItems', 'aio_id': 'deformation'}, component_property='value'),
         #deformation data
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'dataDropdown', 'aio_id': 'deformation'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'dataDropdown', 'aio_id': 'deformation'}, component_property='value'),
         #pairing x-axis
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'xRadioItems', 'aio_id': 'pairing'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'xRadioItems', 'aio_id': 'pairing'}, component_property='value'),
         #pairing y-axis
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'yRadioItems', 'aio_id': 'pairing'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'yRadioItems', 'aio_id': 'pairing'}, component_property='value'),
         #pairing data
-        State({'component': 'GraphSettingsAIO', 'subcomponent': 'dataDropdown', 'aio_id': 'pairing'}, component_property='value'),
+        State({'component': 'GraphPickerAIO', 'subcomponent': 'dataDropdown', 'aio_id': 'pairing'}, component_property='value'),
     )
+    # function for updating a dropdown component storing the list of graphs
     def update_list_of_graphs(b1, b2, b3, b4, 
                   list_options, list_values,
                   cx, cy, cdata,
@@ -281,13 +538,13 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
         trigerred_id = ctx.triggered_id
 
         #add new graph to the list
-        if trigerred_id == 'addButton-conservation':
+        if trigerred_id == GraphPickerAIO.ids.add_button('conservation'):
             return create_element(cdata, cx, cy , list_options, list_values)
-        elif trigerred_id == 'addButton-center-of-mass':
+        elif trigerred_id == GraphPickerAIO.ids.add_button('center-of-mass'):
             return create_element(cmdata, cmx, cmy, list_options, list_values)
-        elif trigerred_id == 'addButton-deformation':
+        elif trigerred_id == GraphPickerAIO.ids.add_button('deformation'):
             return create_element(ddata, dx, dy, list_options, list_values)
-        elif trigerred_id == 'addButton-pairing':
+        elif trigerred_id == GraphPickerAIO.ids.add_button('pairing'):
             return create_element(pdata, px, py, list_options, list_values)
         #delete graphs from the list
         elif trigerred_id == 'list-of-graphs':
@@ -312,12 +569,13 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
         if (b1 and b2 and b3 and b4) is None:
             raise PreventUpdate
     
-    #Updating graphs
+    # Updating graphs
     @app.callback(
         Output(component_id='graphs', component_property='children'),
         Input(component_id='list-of-graphs', component_property='value'),
         State(component_id='graphs', component_property='children')
     )
+    # function for updating graphs
     def update_graphs(values, graphs):
         graphs_temp = graphs
         #when no graph was added to the list
@@ -333,10 +591,9 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 to_remove = None
                 for graph in graphs_temp:
                     id = graph['props']['id']
-                    id = id.replace('container--','')
+                    id = id.replace('-container','')
                     id = id.replace('--','|')
                     id = id.replace('-',' ')
-                    print(id)
 
                     delete = True
 
@@ -357,77 +614,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             yaxis_type = info[0] #[linear/log]
             xaxis_type = 'linear'
             yaxis_data_name = info[1]
-            #[in time/in distance/as maps]
-            if info[2] == 'in time':
-                xaxis_data_name = 'Time'
-            elif info[2] == 'in distance':
-                xaxis_data_name = 'Distance'
-            elif info[2] == 'as maps':
-                xaxis_data_name = 'Maps'
-            
-            colorscale = colorscales[-1]
-
-            dff=df
-            xrange_min=-50 if xaxis_data_name == 'Time' else -1
-            xrange_max=[]
-            fig=go.Figure()
-            for key, it in zip(dff, range(len(dff))):
-                dataname=key.split(".")[0].split(os.sep)[1].split("_")
-                dff_data_x=dff[key][xaxis_data_name]
-                dff_data_y=dff[key][yaxis_data_name]
-                # Choose the plot type. Relative or not. 
-                # Relative: data(x) - data(x=0)
-                # Normal: data(x)
-                # # todo 1 Add 'relative' CheckBox. If so, then plot relative plot (if statement here)
-                # # todo 2 Optimize this. Loading data should return a list, also this done for every 
-                # # todo 2 data point instead of reducing whole list as one. Try having np.array in dict (`dff`) isntead of lists
-                # # todo 3 this might speedup the process significantly
-                ydata=list(dff_data_y)
-                if yaxis_data_name == "Total Energy":
-                    for i in range(len(ydata)):
-                        ydata[i] -= dff_data_y[0]
-                fig.add_trace(go.Scatter(
-                    x=list(dff_data_x),
-                    y=ydata,
-                    mode='lines', # todo add to graph options (the one appears after plotting). CheckBox 'lines' and 'markers' if both are checked then 'lines+makrers'
-                    line=dict(width=5, color=px.colors.sample_colorscale(
-                        colorscale, it/len(dff))[0]),
-                    name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
-                    hovertemplate = '%{y:12.3f}',
-                    )
-                )
-                xrange_max.append(max(dff_data_x))
-
-            fig.update_layout(title=dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
-                                         font=dict(size=22, family="Times New Roman")),
-                              autosize=True,height=540,
-                              template='simple_white',paper_bgcolor='#B4A0AA',plot_bgcolor='#B4A0AA',
-                              margin={'l': 0, 'b': 0, 't': 32, 'r': 0}, 
-                              hovermode='closest', # todo add to graph options. RadioItem 'x unified', 'closest'
-                              hoverlabel=dict(
-                                bgcolor='rgba(0,0,0,0)',
-                                font_size=16,
-                                font_family="Times New Roman"), # todo fix hover label. color of the hover title background should be the inverted color of the data, i.e. if colro is black then background is white
-                              )
-
-            fig.update_xaxes(title=dict(text=xaxis_data_name,
-                                        font=dict(size=20, family="Times New Roman")),
-                             range=[xrange_min, max(xrange_max)],
-                             type=xaxis_type, linewidth=4, mirror=True, side='bottom',
-                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
-                             minor=dict(ticklen=10, tickwidth=2),
-                             showspikes=True)
-
-            fig.update_yaxes(title=dict(text=yaxis_data_name,
-                                        font=dict(size=20, family="Times New Roman")),
-                             type=yaxis_type, linewidth=4, mirror=True, side='left',
-                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
-                             minor=dict(ticklen=10, tickwidth=2),
-                             showspikes=True)
-            
-            graph_id = 'graph--' + yaxis_type + '--' + yaxis_data_name.replace(' ', '-') + '--' + info[2].replace(' ', '-')
-
-            graph = dcc.Graph(figure=fig, id = graph_id, className='graph-graph')
+            xaxis_data_name = info[2]
 
             if yaxis_data_name in groups["conservation"]:
                 x_options = ['in time']
@@ -438,21 +625,24 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             elif (yaxis_data_name in groups["deformation"]) or (yaxis_data_name in groups["pairing"]):
                 x_options = ['in time', 'in distance', 'as maps']
                 y_options = ['linear', 'log']
-            settings = GraphSettingsAIO(
-                                data_type_props = {},
-                                data_props = {},
-                                x_axis_type_props = {'options':x_options},
-                                y_axis_type_props = {'options':y_options},
-                                is_picker = False,
-                                aio_id = "settings"
-                            )
-            div_id = 'container--'+ yaxis_type + '--' + yaxis_data_name.replace(' ', '-') + '--' + info[2].replace(' ', '-')
+            
+            aio_id = yaxis_type + '--' + yaxis_data_name.replace(' ', '-') + '--' + info[2].replace(' ', '-')
+
+            graph_component = GraphComponentAIO(
+                x_axis_type_props={'options':x_options},
+                xaxis_type=xaxis_type,
+                xaxis_data_name=xaxis_data_name,
+                y_axis_type_props={'options':y_options},
+                yaxis_type=yaxis_type,
+                yaxis_data_name= yaxis_data_name,
+                colorscale_type='ntg_av',
+                aio_id=aio_id
+            )
 
             div = html.Div([
-                graph,
-                settings
-            ], id = div_id)
+                graph_component
+            ], id = aio_id + '-container')
+
             graphs_temp.append(div)
-            #print(type(graph))
         
             return graphs_temp
