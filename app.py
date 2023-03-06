@@ -201,7 +201,7 @@ app.layout = html.Div([
                                 html.Div([html.H3("System"),
                                         html.Div([
                                             html.Div([dcc.Dropdown(
-                                                [], '', id='filters_system', multi=True)], className="filters--list"),
+                                                 [df[0]], '', id='filter_system', multi=True)], className="filters--list"),
                                                 ])
                                         ])
 
@@ -211,7 +211,7 @@ app.layout = html.Div([
                                 html.Div([html.H3("Method"),
                                     html.Div([
                                             html.Div([dcc.Checklist(
-                                                     ['HF', 'HFB'], labelStyle={'display': 'block'}
+                                                     ['HF', 'HFB'],id='filter_method', labelStyle={'display': 'block'}
                                                     )], className="filtersr--radio-items")
                                             ])
                                 ])
@@ -223,27 +223,37 @@ app.layout = html.Div([
                                 html.Div([html.H3("Functional"),
                             html.Div([
                                 html.Div([dcc.Dropdown(
-                                    [], '', id='filter_filter', multi=True)], className="filters--list2"),
+                                    [df[4]], '', id='filter_filter', multi=True)], className="filters--list2"),
                                     ])
                                         ])
                             ], className="filters--column")
 
                 ], className="filters--options"),                 # dcc.RangeSlider(0, 20, tooltip = { 'always_visible': True }, value=20,className="filter--slider")
                  html.H3("Ecm [MeV]", className="filters--text"),
-            dcc.RangeSlider(0, 20, tooltip={'always_visible': True, "placement": "bottom"}, value=[0, 20], id='filter_ecms', marks=None), html.H3("Phase", className="filters--text"), dcc.Slider(0, 2*math.pi, tooltip={'always_visible': True, "placement": "bottom"}, value=2*math.pi, className="filter--slider", id='filter_phase', marks={
-        0: {'label': '0', 'style': {'color': 'black'}},
-        math.pi/2: {'label': 'π/2', 'style': {'color': 'black'}},
-        math.pi: {'label': 'π', 'style': {'color': 'black'}},
-        3*math.pi/2: {'label': '3π/2', 'style': {'color': 'black'}},
-        2*math.pi: {'label': '2π', 'style': {'color': 'black'}}
-    })  # 2*math.pi
-                , html.H3("b", className="filters--text"), dcc.Slider(0, 4, tooltip={'always_visible': True, "placement": "bottom"}, value=10, className="filter--slider", id='filter_D', marks={
-        0: {'label': '0', 'style': {'color': 'black'}},
-        1: {'label': '1', 'style': {'color': 'black'}},
-        2: {'label': '2', 'style': {'color': 'black'}},
-        3: {'label': '3', 'style': {'color': 'black'}},
-        4: {'label': '4', 'style': {'color': 'black'}}}),
-        html.Button('Apply', id='apply', n_clicks=0,
+            dcc.RangeSlider(0, 20, tooltip={'always_visible': True, "placement": "bottom"}, value=[0, 20], id='filter_ecms', marks=None), 
+            html.H3("Phase", className="filters--text"), 
+            dcc.RangeSlider(0, 2*math.pi, tooltip={'always_visible': True, "placement": "bottom"}, value=[0,2*math.pi], className="filter--slider", id='filter_phase', marks={
+            0: {'label': '0', 'style': {'color': 'black'}},
+            math.pi/4: {'label': r'$\tfrac{\pi}{4}$', 'style': {'color': 'black'}},
+            math.pi/3: {'label': 'π/3', 'style': {'color': 'black'}},
+            2*math.pi/4: {'label': 'π/2', 'style': {'color': 'black'}},
+            3*math.pi/4: {'label': '3π/4', 'style': {'color': 'black'}},
+            math.pi: {'label': 'π', 'style': {'color': 'black'}},
+            5*math.pi/4: {'label': '5π/4', 'style': {'color': 'black'}},
+            4*math.pi/3: {'label': '4π/3', 'style': {'color': 'black'}},
+            6*math.pi/4: {'label': '3π/2', 'style': {'color': 'black'}},
+            5*math.pi/3: {'label': '5π/3', 'style': {'color': 'black'}},
+            7*math.pi/4: {'label': '7π/4', 'style': {'color': 'black'}},
+            2*math.pi: {'label': r'$2\pi$', 'style': {'color': 'black'}}
+            })  
+            , html.H3("b", className="filters--text"),
+             dcc.RangeSlider(0, 4, tooltip={'always_visible': True, "placement": "bottom"}, value=[0,4], className="filter--slider", id='filter_D', marks={
+            0: {'label': '0', 'style': {'color': 'black'}},
+            1: {'label': '1', 'style': {'color': 'black'}},
+            2: {'label': '2', 'style': {'color': 'black'}},
+            3: {'label': '3', 'style': {'color': 'black'}},
+            4: {'label': '4', 'style': {'color': 'black'}}}),
+            html.Button('Apply', id='apply', n_clicks=0,
                     className="filters--button")
         ], className="filters")
     ], className="menu"),
@@ -258,6 +268,8 @@ app.layout = html.Div([
 
 
 graph.get_callbacks(app, df, ntg_colors.colorscales)
+
+ntg_data.pipe_data(app) #method,System,Functional,phase,Ecm,b
 
 if __name__ == '__main__':
     app.run_server(debug=True)
