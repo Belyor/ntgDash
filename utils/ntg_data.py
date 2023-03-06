@@ -44,6 +44,7 @@ def load_data():
     for file in files:
         dns = file.split(os.sep)
         dns = dns[1].split("_")
+
         _system = dns[0] #system #dns[0] jako cały sytem  #system
         _functional = dns[1] 
         _gp = dns[2].split('gp')[1]
@@ -56,8 +57,7 @@ def load_data():
         data_tmp["totalmass"] = data_tmp["Number of Protons"][1] * \
            938.272013 + data_tmp["Number of Neutrons"][1] * 939.565346
         data[file] = data_tmp
-    return _system, _ecm,_b,_functional
-
+    return data#_system, _ecm,_b,_functional
     
 def pipe_data(app: Dash):
     @app.callback(
