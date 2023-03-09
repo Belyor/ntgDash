@@ -1,0 +1,38 @@
+Bootstrap: docker
+From: ubuntu:22.04
+Stage:build
+
+%setup
+
+%files
+    # ./assets
+    # ./TestData
+    ./deploy/requirements.txt
+    # ./utils
+    # ./app.py
+
+%environment
+
+%post
+    apt -y update
+    apt -y install python3-pip
+    pip install -r deploy/requirements.txt
+    apt -y install git
+    git clone https://github.com/Belyor/ntgDash.git
+    cd ntgDash
+
+%runscript
+    ls
+    python3 ./ntgDash/app.py
+
+%startscript
+
+%test
+
+%labels
+    Author Andrzej Makowski
+    Version v0.0.1
+    MyLabel NTG Dash
+
+%help
+    This is a container used to run `ntgDash` dash (plotly) app for analyzing the data obtained using LISE toolkit based on TDHFB for nuclear systems.
