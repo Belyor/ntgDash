@@ -1,12 +1,4 @@
-from pydoc import classname
-from dash import Dash, dcc, html, Input, Output
-import plotly.express as px
-import pandas as pd
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
-import numpy as np
-import math
-import os
+from dash import Dash
 
 # Project
 import utils.ntg_data as ntg_data
