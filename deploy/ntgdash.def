@@ -5,25 +5,18 @@ Stage:build
 %setup
 
 %files
-    # ./assets
-    # ./TestData
-    ./deploy/requirements.txt
-    # ./utils
-    # ./app.py
+    deploy/requirements.txt
 
 %environment
 
 %post
     apt -y update
     apt -y install python3-pip
-    pip install -r deploy/requirements.txt
-    apt -y install git
-    git clone https://github.com/Belyor/ntgDash.git
-    cd ntgDash
+    pip install -r ./deploy/requirements.txt
 
 %runscript
-    ls
-    python3 ./ntgDash/app.py
+    cd ./ntgDash
+    python3 ./app.py
 
 %startscript
 
