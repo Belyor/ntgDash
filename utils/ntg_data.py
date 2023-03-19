@@ -145,16 +145,16 @@ def pipe_data(app: Dash):
        # print(_phase1)
        # print(_functional1)
        # print(_system1)
-        tab3 = list(set(_ecm1))
+        tab3 = list(set(_ecm1)) #tablice z przefiltrowanymi wartościami
         tab4 = list(set(_b1))
         tab5 = list(set(_phase1))
         tab6 = list(set(_functional1))
         tab7 = list(set(_system1))
-        data_one=tab3
-        data_two=tab4
-        data_three=tab5
-        data_four=tab6
-        data_five=tab7
+        #data_one=tab3
+        #data_two=tab4
+        #data_three=tab5
+        #data_four=tab6
+        #data_five=tab7
         #print(data_one)
         #print(tab3)
         #print(tab4)
@@ -164,4 +164,4 @@ def pipe_data(app: Dash):
             #print(ecms[0])
             #print (system,method,functional,phase,ecms,b)
         return tab3, method,functional,phase #input_value,ip,im #print(input_value,ip,im)
-    return data_one#,data_two,data_three,data_four,data_five      
+    return #,data_two,data_three,data_four,data_five      
