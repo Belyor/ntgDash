@@ -8,6 +8,11 @@ from dash.exceptions import PreventUpdate
 DATA = 1  # 1: Test Data, 0: All NTG data
 global col_results
 global col_postprocess
+data_one=[]
+data_two=[]
+data_three=[]
+data_four=[]
+data_five=[]
 
 col_results = ["Time", "Total Energy", "Number of Protons", "Number of Neutrons",
                "X_cm", "Y_cm", "Z_cm",
@@ -33,7 +38,7 @@ col_postprocess = ["Time", "Total Energy", "Total Fermi Energy", "Total Fermi En
 
 def load_data():
     project_dir = os.path.join("TestData", "*.dat")
-
+    metadata=[]
     if DATA == 0:
         project_dir = os.path.join("Data", "*.dat")
 
@@ -44,7 +49,6 @@ def load_data():
     for file in files:
         dns = file.split(os.sep)
         dns = dns[1].split("_")
-
         _system = dns[0] #system #dns[0] jako cały sytem  #system
         _functional = dns[1] 
         _gp = dns[2].split('gp')[1]
@@ -53,11 +57,12 @@ def load_data():
         _phase = dns[5].split('Phase')[0]
         _ecm = dns[6].split('MeV')[0]
         data_tmp = pd.read_csv(file, sep=",", names=col_postprocess)  # READ FILES
-
+        metadata.append([_system,_functional,_gp,_gn, _b,_phase,_ecm])
         data_tmp["totalmass"] = data_tmp["Number of Protons"][1] * \
            938.272013 + data_tmp["Number of Neutrons"][1] * 939.565346
         data[file] = data_tmp
-    return data#_system, _ecm,_b,_functional
+    
+    return data,metadata #_system, _ecm,_b,_functional
     
 def pipe_data(app: Dash):
     @app.callback(
@@ -74,7 +79,13 @@ def pipe_data(app: Dash):
         State(component_id='filter_D', component_property='value'),
     )
     def callback(button,system,method,functional,phase,ecms,b):
-        #if ( df.dns[5] > phase[0] and df.dns[5] < phase[1] ):
+        _ecm1=[]
+        _phase1=[]
+        _functional1=[]
+        _b1=[]
+        _system1=[]
+        if button == 0:
+            raise PreventUpdate
         project_dir = os.path.join("TestData", "*.dat")
         if DATA == 0:
             project_dir = ""
@@ -87,32 +98,70 @@ def pipe_data(app: Dash):
             _system = dns[0]
             _functional = dns[1] 
             _b = float(dns[4].split('b')[1].replace('-', '.'))
-            _phase = float(dns[5].split('PIPhase')[0].split("-"))
-            if(len(_phase)==2):
-                _phase=_phase[0]
+            _phase =dns[5].split('PIPhase')[0].split("-")
+            #print(_phase)
+            #print(type(_phase))
+            if _phase[0] == '0Phase':
+                _phase=' '.join(map(str,_phase))
+                #print(_phase)
+               # print(type(_phase))
+                _phase=_phase.replace('Phase','')
+                _phase=float(_phase)
             else:
-                _phase=_phase[0]/_phase[1]
+               # print(_phase)
+               # print(type(_phase[0]))
+                if _phase[0]=='':
+                    _phase=0
+                else:
+                    _phase[0]=float(_phase[0])
+                    _phase[1]=float(_phase[1])
+                    #print(_phase[0])
+                    _phase=_phase[0]/_phase[1] 
             _ecm = float(dns[6].split('MeV')[0])
-            # data_tmp = pd.read_csv(file, sep=",", names=col_results)  # READ FILES
-            # data_tmp["totalmass"] = data_tmp["Number of Protons"][1] * \
-                # 938.272013 + data_tmp["Number of Neutrons"][1] * 939.565346
-            # data[file] = data_tmp
-            
-            if ( _system == system):
-                print("System condition filled")
-            if ( _functional == functional ):
-                print("Functional condition filled")
+            if ( _system == system[0]):
+                #print("System condition filled")
+                #print (_system)
+                _system1.append(_system)
+            if ( _functional == functional[0] ):
+                #print("Functional condition filled")
+                #print (_functional)
+                _functional1.append(_functional)
             if ( b[0] <= _b <= b[1]):
-                print("Impact parameter condition filled")
+                #print("Impact parameter condition filled")
+                #print (_b)
+                _b1.append(_b)
+
             if ( phase[0] <= _phase <= phase[1] ):
-                print("Phase condition filled")
+                #print("Phase condition filled")
+                ##print(_phase)
+                _phase1.append(_phase)
             if ( ecms[0] <= _ecm <= ecms[1] ):
-                print("Energy condition filled")
+                #print("Energy condition filled")
+                #print(_ecm)
+                _ecm1.append(_ecm)
                 
-        if button == 0:
-            raise PreventUpdate
-            return system,method,functional,phase 
-        else: 
-            print(ecms[0])
-            print (system,method,functional,phase,ecms,b)
-            return system,method,functional,phase #input_value,ip,im #print(input_value,ip,im)
+        #print(_ecm1)
+       # print(_b1)
+       # print(_phase1)
+       # print(_functional1)
+       # print(_system1)
+        tab3 = list(set(_ecm1))
+        tab4 = list(set(_b1))
+        tab5 = list(set(_phase1))
+        tab6 = list(set(_functional1))
+        tab7 = list(set(_system1))
+        data_one=tab3
+        data_two=tab4
+        data_three=tab5
+        data_four=tab6
+        data_five=tab7
+        #print(data_one)
+        #print(tab3)
+        #print(tab4)
+        #print(tab5)
+        #print(tab6)
+        #print(tab7)
+            #print(ecms[0])
+            #print (system,method,functional,phase,ecms,b)
+        return tab3, method,functional,phase #input_value,ip,im #print(input_value,ip,im)
+    return data_one#,data_two,data_three,data_four,data_five      
