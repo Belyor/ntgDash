@@ -150,4 +150,10 @@ def sett(app: Dash,metadata):
             ]),
             html.Div([], id='graphs', className='graph-div'),
         ])
+        ,html.Div([
+            dcc.Markdown(" ",id = 'system_out'),
+            dcc.Markdown(" ",id = 'function_out'),
+            dcc.Dropdown([],id ='ecm_out'),
+            dcc.Dropdown([],id ='phase'),
+            dcc.Dropdown([],id ='impact')])#,style={"display":"none"})
     ])

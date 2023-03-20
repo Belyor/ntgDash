@@ -70,6 +70,11 @@ def pipe_data(app: Dash):
         Output(component_id='filter_filter', component_property='value'),
         Output(component_id='filter_method', component_property='value'),
         Output(component_id='filter_phase', component_property='value'),
+        Output(component_id='system_out', component_property='children'),
+        Output(component_id='function_out', component_property='children'),
+        Output(component_id='ecm_out', component_property='options'),
+        Output(component_id='phase', component_property='options'),
+        Output(component_id='impact', component_property='options'),
         Input(component_id='apply', component_property='n_clicks'),
         State(component_id='filter_system', component_property='value'),
         State(component_id='filter_method', component_property='value'),
@@ -163,5 +168,5 @@ def pipe_data(app: Dash):
         print(tab7)
             #print(ecms[0])
             #print (system,method,functional,phase,ecms,b)
-        return tab3, method,functional,phase #input_value,ip,im #print(input_value,ip,im)
+        return system, method,functional,phase,tab3,tab4,tab5,tab6,tab7#input_value,ip,im #print(input_value,ip,im)
     return #,data_two,data_three,data_four,data_five      
