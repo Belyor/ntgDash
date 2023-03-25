@@ -1,11 +1,9 @@
 from dash import Dash, dcc, html, callback, ctx, Input, Output, State, MATCH
 import plotly.express as px
 import pandas as pd
-from plotly.subplots import make_subplots
 from dash.exceptions import PreventUpdate
 import plotly.graph_objects as go
 import numpy as np
-import math
 import os
 import uuid
 
