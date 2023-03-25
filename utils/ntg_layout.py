@@ -1,9 +1,30 @@
 from dash import Dash, dcc, html
 import math
 from utils.ntg_graph import GraphPickerAIO
-
+def fun (data):
+    one=[]
+    two=[]
+    three=[]
+    four=[]
+    five=[]
+    six= []
+    seven=[]
+    tab =[one, two, three,four, five,six, seven]
+    for j in range (7):
+        for i in range (len(data)):
+            tab[j].append(data[i][j])
+    tab1 = list(set(tab[0]))
+    tab2 = list(set(tab[1]))
+    tab3 = list(set(tab[2]))
+    tab4 = list(set(tab[3]))
+    tab5 = list(set(tab[4]))
+    tab6 = list(set(tab[5]))
+    tab7 = list(set(tab[6]))
+    tab7 = min(tab7),max(tab7)
+    return(tab1,tab2,tab3,tab4,tab5,tab6,tab7)
 #sets application's layout
-def set(app: Dash):
+def sett(app: Dash,metadata):
+    dane=fun(metadata)
     app.layout = html.Div([
         html.Div([
             html.Div([html.H1("LISE Analyzer")], className="app-header--title"),
@@ -73,7 +94,7 @@ def set(app: Dash):
                                     html.Div([html.H3("System"),
                                             html.Div([
                                                 html.Div([dcc.Dropdown(
-                                                    [], '', id='filters_system', multi=True)], className="filters--list"),
+                                                    dane[0], '', id='filter_system', multi=True)], className="filters--list"),
                                                     ])
                                             ])
 
@@ -83,7 +104,7 @@ def set(app: Dash):
                                     html.Div([html.H3("Method"),
                                         html.Div([
                                                 html.Div([dcc.Checklist(
-                                                        ['HF', 'HFB'], labelStyle={'display': 'block'}
+                                                        ['HF', 'HFB'], id='filter_method',labelStyle={'display': 'block'}
                                                         )], className="filtersr--radio-items")
                                                 ])
                                     ])
@@ -95,26 +116,28 @@ def set(app: Dash):
                                     html.Div([html.H3("Functional"),
                                 html.Div([
                                     html.Div([dcc.Dropdown(
-                                        [], '', id='filter_filter', multi=True)], className="filters--list2"),
+                                        dane[1], '', id='filter_filter', multi=True)], className="filters--list2"),
                                         ])
                                             ])
                                 ], className="filters--column")
 
                     ], className="filters--options"),                 # dcc.RangeSlider(0, 20, tooltip = { 'always_visible': True }, value=20,className="filter--slider")
                     html.H3("Ecm [MeV]", className="filters--text"),
-                dcc.RangeSlider(0, 20, tooltip={'always_visible': True, "placement": "bottom"}, value=[0, 20], id='filter_ecms', marks=None), html.H3("Phase", className="filters--text"), dcc.Slider(0, 2*math.pi, tooltip={'always_visible': True, "placement": "bottom"}, value=2*math.pi, className="filter--slider", id='filter_phase', marks={
-            0: {'label': '0', 'style': {'color': 'black'}},
-            math.pi/2: {'label': 'π/2', 'style': {'color': 'black'}},
-            math.pi: {'label': 'π', 'style': {'color': 'black'}},
-            3*math.pi/2: {'label': '3π/2', 'style': {'color': 'black'}},
-            2*math.pi: {'label': '2π', 'style': {'color': 'black'}}
+                dcc.RangeSlider(int(dane[6][0]),int(dane[6][1]), tooltip={'always_visible': True, "placement": "bottom"}, value=[int(dane[6][0]),int(dane[6][1])], id='filter_ecms', marks=None), html.H3("Phase", className="filters--text"), 
+                dcc.RangeSlider(0, 2*math.pi, tooltip={'always_visible': True, "placement": "bottom"}, value=[0,2*math.pi], className="filter--slider", id='filter_phase', marks={
+                0: {'label': '0', 'style': {'color': 'black'}},
+                math.pi/2: {'label': 'π/2', 'style': {'color': 'black'}},
+                math.pi: {'label': 'π', 'style': {'color': 'black'}},
+                3*math.pi/2: {'label': '3π/2', 'style': {'color': 'black'}},
+                2*math.pi: {'label': '2π', 'style': {'color': 'black'}}
         })  # 2*math.pi
-                    , html.H3("b", className="filters--text"), dcc.Slider(0, 4, tooltip={'always_visible': True, "placement": "bottom"}, value=10, className="filter--slider", id='filter_D', marks={
-            0: {'label': '0', 'style': {'color': 'black'}},
-            1: {'label': '1', 'style': {'color': 'black'}},
-            2: {'label': '2', 'style': {'color': 'black'}},
-            3: {'label': '3', 'style': {'color': 'black'}},
-            4: {'label': '4', 'style': {'color': 'black'}}}),
+                    , html.H3("b", className="filters--text"),
+                      dcc.RangeSlider(0, 4, tooltip={'always_visible': True, "placement": "bottom"}, value=[0,4], className="filter--slider", id='filter_D', marks={
+                        0: {'label': '0', 'style': {'color': 'black'}},
+                        1: {'label': '1', 'style': {'color': 'black'}},
+                        2: {'label': '2', 'style': {'color': 'black'}},
+                        3: {'label': '3', 'style': {'color': 'black'}},
+                        4: {'label': '4', 'style': {'color': 'black'}}}),
             html.Button('Apply', id='apply', n_clicks=0,
                         className="filters--button")
             ], className="filters")
@@ -126,4 +149,10 @@ def set(app: Dash):
             ]),
             html.Div([], id='graphs', className='graph-div'),
         ])
+        ,html.Div([
+            dcc.Markdown(" ",id = 'system_out'),
+            dcc.Markdown(" ",id = 'function_out'),
+            dcc.Dropdown([],id ='ecm_out'),
+            dcc.Dropdown([],id ='phase'),
+            dcc.Dropdown([],id ='impact')])#,style={"display":"none"})
     ])
