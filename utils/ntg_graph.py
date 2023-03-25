@@ -56,6 +56,36 @@ groups = {
     #'mics'
 }
 
+units = {
+    #Conservation
+    "Total Energy": "MeV",
+    "Number of Protons": "",
+    "Number of Neutrons": "",
+    #Center of mass
+    "X_cm": "fm",
+    "Y_cm": "fm",
+    "Z_cm": "fm",
+    "X_cm for Protons": "fm",
+    "Y_cm for Protons": "fm",
+    "Z_cm for Protons": "fm",
+    "X_cm for Neutrons": "fm",
+    "Y_cm for Neutrons": "fm",
+    "Z_cm for Neutrons": "fm",
+    "Center of Mass Energy": "MeV",
+    #Deformation
+    "Beta": "",
+    "Quadrupole Moment Q20": "b",
+    "Octupole Moment Q30": "b^3/2",
+    "Hexadecupole Moment Q40": "b^2",
+    #Pairing
+    "Pairing gap for Protons": "MeV",
+    "Pairing gap for Neutrons": "MeV",
+    #Misc
+    #x axis
+    "Time": "fm/c",
+    "Distance": "fm"
+}
+
 #GraphPickerAIO - a component which stores settings available in Graph Picker panel in main menu
 class GraphPickerAIO(html.Div):
     graph_id = ""
@@ -321,6 +351,9 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 xaxis_data_name = 'Maps'
             
             colorscale = ntg_colors.ntg_av
+            
+            unit_x = units[xaxis_data_name]
+            unit_y = units[yaxis_data_name]
 
             dff=df
             xrange_min=-50 if xaxis_data_name == 'Time' else -1
@@ -342,7 +375,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                     line=dict(width=5, color=px.colors.sample_colorscale(
                         colorscale, it/len(dff))[0]),
                     name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
-                    hovertemplate = '%{y:12.3f}',
+                    hovertemplate = '%{y:3.2e} ' + unit_y,
                     hoverlabel=dict(bgcolor=px.colors.sample_colorscale(
                         colorscale, it/len(dff))[0])
                     ) # todo hover label color
@@ -360,7 +393,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                                 font_family="Times New Roman"), # todo fix hover label. color of the hover title background should be the inverted color of the data, i.e. if colro is black then background is white
                               )
 
-            fig.update_xaxes(title=dict(text=xaxis_data_name,
+            fig.update_xaxes(title=dict(text=xaxis_data_name + " [" + unit_x + "]",
                                         font=dict(size=20, family="Times New Roman")),
                              range=[xrange_min, max(xrange_max)],
                              type=xaxis_type, linewidth=4, mirror=True, side='bottom',
@@ -368,7 +401,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                              minor=dict(ticklen=10, tickwidth=2),
                              showspikes=True)
 
-            fig.update_yaxes(title=dict(text=yaxis_data_name,
+            fig.update_yaxes(title=dict(text=yaxis_data_name + " [" + unit_y + "]",
                                         font=dict(size=20, family="Times New Roman")),
                              type=yaxis_type, linewidth=4, mirror=True, side='left',
                              ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
@@ -421,8 +454,8 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
         def update_graph(clicks, x_data, y_type, relative, line, hovermode, colorscale ,figure: go.Figure):
 
             fig = go.Figure(figure)
-            yaxis_data_name = figure['layout']['yaxis']['title']['text']
-            xaxis_data_name = figure['layout']['xaxis']['title']['text']
+            yaxis_data_name = figure['layout']['yaxis']['title']['text'].split(" [")[0]
+            xaxis_data_name = figure['layout']['xaxis']['title']['text'].split(" [")[0]
 
             # Change x type + colorscale + lines/markers
             if x_data == 'in time':
@@ -474,8 +507,10 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             elif 'lines' in line and 'markers' in line:
                 fig.update_traces(mode='lines+markers')
 
+            unit_x = units[xaxis_data_name]
+
             #Change title of x axis
-            fig.update_xaxes(title=dict(text=xaxis_data_name,font=dict(size=20, family="Times New Roman")),
+            fig.update_xaxes(title=dict(text=xaxis_data_name + " [" + unit_x + "]",font=dict(size=20, family="Times New Roman")),
                              range = [xrange_min,max(xrange_max)])
 
             # Change y type
