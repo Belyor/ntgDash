@@ -64,14 +64,15 @@ def load_data():
     
     return data,metadata #_system, _ecm,_b,_functional
     
-def pipe_data(app: Dash):
+def pipe_data(app: Dash, df): #df == data frame 
+    print("Pipedata")
     @app.callback(
         Output(component_id='filter_system', component_property='value'),
         Output(component_id='filter_filter', component_property='value'),
         Output(component_id='filter_method', component_property='value'),
         Output(component_id='filter_phase', component_property='value'),
-        Output(component_id='system_out', component_property='children'),
-        Output(component_id='function_out', component_property='children'),
+        Output(component_id='system_out', component_property='options'),
+        Output(component_id='function_out', component_property='options'),
         Output(component_id='ecm_out', component_property='options'),
         Output(component_id='phase', component_property='options'),
         Output(component_id='impact', component_property='options'),
@@ -97,7 +98,7 @@ def pipe_data(app: Dash):
         data_names = defaultdict(dict)
         files = sorted(glob.glob(project_dir, ))
         data = defaultdict(pd.DataFrame)
-        for file in files:
+        for file in files: #petla po kluczach w df, podobie jak w load_data 
             dns = file.split(os.sep)
             dns = dns[1].split("_")
             _system = dns[0]
@@ -168,5 +169,5 @@ def pipe_data(app: Dash):
         print(tab7)
             #print(ecms[0])
             #print (system,method,functional,phase,ecms,b)
-        return system, method,functional,phase,tab3,tab4,tab5,tab6,tab7#input_value,ip,im #print(input_value,ip,im)
+        return system, method,functional,phase,tab7,tab6,tab3,tab5,tab4#input_value,ip,im #print(input_value,ip,im)
     return #,data_two,data_three,data_four,data_five      

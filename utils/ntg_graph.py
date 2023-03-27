@@ -281,6 +281,11 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             line_props = None, # lines/markers checklist
             hovermode_props = None, # x unified/closest
             update_props = None, # update button
+            system = None, # system filter
+            function = None, # function filter
+            ecm = None, # ecm filter
+            phase = None, # phase filter
+            impact = None, # impact filter
             aio_id = None # id of All-in-one component
         ):
             # Initialize components' properties
@@ -352,11 +357,110 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             
             unit_x = units[xaxis_data_name]
             unit_y = units[yaxis_data_name]
+            
+            # filter out keys from dataframe
+            keys_out = []
+            for key in df:
+                # check if a key fulfills all the filters
+                skip_key = True
+                print(system)
+                for s in system:
+                    if key.find(s) != -1:
+                        skip_key = False
+                        break
+                if skip_key == True and system:
+                    keys_out.append(key)
+                    continue
+                print(function)
+                for f in function:
+                    if key.find(f) != -1:
+                        skip_key = False
+                        break
+                    else:
+                        skip_key = True
+                if skip_key == True and function:
+                    keys_out.append(key)
+                    continue
+                print(ecm)
+                for e in ecm:
+                    if key.find(str(e)) != -1:
+                        skip_key = False
+                        break
+                    else:
+                        skip_key = True
+                if skip_key == True and ecm:
+                    keys_out.append(key)
+                    continue
+                print(phase)
+                for p in phase:
+                    if p == 0:
+                        p = '0Phase'
+                    elif p > 0.32 and p < 0.34:
+                        p = '1-3PIPhase'
+                    elif p > 0.65 and p < 0.67:
+                        p = '2-3PIPhase'
+                    elif p == 1:
+                        p = '_PIPhase'
+                    elif p > 1.32 and p < 1.34:
+                        p = '4-3PIPhase'
+                    elif p > 1.65 and p < 1.67:
+                        p = '5-3PIPhase'
+                    
+                    if key.find(p) != -1:
+                        skip_key = False
+                        break
+                    else:
+                        skip_key = True
+                if skip_key == True and phase:
+                    keys_out.append(key)
+                    continue
+                for i in impact:
 
-            dff=df
+                    if i == 0:
+                        i = 'b0'
+                        if key.find(i) != -1:
+                            skip_key = False
+                            break
+                        else:
+                            i = 'b0-0'
+                            if key.find(i) != -1:
+                                skip_key = False
+                            else:
+                                skip_key = True
+                    elif i == 1:
+                        i = 'b1_'
+                        if key.find(i) != -1:
+                            skip_key = False
+                            break
+                        else:
+                            i = 'b1-0'
+                            if key.find(i) != -1:
+                                skip_key = False
+                            else:
+                                skip_key = True
+                    else:
+                        if i == 0.5:
+                            i = 'b0-5'
+                        elif i == 1.5:
+                            i = 'b1-5'
+
+                        if key.find(i) != -1:
+                            skip_key = False
+                            break
+                        else:
+                            skip_key = True
+                
+                if skip_key == True and impact:
+                    keys_out.append(key)
+                    continue
+            dff=df.copy()
+            for key in keys_out:
+                dff.pop(key)
+
             xrange_min=-50 if xaxis_data_name == 'Time' else -1
             xrange_max=[]
             fig=go.Figure()
+            print("=====================")
             for key, it in zip(dff, range(len(dff))):
                 dataname=key.split(".")[0].split(os.sep)[1].split("_")
                 dff_data_x=dff[key][xaxis_data_name]
@@ -379,6 +483,9 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                     ) # todo hover label color
                 )
                 xrange_max.append(max(dff_data_x))
+            
+            if not xrange_max:
+                xrange_max.append(10)
 
             fig.update_layout(title=dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
                                          font=dict(size=22, family="Times New Roman")),
@@ -439,6 +546,11 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
         @callback(
             Output(ids.graph(MATCH), component_property='figure'),
             Input(ids.update(MATCH),'n_clicks'),
+            Input(component_id='system_out', component_property='options'),
+            Input(component_id='function_out', component_property='options'),
+            Input(component_id='ecm_out', component_property='options'),
+            Input(component_id='phase', component_property='options'),
+            Input(component_id='impact', component_property='options'),
             State(ids.x_axis_type(MATCH), 'value'),
             State(ids.y_axis_type(MATCH), 'value'),
             State(ids.relative(MATCH), 'value'),
@@ -449,7 +561,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             prevent_initial_call = True
         )
         # method for updating a graph in a GraphComponentAIO
-        def update_graph(clicks, x_data, y_type, relative, line, hovermode, colorscale ,figure: go.Figure):
+        def update_graph(clicks, system, function, ecm, phase, impact, x_data, y_type, relative, line, hovermode, colorscale ,figure: go.Figure):
 
             fig = go.Figure(figure)
             yaxis_data_name = figure['layout']['yaxis']['title']['text'].split(" [")[0]
@@ -466,9 +578,109 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             if xaxis_data_name != x_data:
                 xaxis_data_name = x_data
             
-            dff=df
+            # filter out keys from dataframe
+            keys_out = []
+            for key in df:
+                # check if a key fulfills all the filters
+                skip_key = True
+                print(system)
+                for s in system:
+                    if key.find(s) != -1:
+                        skip_key = False
+                        break
+                if skip_key == True and system:
+                    keys_out.append(key)
+                    continue
+                print(function)
+                for f in function:
+                    if key.find(f) != -1:
+                        skip_key = False
+                        break
+                    else:
+                        skip_key = True
+                if skip_key == True and function:
+                    keys_out.append(key)
+                    continue
+                print(ecm)
+                for e in ecm:
+                    if key.find(str(e)) != -1:
+                        skip_key = False
+                        break
+                    else:
+                        skip_key = True
+                if skip_key == True and ecm:
+                    keys_out.append(key)
+                    continue
+                print(phase)
+                for p in phase:
+                    if p == 0:
+                        p = '0Phase'
+                    elif p > 0.32 and p < 0.34:
+                        p = '1-3PIPhase'
+                    elif p > 0.65 and p < 0.67:
+                        p = '2-3PIPhase'
+                    elif p == 1:
+                        p = '_PIPhase'
+                    elif p > 1.32 and p < 1.34:
+                        p = '4-3PIPhase'
+                    elif p > 1.65 and p < 1.67:
+                        p = '5-3PIPhase'
+                    
+                    if key.find(p) != -1:
+                        skip_key = False
+                        break
+                    else:
+                        skip_key = True
+                if skip_key == True and phase:
+                    keys_out.append(key)
+                    continue
+                for i in impact:
+
+                    if i == 0:
+                        i = 'b0'
+                        if key.find(i) != -1:
+                            skip_key = False
+                            break
+                        else:
+                            i = 'b0-0'
+                            if key.find(i) != -1:
+                                skip_key = False
+                            else:
+                                skip_key = True
+                    elif i == 1:
+                        i = 'b1_'
+                        if key.find(i) != -1:
+                            skip_key = False
+                            break
+                        else:
+                            i = 'b1-0'
+                            if key.find(i) != -1:
+                                skip_key = False
+                            else:
+                                skip_key = True
+                    else:
+                        if i == 0.5:
+                            i = 'b0-5'
+                        elif i == 1.5:
+                            i = 'b1-5'
+
+                        if key.find(i) != -1:
+                            skip_key = False
+                            break
+                        else:
+                            skip_key = True
+                
+                if skip_key == True and impact:
+                    keys_out.append(key)
+                    continue
+
+            dff=df.copy()
+            for key in keys_out:
+                dff.pop(key)
+            
             xrange_min=-50 if xaxis_data_name == 'Time' else -1
             xrange_max=[]
+            
             for key, data, it in zip(dff,fig.data,range(len(dff))):
                 data['x'] = np.array(dff[key][xaxis_data_name])
                 dff_data_y = dff[key][yaxis_data_name]
@@ -606,10 +818,15 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
     @app.callback(
         Output(component_id='graphs', component_property='children'),
         Input(component_id='list-of-graphs', component_property='value'),
-        State(component_id='graphs', component_property='children')
+        State(component_id='graphs', component_property='children'),
+        State(component_id='system_out', component_property='options'),
+        State(component_id='function_out', component_property='options'),
+        State(component_id='ecm_out', component_property='options'),
+        State(component_id='phase', component_property='options'),
+        State(component_id='impact', component_property='options')
     )
     # function for updating graphs
-    def update_graphs(values, graphs):
+    def update_graphs(values, graphs, system, function, ecm, phase, impact):
         graphs_temp = graphs
         #when no graph was added to the list
         if len(graphs_temp) == len(values):
@@ -669,6 +886,11 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 yaxis_type=yaxis_type,
                 yaxis_data_name= yaxis_data_name,
                 colorscale_type='ntg_av',
+                system=system,
+                function=function,
+                ecm=ecm,
+                phase=phase,
+                impact=impact,
                 aio_id=aio_id
             )
 
