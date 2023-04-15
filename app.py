@@ -20,7 +20,7 @@ df, metadta = ntg_data.load_data()
 #set app's layout
 layout.sett(app, metadta)
 #get graphs callbacks
-ntg_data.pipe_data(app)
+ntg_data.pipe_data(app,df)
 ntg_graph.get_callbacks(app, df)
 if __name__ == '__main__':
     app.run_server(debug=True)

@@ -90,6 +90,10 @@ def pipe_data(app: Dash, df): #df == data frame
         _functional1=[]
         _b1=[]
         _system1=[]
+        tab=[]
+        dns=[]
+        pliki=[]
+        plikiR=[]
         if button == 0:
             raise PreventUpdate
         project_dir = os.path.join("TestData", "*.dat")
@@ -98,76 +102,73 @@ def pipe_data(app: Dash, df): #df == data frame
         data_names = defaultdict(dict)
         files = sorted(glob.glob(project_dir, ))
         data = defaultdict(pd.DataFrame)
-        for file in files: #petla po kluczach w df, podobie jak w load_data 
-            dns = file.split(os.sep)
-            dns = dns[1].split("_")
-            _system = dns[0]
-            _functional = dns[1] 
-            _b = float(dns[4].split('b')[1].replace('-', '.'))
-            _phase =dns[5].split('PIPhase')[0].split("-")
-            #print(_phase)
-            #print(type(_phase))
-            if _phase[0] == '0Phase':
-                _phase=' '.join(map(str,_phase))
-                #print(_phase)
-               # print(type(_phase))
-                _phase=_phase.replace('Phase','')
-                _phase=float(_phase)
+        for key in df.keys():
+            tab.append(key)    
+        for i in range(len(tab)):
+            dns.append(tab[i].split("_"))
+            _system1.append(dns[i][0].replace('TestData\\', ''))
+            _functional1.append(dns[i][1])
+            _b1.append(float(dns[i][4].split('b')[1].replace('-', '.')))
+            _phase1.append((dns[i][5].replace('PIPhase', '')))
+            _ecm1.append(float(dns[i][6].replace('MeV','')))
+        for k in range(len(_phase1)):
+            if( len(_phase1[k])> 1):
+                   _phase1[k]=float(_phase1[k][0])/float(_phase1[k][2])
             else:
-               # print(_phase)
-               # print(type(_phase[0]))
-                if _phase[0]=='':
-                    _phase=0
-                else:
-                    _phase[0]=float(_phase[0])
-                    _phase[1]=float(_phase[1])
-                    #print(_phase[0])
-                    _phase=_phase[0]/_phase[1] 
-            _ecm = float(dns[6].split('MeV')[0])
-            if ( _system == system[0]):
-                #print("System condition filled")
-                #print (_system)
-                _system1.append(_system)
-            if ( _functional == functional[0] ):
-                #print("Functional condition filled")
-                #print (_functional)
-                _functional1.append(_functional)
-            if ( b[0] <= _b <= b[1]):
-                #print("Impact parameter condition filled")
-                #print (_b)
-                _b1.append(_b)
-
-            if ( phase[0] <= _phase <= phase[1] ):
-                #print("Phase condition filled")
-                ##print(_phase)
-                _phase1.append(_phase)
-            if ( ecms[0] <= _ecm <= ecms[1] ):
-                #print("Energy condition filled")
-                #print(_ecm)
-                _ecm1.append(_ecm)
-                
-        #print(_ecm1)
-       # print(_b1)
-       # print(_phase1)
-       # print(_functional1)
-       # print(_system1)
-        tab3 = list(set(_ecm1)) #tablice z przefiltrowanymi wartościami
-        tab4 = list(set(_b1)) 
-        tab5 = list(set(_phase1))
-        tab6 = list(set(_functional1))
-        tab7 = list(set(_system1))
-        #data_one=tab3
-        #data_two=tab4
-        #data_three=tab5
-        #data_four=tab6
-        #data_five=tab7
-        #print(data_one)
-        print(tab3)
-        print(tab4)
-        print(tab5)
-        print(tab6)
-        print(tab7)
-            #print(ecms[0])
-            #print (system,method,functional,phase,ecms,b)
-        return system, method,functional,phase,tab7,tab6,tab3,tab5,tab4#input_value,ip,im #print(input_value,ip,im)
+                  _phase1[k]=float( _phase1[k])
+        for i in range(len(tab)):
+             if ( _system1[i] not in system): #działa raz nie ? 
+                  continue
+            #  if ( _system1[i] not in system): # raz działa raz nie ? 
+            #       print(_system1[i])
+            #       print(system[0])
+            #       continue
+             if ( _functional1[i] not in functional ): #działa 
+                   continue
+             if ( b[1]<= _b1[i] <=b[0] ):
+                  continue
+             if ( phase[1]<= _phase1[i]<=phase[0]):
+                 continue
+             if ( ecms[1] <= _ecm1[i] <= ecms[0]):
+                  continue
+             pliki.append(i)
+        print(pliki)
+        for t in pliki:
+             plikiR.append(tab[t].replace('TestData\\', ''))
+        print(plikiR)
+        # print(_system1[11])
+        # print(_functional1[11])
+        # print(_b1[11])
+        # print(_phase1[11])
+        # print(_ecm1[11])
+        # for file in files: #petla po kluczach w df, podobie jak w load_data 
+        #     dns = file.split(os.sep)
+        #     dns = dns[1].split("_")
+        #     _system = dns[0]
+        #     _functional = dns[1] 
+        #     _b = float(dns[4].split('b')[1].replace('-', '.'))
+        #     _phase =dns[5].split('PIPhase')[0].split("-")
+        #     if _phase[0] == '0Phase':
+        #         _phase=' '.join(map(str,_phase))
+        #         _phase=_phase.replace('Phase','')
+        #         _phase=float(_phase)
+        #     else:
+        #         if _phase[0]=='':
+        #             _phase=0
+        #         else:
+        #             _phase[0]=float(_phase[0])
+        #             _phase[1]=float(_phase[1])
+        #             _phase=_phase[0]/_phase[1] 
+        #     _ecm = float(dns[6].split('MeV')[0])
+            # if ( _system == system[0]):
+            #     _system1.append(_system)
+            # if ( _functional == functional[0] ):
+            #     _functional1.append(_functional)
+            # if ( b[0] <= _b <= b[1]):
+            #     _b1.append(_b)
+            # if ( phase[0] <= _phase <= phase[1] ):
+            #     _phase1.append(_phase)
+            # if ( ecms[0] <= _ecm <= ecms[1] ):
+            #     _ecm1.append(_ecm)
+        return system, method,functional,phase,plikiR,plikiR,plikiR,plikiR,plikiR#input_value,ip,im #print(input_value,ip,im)
     return #,data_two,data_three,data_four,data_five      

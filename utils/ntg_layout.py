@@ -154,5 +154,5 @@ def sett(app: Dash,metadata):
             dcc.Dropdown([],id = 'function_out'),
             dcc.Dropdown([],id ='ecm_out'),
             dcc.Dropdown([],id ='phase'),
-            dcc.Dropdown([],id ='impact')],style={"display":"none"})
+            dcc.Dropdown([],id ='impact')])#,style={"display":"none"})
     ])
