@@ -253,11 +253,6 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 'subcomponent': 'hovermodeRadioItems',
                 'aio_id': aio_id
             }
-            update = lambda aio_id: {
-                'component': 'GraphComponentAIO',
-                'subcomponent': 'button',
-                'aio_id': aio_id
-            }
             graph = lambda aio_id: {
                 'component': 'GraphComponentAIO',
                 'subcomponent': 'graph',
@@ -280,12 +275,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             relative_props = None, # relative/normal checkbox
             line_props = None, # lines/markers checklist
             hovermode_props = None, # x unified/closest
-            update_props = None, # update button
-            system = None, # system filter
-            function = None, # function filter
-            ecm = None, # ecm filter
-            phase = None, # phase filter
-            impact = None, # impact filter
+            files = None, # files
             aio_id = None # id of All-in-one component
         ):
             # Initialize components' properties
@@ -337,10 +327,6 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             if 'value' not in hovermode_props:
                 hovermode_props['value'] = 'closest'
     
-            update_props = update_props.copy() if update_props else {}
-            if 'children' not in update_props:
-                update_props['children'] = 'Update'
-    
             if aio_id is None:
                 aio_id = str(uuid.uuid4())
 
@@ -359,112 +345,17 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             unit_y = units[yaxis_data_name]
             
             # filter out keys from dataframe
-            keys_out = []
-            for key in df:
-                # check if a key fulfills all the filters
-                skip_key = True
-                print(system)
-                for s in system:
-                    if key.find(s) != -1:
-                        skip_key = False
-                        break
-                if skip_key == True and system:
-                    keys_out.append(key)
-                    continue
-                print(function)
-                for f in function:
-                    if key.find(f) != -1:
-                        skip_key = False
-                        break
-                    else:
-                        skip_key = True
-                if skip_key == True and function:
-                    keys_out.append(key)
-                    continue
-                print(ecm)
-                for e in ecm:
-                    if key.find(str(e)) != -1:
-                        skip_key = False
-                        break
-                    else:
-                        skip_key = True
-                if skip_key == True and ecm:
-                    keys_out.append(key)
-                    continue
-                print(phase)
-                for p in phase:
-                    if p == 0:
-                        p = '0Phase'
-                    elif p > 0.32 and p < 0.34:
-                        p = '1-3PIPhase'
-                    elif p > 0.65 and p < 0.67:
-                        p = '2-3PIPhase'
-                    elif p == 1:
-                        p = '_PIPhase'
-                    elif p > 1.32 and p < 1.34:
-                        p = '4-3PIPhase'
-                    elif p > 1.65 and p < 1.67:
-                        p = '5-3PIPhase'
-                    
-                    if key.find(p) != -1:
-                        skip_key = False
-                        break
-                    else:
-                        skip_key = True
-                if skip_key == True and phase:
-                    keys_out.append(key)
-                    continue
-                for i in impact:
-
-                    if i == 0:
-                        i = 'b0'
-                        if key.find(i) != -1:
-                            skip_key = False
-                            break
-                        else:
-                            i = 'b0-0'
-                            if key.find(i) != -1:
-                                skip_key = False
-                            else:
-                                skip_key = True
-                    elif i == 1:
-                        i = 'b1_'
-                        if key.find(i) != -1:
-                            skip_key = False
-                            break
-                        else:
-                            i = 'b1-0'
-                            if key.find(i) != -1:
-                                skip_key = False
-                            else:
-                                skip_key = True
-                    else:
-                        if i == 0.5:
-                            i = 'b0-5'
-                        elif i == 1.5:
-                            i = 'b1-5'
-
-                        if key.find(i) != -1:
-                            skip_key = False
-                            break
-                        else:
-                            skip_key = True
-                
-                if skip_key == True and impact:
-                    keys_out.append(key)
-                    continue
-            dff=df.copy()
-            for key in keys_out:
-                dff.pop(key)
-
             xrange_min=-50 if xaxis_data_name == 'Time' else -1
             xrange_max=[]
             fig=go.Figure()
-            print("=====================")
-            for key, it in zip(dff, range(len(dff))):
+
+            if not files: # if files is empty
+                files = df.keys()
+            
+            for key, it in zip(files, range(len(files))):
                 dataname=key.split(".")[0].split(os.sep)[1].split("_")
-                dff_data_x=dff[key][xaxis_data_name]
-                dff_data_y=dff[key][yaxis_data_name]
+                dff_data_x=df[key][xaxis_data_name]
+                dff_data_y=df[key][yaxis_data_name]
 
                 ydata=np.array(dff_data_y)
                 if relative_props['value'] == ['relative']:
@@ -475,11 +366,12 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                     y=ydata,
                     mode='lines',
                     line=dict(width=5, color=px.colors.sample_colorscale(
-                        colorscale, it/len(dff))[0]),
+                        colorscale, it/len(files))[0]),
                     name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
                     hovertemplate = '%{y:3.2e} ' + unit_y,
+                    xhoverformat='%{x:3.2e} ' + unit_x,
                     hoverlabel=dict(bgcolor=px.colors.sample_colorscale(
-                        colorscale, it/len(dff))[0])
+                        colorscale, it/len(files))[0])
                     ) # todo hover label color
                 )
                 xrange_max.append(max(dff_data_x))
@@ -503,6 +395,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                              range=[xrange_min, max(xrange_max)],
                              type=xaxis_type, linewidth=4, mirror=True, side='bottom',
                              ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
+                             tickformat='%{y:3.2e} ' + unit_x,
                              minor=dict(ticklen=10, tickwidth=2),
                              showspikes=True)
 
@@ -510,6 +403,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                                         font=dict(size=20, family="Times New Roman")),
                              type=yaxis_type, linewidth=4, mirror=True, side='left',
                              ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
+                             tickformat='%{y:3.2e} ' + unit_x,
                              minor=dict(ticklen=10, tickwidth=2),
                              showspikes=True)
 
@@ -536,8 +430,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                         dcc.Checklist(id = self.ids.line(aio_id), **line_props),
                         dcc.Markdown("Hovermode:"),
                         dcc.RadioItems(id = self.ids.hovermode(aio_id), **hovermode_props)
-                    ], className = "graph-settings--additional"),
-                    html.Button(id = self.ids.update(aio_id), **update_props, className="graph-settings--updateButton")
+                    ], className = "graph-settings--additional")
                 ], className = "graph-settings--container")
             ])
     
@@ -545,25 +438,20 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
     
         @callback(
             Output(ids.graph(MATCH), component_property='figure'),
-            Input(ids.update(MATCH),'n_clicks'),
-            Input(component_id='system_out', component_property='options'),
-            Input(component_id='function_out', component_property='options'),
-            Input(component_id='ecm_out', component_property='options'),
-            Input(component_id='phase', component_property='options'),
-            Input(component_id='impact', component_property='options'),
-            State(ids.x_axis_type(MATCH), 'value'),
-            State(ids.y_axis_type(MATCH), 'value'),
-            State(ids.relative(MATCH), 'value'),
-            State(ids.line(MATCH), 'value'),
-            State(ids.hovermode(MATCH), 'value'),
-            State(ids.colorscale(MATCH), 'value'),
-            State(ids.graph(MATCH), component_property='figure'),
+            Input(component_id='files_out', component_property='options'),
+            Input(ids.x_axis_type(MATCH), 'value'),
+            Input(ids.y_axis_type(MATCH), 'value'),
+            Input(ids.relative(MATCH), 'value'),
+            Input(ids.line(MATCH), 'value'),
+            Input(ids.hovermode(MATCH), 'value'),
+            Input(ids.colorscale(MATCH), 'value'),
+            Input(ids.graph(MATCH), component_property='figure'),
             prevent_initial_call = True
         )
         # method for updating a graph in a GraphComponentAIO
-        def update_graph(clicks, system, function, ecm, phase, impact, x_data, y_type, relative, line, hovermode, colorscale ,figure: go.Figure):
+        def update_graph(files, x_data, y_type, relative, line, hovermode, colorscale ,figure: go.Figure):
 
-            fig = go.Figure(figure)
+            fig = go.Figure()
             yaxis_data_name = figure['layout']['yaxis']['title']['text'].split(" [")[0]
             xaxis_data_name = figure['layout']['xaxis']['title']['text'].split(" [")[0]
 
@@ -579,117 +467,19 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 xaxis_data_name = x_data
             
             # filter out keys from dataframe
-            keys_out = []
-            for key in df:
-                # check if a key fulfills all the filters
-                skip_key = True
-                print(system)
-                for s in system:
-                    if key.find(s) != -1:
-                        skip_key = False
-                        break
-                if skip_key == True and system:
-                    keys_out.append(key)
-                    continue
-                print(function)
-                for f in function:
-                    if key.find(f) != -1:
-                        skip_key = False
-                        break
-                    else:
-                        skip_key = True
-                if skip_key == True and function:
-                    keys_out.append(key)
-                    continue
-                print(ecm)
-                for e in ecm:
-                    if key.find(str(e)) != -1:
-                        skip_key = False
-                        break
-                    else:
-                        skip_key = True
-                if skip_key == True and ecm:
-                    keys_out.append(key)
-                    continue
-                print(phase)
-                for p in phase:
-                    if p == 0:
-                        p = '0Phase'
-                    elif p > 0.32 and p < 0.34:
-                        p = '1-3PIPhase'
-                    elif p > 0.65 and p < 0.67:
-                        p = '2-3PIPhase'
-                    elif p == 1:
-                        p = '_PIPhase'
-                    elif p > 1.32 and p < 1.34:
-                        p = '4-3PIPhase'
-                    elif p > 1.65 and p < 1.67:
-                        p = '5-3PIPhase'
-                    
-                    if key.find(p) != -1:
-                        skip_key = False
-                        break
-                    else:
-                        skip_key = True
-                if skip_key == True and phase:
-                    keys_out.append(key)
-                    continue
-                for i in impact:
-
-                    if i == 0:
-                        i = 'b0'
-                        if key.find(i) != -1:
-                            skip_key = False
-                            break
-                        else:
-                            i = 'b0-0'
-                            if key.find(i) != -1:
-                                skip_key = False
-                            else:
-                                skip_key = True
-                    elif i == 1:
-                        i = 'b1_'
-                        if key.find(i) != -1:
-                            skip_key = False
-                            break
-                        else:
-                            i = 'b1-0'
-                            if key.find(i) != -1:
-                                skip_key = False
-                            else:
-                                skip_key = True
-                    else:
-                        if i == 0.5:
-                            i = 'b0-5'
-                        elif i == 1.5:
-                            i = 'b1-5'
-
-                        if key.find(i) != -1:
-                            skip_key = False
-                            break
-                        else:
-                            skip_key = True
-                
-                if skip_key == True and impact:
-                    keys_out.append(key)
-                    continue
-
-            dff=df.copy()
-            for key in keys_out:
-                dff.pop(key)
-            
             xrange_min=-50 if xaxis_data_name == 'Time' else -1
             xrange_max=[]
-            
-            for key, data, it in zip(dff,fig.data,range(len(dff))):
-                data['x'] = np.array(dff[key][xaxis_data_name])
-                dff_data_y = dff[key][yaxis_data_name]
-                y_data = np.array(dff_data_y)
-                if relative == ['relative']:
-                    for i in range(len(y_data)):
-                        y_data[i] -= dff_data_y[0]
-                data['y'] = y_data
-                xrange_max.append(max(data['x']))
+
+            unit_x = units[xaxis_data_name]
+            unit_y = units[yaxis_data_name]
+
+            if not files: # if files is empty
+                files = df.keys()
+
+            for key, it in zip(files, range(len(files))):
+                dataname=key.split(".")[0].split(os.sep)[1].split("_")
+                dff_data_x=df[key][xaxis_data_name]
+                dff_data_y=df[key][yaxis_data_name]
 
                 # Change colorscale
                 if colorscale == 'ntg':
@@ -698,17 +488,56 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                     colorscale = ntg_colors.ntg_map
                 elif colorscale == 'ntg_av':
                     colorscale = ntg_colors.ntg_av
-                # Change lines/markers
-                if 'lines' in line:
-                    data['line'] = dict(width=5, color=px.colors.sample_colorscale(
-                                    colorscale, it/len(dff))[0])
-                else:
-                    data['line'] = dict(width=0)
-                if 'markers' in line:
-                    data['marker'] = dict(size = 5, color=px.colors.sample_colorscale(
-                                    colorscale, it/len(dff))[0])
-                else:
-                    data['marker'] = dict(size = 0)
+
+                ydata=np.array(dff_data_y)
+                if relative == ['relative']:
+                    for i in range(len(ydata)):
+                        ydata[i] -= dff_data_y[0]
+                fig.add_trace(go.Scatter(
+                    x=np.array(dff_data_x),
+                    y=ydata,
+                    mode='lines',
+                    line=dict(width=5, color=px.colors.sample_colorscale(
+                        colorscale, it/len(files))[0]),
+                    name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
+                    hovertemplate = '%{y:3.2e} ' + unit_y,
+                    xhoverformat='%{x:3.2e} ' + unit_x,
+                    hoverlabel=dict(bgcolor=px.colors.sample_colorscale(
+                        colorscale, it/len(files))[0])
+                    ) # todo hover label color
+                )
+                xrange_max.append(max(dff_data_x))
+            
+            if not xrange_max:
+                xrange_max.append(10)
+
+            fig.update_layout(title=dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
+                                         font=dict(size=22, family="Times New Roman")),
+                              autosize=True,height=540,
+                              template='simple_white',paper_bgcolor='#B4A0AA',plot_bgcolor='#B4A0AA',
+                              margin={'l': 0, 'b': 0, 't': 32, 'r': 0}, 
+                              hovermode=hovermode,
+                              hoverlabel=dict(
+                                font_size=16,
+                                font_family="Times New Roman"), # todo fix hover label. color of the hover title background should be the inverted color of the data, i.e. if colro is black then background is white
+                              )
+
+            fig.update_xaxes(title=dict(text=xaxis_data_name + " [" + unit_x + "]",
+                                        font=dict(size=20, family="Times New Roman")),
+                             range=[xrange_min, max(xrange_max)],
+                             type='linear', linewidth=4, mirror=True, side='bottom',
+                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
+                             tickformat='%{y:3.2e} ' + unit_x,
+                             minor=dict(ticklen=10, tickwidth=2),
+                             showspikes=True)
+            
+            fig.update_yaxes(title=dict(text=yaxis_data_name + " [" + unit_y + "]",
+                                        font=dict(size=20, family="Times New Roman")),
+                             type=y_type, linewidth=4, mirror=True, side='left',
+                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
+                             tickformat='%{y:3.2e} ' + unit_x,
+                             minor=dict(ticklen=10, tickwidth=2),
+                             showspikes=True)
             
             if line == ['lines']:
                 fig.update_traces(mode='lines')
@@ -716,20 +545,6 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 fig.update_traces(mode='markers')
             elif 'lines' in line and 'markers' in line:
                 fig.update_traces(mode='lines+markers')
-
-            unit_x = units[xaxis_data_name]
-
-            #Change title of x axis
-            fig.update_xaxes(title=dict(text=xaxis_data_name + " [" + unit_x + "]",font=dict(size=20, family="Times New Roman")),
-                             range = [xrange_min,max(xrange_max)])
-
-            # Change y type
-            fig.update_yaxes(type=y_type)
-
-            # Change title of graph + change hovermode
-            fig.update_layout(title = dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
-                                font=dict(size=22, family="Times New Roman")),
-                                hovermode=hovermode)
 
             return fig
 
@@ -819,14 +634,10 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
         Output(component_id='graphs', component_property='children'),
         Input(component_id='list-of-graphs', component_property='value'),
         State(component_id='graphs', component_property='children'),
-        State(component_id='system_out', component_property='options'),
-        State(component_id='function_out', component_property='options'),
-        State(component_id='ecm_out', component_property='options'),
-        State(component_id='phase', component_property='options'),
-        State(component_id='impact', component_property='options')
+        State(component_id='files_out', component_property='options')
     )
     # function for updating graphs
-    def update_graphs(values, graphs, system, function, ecm, phase, impact):
+    def update_graphs(values, graphs, files):
         graphs_temp = graphs
         #when no graph was added to the list
         if len(graphs_temp) == len(values):
@@ -886,11 +697,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 yaxis_type=yaxis_type,
                 yaxis_data_name= yaxis_data_name,
                 colorscale_type='ntg_av',
-                system=system,
-                function=function,
-                ecm=ecm,
-                phase=phase,
-                impact=impact,
+                files=files,
                 aio_id=aio_id
             )
 

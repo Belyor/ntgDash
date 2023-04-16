@@ -71,11 +71,11 @@ def pipe_data(app: Dash, df): #df == data frame
         Output(component_id='filter_filter', component_property='value'),
         Output(component_id='filter_method', component_property='value'),
         Output(component_id='filter_phase', component_property='value'),
-        Output(component_id='system_out', component_property='options'),
-        Output(component_id='function_out', component_property='options'),
-        Output(component_id='ecm_out', component_property='options'),
-        Output(component_id='phase', component_property='options'),
-        Output(component_id='impact', component_property='options'),
+        Output(component_id='files_out', component_property='options'),
+        #Output(component_id='function_out', component_property='options'),
+        #Output(component_id='ecm_out', component_property='options'),
+        #Output(component_id='phase', component_property='options'),
+        #Output(component_id='impact', component_property='options'),
         Input(component_id='apply', component_property='n_clicks'),
         State(component_id='filter_system', component_property='value'),
         State(component_id='filter_method', component_property='value'),
@@ -134,7 +134,7 @@ def pipe_data(app: Dash, df): #df == data frame
              pliki.append(i)
         print(pliki)
         for t in pliki:
-             plikiR.append(tab[t].replace('TestData\\', ''))
+             plikiR.append(tab[t])
         print(plikiR)
         # print(_system1[11])
         # print(_functional1[11])
@@ -170,5 +170,5 @@ def pipe_data(app: Dash, df): #df == data frame
             #     _phase1.append(_phase)
             # if ( ecms[0] <= _ecm <= ecms[1] ):
             #     _ecm1.append(_ecm)
-        return system, method,functional,phase,plikiR,plikiR,plikiR,plikiR,plikiR#input_value,ip,im #print(input_value,ip,im)
+        return system,functional,method,phase,plikiR#,plikiR,plikiR,plikiR,plikiR#input_value,ip,im #print(input_value,ip,im)
     return #,data_two,data_three,data_four,data_five      
