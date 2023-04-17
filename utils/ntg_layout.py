@@ -50,7 +50,8 @@ def sett(app: Dash,metadata):
                             data_props = {'options':["X_cm", "Y_cm", "Z_cm",
                                 "X_cm for Protons", "Y_cm for Protons", "Z_cm for Protons",
                                 "X_cm for Neutrons", "Y_cm for Neutrons", "Z_cm for Neutrons",
-                                "Center of Mass Energy"]},
+                                #"Center of Mass Energy"
+                                ]},
                             x_axis_type_props = {'options':['in time']},
                             y_axis_type_props = {'options':['linear']},
                             aio_id = "center-of-mass"
@@ -104,7 +105,7 @@ def sett(app: Dash,metadata):
                                     html.Div([html.H3("Method"),
                                         html.Div([
                                                 html.Div([dcc.Checklist(
-                                                        ['HF', 'HFB'], id='filter_method',labelStyle={'display': 'block'}
+                                                        options = [{'label':'HF','value':'HF','disabled':True}, {'label':'HFB','value':'HFB','disabled':True}], id='filter_method',labelStyle={'display': 'block'}
                                                         )], className="filtersr--radio-items")
                                                 ])
                                     ])
@@ -150,10 +151,6 @@ def sett(app: Dash,metadata):
             html.Div([], id='graphs', className='graph-div'),
         ])
         ,html.Div([
-            dcc.Dropdown([],id = 'files_out'),
-            #dcc.Dropdown([],id = 'function_out'),
-            #dcc.Dropdown([],id ='ecm_out'),
-            #dcc.Dropdown([],id ='phase'),
-            #dcc.Dropdown([],id ='impact')
+            dcc.Dropdown([],id = 'files_out')
             ],style={"display":"none"})
     ])

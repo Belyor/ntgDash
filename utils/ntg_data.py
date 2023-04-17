@@ -103,14 +103,14 @@ def pipe_data(app: Dash, df): #df == data frame
         files = sorted(glob.glob(project_dir, ))
         data = defaultdict(pd.DataFrame)
         for key in df.keys():
-            tab.append(key)    
+            tab.append(key)  # todo zmienic nazwe listy   
         for i in range(len(tab)):
             dns.append(tab[i].split("_"))
-            _system1.append(dns[i][0].replace('TestData\\', ''))
-            _functional1.append(dns[i][1])
-            _b1.append(float(dns[i][4].split('b')[1].replace('-', '.')))
-            _phase1.append((dns[i][5].replace('PIPhase', '')))
-            _ecm1.append(float(dns[i][6].replace('MeV','')))
+            _system1.append(dns[i][0].replace('TestData\\', '')) # todo zmienic nazwe listy
+            _functional1.append(dns[i][1])# todo zmienic nazwe listy
+            _b1.append(float(dns[i][4].split('b')[1].replace('-', '.')))# todo zmienic nazwe listy
+            _phase1.append((dns[i][5].replace('PIPhase', '')))# todo zmienic nazwe listy
+            _ecm1.append(float(dns[i][6].replace('MeV','')))# todo zmienic nazwe listy
         for k in range(len(_phase1)):
             if( len(_phase1[k])> 1):
                    _phase1[k]=float(_phase1[k][0])/float(_phase1[k][2])
@@ -129,10 +129,10 @@ def pipe_data(app: Dash, df): #df == data frame
              if ( _b1[i]< b[0] or _b1[i]>b[1] ):
                   continue
              #print(phase[1]/3.14,_phase1[i],phase[0]/3.14)
-             if ( _phase1[i]<=phase[0]/3.14 or _phase1[i]>=phase[1]/3.14):
+             if ( _phase1[i]<phase[0]/3.14 or _phase1[i]>phase[1]/3.14):
                  continue
              #print( ecms[0],_ecm1[i],ecms[1])
-             if ( _ecm1[i] <= ecms[0] or _ecm1[i] >= ecms[1] ):
+             if ( _ecm1[i] < ecms[0] or _ecm1[i] > ecms[1] ):
                   continue
              pliki.append(i)
         print(pliki)

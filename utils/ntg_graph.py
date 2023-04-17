@@ -150,7 +150,7 @@ class GraphPickerAIO(html.Div):
             y_axis_type_props['options'] = {'disabled': False, 'label': 'linear', 'value': 'linear'}
         if 'value' not in y_axis_type_props:
             y_axis_type_props['value'] = y_axis_type_props['options'][0]
-
+        
         add_button_props = add_button_props.copy() if add_button_props else {}
         if 'children' not in add_button_props:
             add_button_props['children'] = 'Add'
@@ -162,6 +162,9 @@ class GraphPickerAIO(html.Div):
         radio_items_class_y = ''
 
         if len(x_axis_type_props['options']) == 3:
+            x_axis_type_props['options'] = [{'label':'in time','value':'in time'},
+                                            {'label':'in distance','value':'in distance'},
+                                            {'label':'as maps','value':'as maps','disabled':True}]
             radio_items_class_x = "graph-picker--radioItemsThreeOptions"
         elif len(x_axis_type_props['options']) == 1:
             radio_items_class_x = "graph-picker--radioItemsOneOption"
@@ -355,6 +358,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             for key, it in zip(files, range(len(files))):
                 dataname=key.split(".")[0].split(os.sep)[1].split("_")
                 dff_data_x=df[key][xaxis_data_name]
+                print(df[key].keys())
                 dff_data_y=df[key][yaxis_data_name]
 
                 ydata=np.array(dff_data_y)
@@ -450,7 +454,11 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
         )
         # method for updating a graph in a GraphComponentAIO
         def update_graph(files, x_data, y_type, relative, line, hovermode, colorscale ,figure: go.Figure):
-
+            '''
+            description:
+            return:
+            parameters:
+            '''
             fig = go.Figure()
             yaxis_data_name = figure['layout']['yaxis']['title']['text'].split(" [")[0]
             xaxis_data_name = figure['layout']['xaxis']['title']['text'].split(" [")[0]
@@ -684,7 +692,9 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 x_options = ['in time']
                 y_options = ['linear']
             elif (yaxis_data_name in groups["deformation"]) or (yaxis_data_name in groups["pairing"]):
-                x_options = ['in time', 'in distance', 'as maps']
+                x_options = [{'label':'in time','value':'in time'},
+                            {'label':'in distance','value':'in distance'},
+                            {'label':'as maps','value':'as maps','disabled':True}]
                 y_options = ['linear', 'log']
             
             aio_id = yaxis_type + '--' + yaxis_data_name.replace(' ', '-') + '--' + info[2].replace(' ', '-')
