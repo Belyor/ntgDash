@@ -125,11 +125,14 @@ def pipe_data(app: Dash, df): #df == data frame
             #       continue
              if ( _functional1[i] not in functional ): #działa 
                    continue
-             if ( b[1]<= _b1[i] <=b[0] ):
+             print(b[0],_b1[i],b[1])
+             if ( _b1[i]< b[0] or _b1[i]>b[1] ):
                   continue
-             if ( phase[1]<= _phase1[i]<=phase[0]):
+             #print(phase[1]/3.14,_phase1[i],phase[0]/3.14)
+             if ( _phase1[i]<=phase[0]/3.14 or _phase1[i]>=phase[1]/3.14):
                  continue
-             if ( ecms[1] <= _ecm1[i] <= ecms[0]):
+             #print( ecms[0],_ecm1[i],ecms[1])
+             if ( _ecm1[i] <= ecms[0] or _ecm1[i] >= ecms[1] ):
                   continue
              pliki.append(i)
         print(pliki)
