@@ -125,29 +125,29 @@ class GraphPickerAIO(html.Div):
     #Arguments definition
     def __init__(
         self,
-        datastringprops = None,
+        data_type_props = None,
         data_props = None,
-        x_axisstringprops = None,
-        y_axisstringprops = None,
+        x_axis_type_props = None,
+        y_axis_type_props = None,
         add_button_props = None,
         aio_id = None
     ):
         """An init function for GraphPickerAIO component.
 
         Args:
-            datastringprops (dict, optional): a dictionary with properties for a markdown describing a data type (one of five: conservation, center of mass, deformation, pairing, misc).
+            data_type_props (dict, optional): a dictionary with properties for a markdown describing a data type (one of five: conservation, center of mass, deformation, pairing, misc).
             data_props (dict, optional): a dictionary with properties for a dropdown containing names of datas available for a given data type.
-            x_axisstringprops (dict, optional): a dictionary with properties for radioitems component containing information about what value is on an x axis of a graph (a subset of these three available values: in time, in distance, as maps).
-            y_axisstringprops (dict, optional): a dictionary with properties for radioitems component containng information about what the type of y axis is (linear or logarithmic).
+            x_axis_type_props (dict, optional): a dictionary with properties for radioitems component containing information about what value is on an x axis of a graph (a subset of these three available values: in time, in distance, as maps).
+            y_axis_type_props (dict, optional): a dictionary with properties for radioitems component containng information about what the type of y axis is (linear or logarithmic).
             add_button_properties (dict, optional): a dictionary with properties for a button which adds a graph to a graph list. Defaults to None.
             aio_id (string, optional): an id of GraphPickerAIO component. Defaults to None.
         """
         #set components properties
-        datastringprops = datastringprops.copy() if datastringprops else {}
-        if 'style' not in datastringprops:
-            datastringprops['style'] = {'color': 'black'}
-        if 'children' not in datastringprops:
-            datastringprops['children'] = 'No data type'
+        data_type_props = data_type_props.copy() if data_type_props else {}
+        if 'style' not in data_type_props:
+            data_type_props['style'] = {'color': 'black'}
+        if 'children' not in data_type_props:
+            data_type_props['children'] = 'No data type'
 
         data_props = data_props.copy() if data_props else {}
         if 'options' not in data_props:
@@ -155,17 +155,17 @@ class GraphPickerAIO(html.Div):
         if 'value' not in data_props:
             data_props['value'] = data_props['options'][0]
         
-        x_axisstringprops = x_axisstringprops.copy() if x_axisstringprops else {}
-        if 'options' not in x_axisstringprops:
-            x_axisstringprops['options'] = {'disabled': False, 'label': 'in time', 'value': 'in time'}
-        if 'value' not in x_axisstringprops:
-            x_axisstringprops['value'] = x_axisstringprops['options'][0]
+        x_axis_type_props = x_axis_type_props.copy() if x_axis_type_props else {}
+        if 'options' not in x_axis_type_props:
+            x_axis_type_props['options'] = {'disabled': False, 'label': 'in time', 'value': 'in time'}
+        if 'value' not in x_axis_type_props:
+            x_axis_type_props['value'] = x_axis_type_props['options'][0]
 
-        y_axisstringprops = y_axisstringprops.copy() if y_axisstringprops else {}
-        if 'options' not in y_axisstringprops:
-            y_axisstringprops['options'] = {'disabled': False, 'label': 'linear', 'value': 'linear'}
-        if 'value' not in y_axisstringprops:
-            y_axisstringprops['value'] = y_axisstringprops['options'][0]
+        y_axis_type_props = y_axis_type_props.copy() if y_axis_type_props else {}
+        if 'options' not in y_axis_type_props:
+            y_axis_type_props['options'] = {'disabled': False, 'label': 'linear', 'value': 'linear'}
+        if 'value' not in y_axis_type_props:
+            y_axis_type_props['value'] = y_axis_type_props['options'][0]
         
         add_button_props = add_button_props.copy() if add_button_props else {}
         if 'children' not in add_button_props:
@@ -177,36 +177,36 @@ class GraphPickerAIO(html.Div):
         radio_items_class_x = ''
         radio_items_class_y = ''
 
-        if len(x_axisstringprops['options']) == 3:
-            x_axisstringprops['options'] = [{'label':'in time','value':'in time'},
+        if len(x_axis_type_props['options']) == 3:
+            x_axis_type_props['options'] = [{'label':'in time','value':'in time'},
                                             {'label':'in distance','value':'in distance'},
                                             {'label':'as maps','value':'as maps','disabled':True}]
             radio_items_class_x = "graph-picker--radioItemsThreeOptions"
-        elif len(x_axisstringprops['options']) == 1:
+        elif len(x_axis_type_props['options']) == 1:
             radio_items_class_x = "graph-picker--radioItemsOneOption"
         
-        if len(y_axisstringprops['options']) == 3:
+        if len(y_axis_type_props['options']) == 3:
             radio_items_class_y = "graph-picker--radioItemsThreeOptions"
-        elif len(x_axisstringprops['options']) == 2:
+        elif len(x_axis_type_props['options']) == 2:
             radio_items_class_y = "graph-picker--radioItemsTwoOptions"
-        elif len(x_axisstringprops['options']) == 1:
+        elif len(x_axis_type_props['options']) == 1:
             radio_items_class_y = "graph-picker--radioItemsOneOption"
             
         layout = html.Div([
             html.Div([
-                dcc.Markdown(id = self.ids.data_type(aio_id), **datastringprops)
+                dcc.Markdown(id = self.ids.data_type(aio_id), **data_type_props)
             ], className = "graph-picker--header"),
             html.Div([
                 html.H3('Plot')
             ], className="graph-picker--text"),
             html.Div([
-                dcc.RadioItems(id = self.ids.y_axis_type(aio_id), **y_axisstringprops)
+                dcc.RadioItems(id = self.ids.y_axis_type(aio_id), **y_axis_type_props)
             ], className = radio_items_class_y),
             html.Div([
                 dcc.Dropdown(id = self.ids.data(aio_id), **data_props, clearable=False)
             ], className="graph-picker--list"),
             html.Div([
-                dcc.RadioItems(id = self.ids.x_axis_type(aio_id), **x_axisstringprops)
+                dcc.RadioItems(id = self.ids.x_axis_type(aio_id), **x_axis_type_props)
             ], className = radio_items_class_x),
             html.Button('Add', id=self.ids.add_button(aio_id),className="graph-picker--addButton")
         ], className='graph-picker--settings')
@@ -308,10 +308,10 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
         def __init__(
             self,
             #properties
-            x_axisstringprops = None, # one of three: in time, in distance, as maps
+            x_axis_type_props = None, # one of three: in time, in distance, as maps
             xaxis_type = None, # type of x axis
             xaxis_data_name = None, # data name of x axis
-            y_axisstringprops = None, # one of two: linear, log
+            y_axis_type_props = None, # one of two: linear, log
             yaxis_type = None, # type of y axis
             yaxis_data_name = None, # data name of y axis
             colorscale_props = None, # dropdown with available colorscales in ntg_colors
@@ -325,10 +325,10 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             """An init function for GraphComponentAIO.
 
             Args:
-                x_axisstringprops (dict, optional): a dictionary with properties for radioitems component storing information about x axis value (one of three available: in time, in distance, as maps).
+                x_axis_type_props (dict, optional): a dictionary with properties for radioitems component storing information about x axis value (one of three available: in time, in distance, as maps).
                 xaxis_type (string, optional): a type of x axis (linear). Defaults to None.
                 xaxis_data_name (string, optional): a data name of x axis (one of three: in time, in distance, as maps). Defaults to None.
-                y_axisstringprops (dict, optional): a dictionary with properties for radioitems component storing information about y axis type (linear or log). Defaults to None.
+                y_axis_type_props (dict, optional): a dictionary with properties for radioitems component storing information about y axis type (linear or log). Defaults to None.
                 yaxis_type (string, optional): a type of y axis (linear or log). Defaults to None.
                 yaxis_data_name (string, optional): a data name of y axis (depends on data type). Defaults to None.
                 colorscale_props (dict, optional): a dictionary with properties for a dropdown storing available colorscales. Defaults to None.
@@ -339,23 +339,23 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
 
             """
             # Initialize components' properties
-            x_axisstringprops = x_axisstringprops.copy() if x_axisstringprops else {}
-            if 'options' not in x_axisstringprops:
-                x_axisstringprops['options'] = {'disabled': False, 'label': 'in time', 'value': 'in time'}
-            if 'value' not in x_axisstringprops:
+            x_axis_type_props = x_axis_type_props.copy() if x_axis_type_props else {}
+            if 'options' not in x_axis_type_props:
+                x_axis_type_props['options'] = {'disabled': False, 'label': 'in time', 'value': 'in time'}
+            if 'value' not in x_axis_type_props:
                 if xaxis_data_name is None:
-                    x_axisstringprops['value'] = x_axisstringprops['options'][0]
+                    x_axis_type_props['value'] = x_axis_type_props['options'][0]
                 else:
-                    x_axisstringprops['value'] = xaxis_data_name
+                    x_axis_type_props['value'] = xaxis_data_name
     
-            y_axisstringprops = y_axisstringprops.copy() if y_axisstringprops else {}
-            if 'options' not in y_axisstringprops:
-                y_axisstringprops['options'] = {'disabled': False, 'label': 'linear', 'value': 'linear'}
-            if 'value' not in y_axisstringprops:
+            y_axis_type_props = y_axis_type_props.copy() if y_axis_type_props else {}
+            if 'options' not in y_axis_type_props:
+                y_axis_type_props['options'] = {'disabled': False, 'label': 'linear', 'value': 'linear'}
+            if 'value' not in y_axis_type_props:
                 if yaxis_type is None:
-                    y_axisstringprops['value'] = y_axisstringprops['options'][0]
+                    y_axis_type_props['value'] = y_axis_type_props['options'][0]
                 else:
-                    y_axisstringprops['value'] = yaxis_type
+                    y_axis_type_props['value'] = yaxis_type
     
             colorscale_props = colorscale_props.copy() if colorscale_props else {}
             if 'options' not in colorscale_props:
@@ -415,7 +415,6 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             for key, it in zip(files, range(len(files))):
                 dataname=key.split(".")[0].split(os.sep)[1].split("_")
                 dff_data_x=df[key][xaxis_data_name]
-                print(df[key].keys())
                 dff_data_y=df[key][yaxis_data_name]
 
                 ydata=np.array(dff_data_y)
@@ -473,11 +472,11 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 html.Div([
                     html.Div([
                         dcc.Markdown('Y axis:'), 
-                        dcc.RadioItems(id = self.ids.y_axis_type(aio_id), **y_axisstringprops),
+                        dcc.RadioItems(id = self.ids.y_axis_type(aio_id), **y_axis_type_props),
                     ], className="graph-settings--yAxis"),
                     html.Div([
                         dcc.Markdown('X axis:'),
-                        dcc.RadioItems(id = self.ids.x_axis_type(aio_id), **x_axisstringprops),
+                        dcc.RadioItems(id = self.ids.x_axis_type(aio_id), **x_axis_type_props),
                     ], className="graph-settings--xAxis"),
                     html.Div([
                         dcc.Markdown("Colorscale"),
@@ -805,10 +804,10 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             aio_id = yaxis_type + '--' + yaxis_data_name.replace(' ', '-') + '--' + info[2].replace(' ', '-')
 
             graph_component = GraphComponentAIO(
-                x_axisstringprops={'options':x_options},
+                x_axis_type_props={'options':x_options},
                 xaxis_type=xaxis_type,
                 xaxis_data_name=xaxis_data_name,
-                y_axisstringprops={'options':y_options},
+                y_axis_type_props={'options':y_options},
                 yaxis_type=yaxis_type,
                 yaxis_data_name= yaxis_data_name,
                 colorscale_type='ntg_av',
