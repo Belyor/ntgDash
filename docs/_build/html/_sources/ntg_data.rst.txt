@@ -1,0 +1,7 @@
+ntg\_data module
+================
+
+.. automodule:: ntg_data
+   :members:
+   :undoc-members:
+   :show-inheritance:

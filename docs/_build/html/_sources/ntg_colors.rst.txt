@@ -1,0 +1,7 @@
+ntg\_colors module
+==================
+
+.. automodule:: ntg_colors
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+ntg\_graph module
+=================
+
+.. automodule:: ntg_graph
+   :members:
+   :undoc-members:
+   :show-inheritance:

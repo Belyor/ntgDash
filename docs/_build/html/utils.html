@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils package &mdash; NTGDash 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="utils" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            NTGDash
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">utils</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">utils package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.ntg_colors">utils.ntg_colors module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.ntg_data">utils.ntg_data module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utils.ntg_data.load_data"><code class="docutils literal notranslate"><span class="pre">load_data()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.ntg_data.pipe_data"><code class="docutils literal notranslate"><span class="pre">pipe_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.ntg_graph">utils.ntg_graph module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utils.ntg_graph.GraphPickerAIO"><code class="docutils literal notranslate"><span class="pre">GraphPickerAIO</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.ntg_graph.create_element"><code class="docutils literal notranslate"><span class="pre">create_element()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.ntg_graph.get_callbacks"><code class="docutils literal notranslate"><span class="pre">get_callbacks()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils.ntg_layout">utils.ntg_layout module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#utils.ntg_layout.fun"><code class="docutils literal notranslate"><span class="pre">fun()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#utils.ntg_layout.sett"><code class="docutils literal notranslate"><span class="pre">sett()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">NTGDash</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">utils</a></li>
+      <li class="breadcrumb-item active">utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="utils-package">
+<h1>utils package<a class="headerlink" href="#utils-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-utils.ntg_colors">
+<span id="utils-ntg-colors-module"></span><h2>utils.ntg_colors module<a class="headerlink" href="#module-utils.ntg_colors" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-utils.ntg_data">
+<span id="utils-ntg-data-module"></span><h2>utils.ntg_data module<a class="headerlink" href="#module-utils.ntg_data" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.ntg_data.load_data">
+<span class="sig-prename descclassname"><span class="pre">utils.ntg_data.</span></span><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/ntg_data.html#load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ntg_data.load_data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.ntg_data.pipe_data">
+<span class="sig-prename descclassname"><span class="pre">utils.ntg_data.</span></span><span class="sig-name descname"><span class="pre">pipe_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dash</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/ntg_data.html#pipe_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ntg_data.pipe_data" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Funkcja do filtorwania danych, pobiera wartości wybrane przez użytkownika w aplikacji, zwraca</dt><dd><p>listę z przefiltrywowanymi plikami, które są aktualizowane na wykresach</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>app</strong> (<em>Dash</em>) – </p></li>
+<li><p><strong>df</strong> (<em>DataFrame</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-utils.ntg_graph">
+<span id="utils-ntg-graph-module"></span><h2>utils.ntg_graph module<a class="headerlink" href="#module-utils.ntg_graph" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.ntg_graph.GraphPickerAIO">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.ntg_graph.</span></span><span class="sig-name descname"><span class="pre">GraphPickerAIO</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type_props</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_props</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_axis_type_props</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_axis_type_props</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_button_props</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aio_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/ntg_graph.html#GraphPickerAIO"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ntg_graph.GraphPickerAIO" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Div</span></code></p>
+<p>A class for an All-in-one component whcich stores components for graph settings available in Graph-Picker panel of main menu.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>html.Div</strong> (<em>html.Div</em>) – the parent component</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.ntg_graph.GraphPickerAIO.ids">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ids</span></span><a class="reference internal" href="_modules/utils/ntg_graph.html#GraphPickerAIO.ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ntg_graph.GraphPickerAIO.ids" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A subclass of GraphPickerAIO containing ids of each subcomponent of GraphPickerAIO.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.ntg_graph.GraphPickerAIO.ids.add_button">
+<span class="sig-name descname"><span class="pre">add_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.ntg_graph.GraphPickerAIO.ids.add_button" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.ntg_graph.GraphPickerAIO.ids.data">
+<span class="sig-name descname"><span class="pre">data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.ntg_graph.GraphPickerAIO.ids.data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.ntg_graph.GraphPickerAIO.ids.data_type">
+<span class="sig-name descname"><span class="pre">data_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.ntg_graph.GraphPickerAIO.ids.data_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.ntg_graph.GraphPickerAIO.ids.x_axis_type">
+<span class="sig-name descname"><span class="pre">x_axis_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.ntg_graph.GraphPickerAIO.ids.x_axis_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.ntg_graph.GraphPickerAIO.ids.y_axis_type">
+<span class="sig-name descname"><span class="pre">y_axis_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.ntg_graph.GraphPickerAIO.ids.y_axis_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.ntg_graph.create_element">
+<span class="sig-prename descclassname"><span class="pre">utils.ntg_graph.</span></span><span class="sig-name descname"><span class="pre">create_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_options</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/ntg_graph.html#create_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ntg_graph.create_element" title="Permalink to this definition"></a></dt>
+<dd><p>A function for creating elements for list of graphs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>string</em>) – name of data (the one on y axis).</p></li>
+<li><p><strong>x_type</strong> (<em>string</em>) – name of x axis (one of three: in time, in distance, as maps).</p></li>
+<li><p><strong>y_type</strong> (<em>string</em>) – name of y axis type (one of two: linear, log).</p></li>
+<li><p><strong>list_options</strong> (<em>list</em><em> of </em><em>strings</em>) – options from list of graphs, which a function will update.</p></li>
+<li><p><strong>list_values</strong> (<em>list</em><em> of </em><em>strings</em>) – values from list of graphs, which a function will update.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>first value is an updated list of options, and second is an updated list of values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple of lists of strings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.ntg_graph.get_callbacks">
+<span class="sig-prename descclassname"><span class="pre">utils.ntg_graph.</span></span><span class="sig-name descname"><span class="pre">get_callbacks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dash</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/ntg_graph.html#get_callbacks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ntg_graph.get_callbacks" title="Permalink to this definition"></a></dt>
+<dd><p>A function storing applications callbacks responsible for updating list of graphs and graphs themselves.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>app</strong> (<em>Dash</em>) – a Dash application.</p></li>
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – a DataFrame storing all the data from a directory with data files.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-utils.ntg_layout">
+<span id="utils-ntg-layout-module"></span><h2>utils.ntg_layout module<a class="headerlink" href="#module-utils.ntg_layout" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.ntg_layout.fun">
+<span class="sig-prename descclassname"><span class="pre">utils.ntg_layout.</span></span><span class="sig-name descname"><span class="pre">fun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/ntg_layout.html#fun"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ntg_layout.fun" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.ntg_layout.sett">
+<span class="sig-prename descclassname"><span class="pre">utils.ntg_layout.</span></span><span class="sig-name descname"><span class="pre">sett</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dash</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/ntg_layout.html#sett"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.ntg_layout.sett" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-utils" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Andrzej Makowski, Jakub Jaroszewski, Konrad Marciniak, Maciej Standerski.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

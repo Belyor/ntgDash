@@ -59,9 +59,10 @@ def load_data():
 def pipe_data(app: Dash, df):
     """Funkcja do filtorwania danych, pobiera wartości wybrane przez użytkownika w aplikacji, zwraca
       listę z przefiltrywowanymi plikami, które są aktualizowane na wykresach 
+    
     Args:
         app (Dash):
-        df (DataFrame): 
+        df (DataFrame):
     """
     @app.callback(
         Output(component_id='files_out', component_property='options'),

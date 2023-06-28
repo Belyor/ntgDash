@@ -91,7 +91,6 @@ class GraphPickerAIO(html.Div):
     Args:
         html.Div (html.Div): the parent component
     """
-    graph_id = ""
     class ids:
         """A subclass of GraphPickerAIO containing ids of each subcomponent of GraphPickerAIO.
         """
