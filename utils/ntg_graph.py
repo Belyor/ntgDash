@@ -421,7 +421,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 if relative_props['value'] == ['relative']:
                     for i in range(len(ydata)):
                         ydata[i] -= dff_data_y[0]
-                fig.add_trace(go.Scatter(
+                fig.add_trace(go.Scattergl(
                     x=np.array(dff_data_x),
                     y=ydata,
                     mode='lines',
@@ -432,7 +432,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                     xhoverformat='%{x:3.2e} ' + unit_x,
                     hoverlabel=dict(bgcolor=px.colors.sample_colorscale(
                         colorscale, it/len(files))[0])
-                    ) # todo hover label color
+                    )
                 )
                 xrange_max.append(max(dff_data_x))
             
@@ -447,7 +447,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                               hovermode='closest',
                               hoverlabel=dict(
                                 font_size=16,
-                                font_family="Times New Roman"), # todo fix hover label. color of the hover title background should be the inverted color of the data, i.e. if colro is black then background is white
+                                font_family="Times New Roman"),
                               )
 
             fig.update_xaxes(title=dict(text=xaxis_data_name + " [" + unit_x + "]",
@@ -463,12 +463,13 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                                         font=dict(size=20, family="Times New Roman")),
                              type=yaxis_type, linewidth=4, mirror=True, side='left',
                              ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
-                             tickformat='%{y:3.2e} ' + unit_x,
+                             tickformat='f',
                              minor=dict(ticklen=10, tickwidth=2),
                              showspikes=True)
 
             layout = html.Div([
                 html.Div(dcc.Graph(figure=fig, id = self.ids.graph(aio_id) ,className='graph-graph')),
+                html.Div(html.H3("Graph settings"), className="graph-settings--title"),
                 html.Div([
                     html.Div([
                         dcc.Markdown('Y axis:'), 
@@ -483,13 +484,18 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                         dcc.Dropdown(id = self.ids.colorscale(aio_id), **colorscale_props, clearable=False)
                     ], className = "graph-settings--colorscale"),
                     html.Div([
-                        # todo make layout for these components
-                        dcc.Markdown("Data:"),
-                        dcc.Checklist(id = self.ids.relative(aio_id), **relative_props),
-                        dcc.Markdown("Show:"),
-                        dcc.Checklist(id = self.ids.line(aio_id), **line_props),
-                        dcc.Markdown("Hovermode:"),
-                        dcc.RadioItems(id = self.ids.hovermode(aio_id), **hovermode_props)
+                        html.Div([
+                            dcc.Markdown("Data:"),
+                            dcc.Checklist(id = self.ids.relative(aio_id), **relative_props)
+                        ], className="graph-settings--additional-data"),
+                        html.Div([
+                            dcc.Markdown("Show:"),
+                            dcc.Checklist(id = self.ids.line(aio_id), **line_props)
+                        ], className="graph-settings--additional-show"),
+                        html.Div([
+                            dcc.Markdown("Hovermode:"),
+                            dcc.RadioItems(id = self.ids.hovermode(aio_id), **hovermode_props)
+                        ], className="graph-settings--additional-hovermode")
                     ], className = "graph-settings--additional")
                 ], className = "graph-settings--container")
             ])
@@ -567,7 +573,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 if relative == ['relative']:
                     for i in range(len(ydata)):
                         ydata[i] -= dff_data_y[0]
-                fig.add_trace(go.Scatter(
+                fig.add_trace(go.Scattergl(
                     x=np.array(dff_data_x),
                     y=ydata,
                     mode='lines',
@@ -609,7 +615,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                                         font=dict(size=20, family="Times New Roman")),
                              type=y_type, linewidth=4, mirror=True, side='left',
                              ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
-                             tickformat='%{y:3.2e} ' + unit_x,
+                             tickformat='f',
                              minor=dict(ticklen=10, tickwidth=2),
                              showspikes=True)
             
