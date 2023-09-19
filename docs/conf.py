@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'NTGDash'
+project = 'Lise Analyzer'
 copyright = '2023, Andrzej Makowski, Jakub Jaroszewski, Konrad Marciniak, Maciej Standerski'
 author = 'Andrzej Makowski, Jakub Jaroszewski, Konrad Marciniak, Maciej Standerski'
 release = '0.0.1'

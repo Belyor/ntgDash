@@ -1,0 +1,24 @@
+Manual
+======
+
+Introduction
+~~~~~~~~~~~~
+This section contains a manual for the Lise Analyzer app. You will find here all necessary information about how to navigate around the app and how to use available options. You'll get a general view of the applications layout and what it contains. The manual covers the topic of data preparation for analisis.
+
+Layout
+~~~~~~
+When you first open the application in your web browser, you'll see a page which is divided into 3 diffrent parts:
+
+1. **Graph picker** (left green panel) - this is the panel which contains options (their functionalities are described in the next paragraph) for choosing types of graphs you want to display,
+2. **Filters** (right blue panel) - a panel in which you filter the data files you want to use in your data analisis,
+3. **List of graphs** (bottom panel) - at the beginning, this panel has only an empty dropdown. After adding graphs using options from graph picker new graphs will be displayed below the dropdown.
+
+Options
+~~~~~~~
+
+Data
+~~~~
+
+Save
+~~~~
+Coming soon.
