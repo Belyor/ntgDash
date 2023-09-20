@@ -91,13 +91,52 @@
 <h2>Layout<a class="headerlink" href="#layout" title="Permalink to this heading"></a></h2>
 <p>When you first open the application in your web browser, you’ll see a page which is divided into 3 diffrent parts:</p>
 <ol class="arabic simple">
-<li><p><strong>Graph picker</strong> (left green panel) - this is the panel which contains options (their functionalities are described in the next paragraph) for choosing types of graphs you want to display,</p></li>
+<li><p><strong>Graph picker</strong> (left green panel) - this is the panel which contains options for choosing types of graphs you want to display,</p></li>
 <li><p><strong>Filters</strong> (right blue panel) - a panel in which you filter the data files you want to use in your data analisis,</p></li>
 <li><p><strong>List of graphs</strong> (bottom panel) - at the beginning, this panel has only an empty dropdown. After adding graphs using options from graph picker new graphs will be displayed below the dropdown.</p></li>
 </ol>
 </section>
 <section id="options">
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this heading"></a></h2>
+<p>Each panel contains its own options.</p>
+<ol class="arabic">
+<li><p><strong>Graph picker</strong> - on this panel you can find 5 different categories of graphs you can create. Each category is named depending on a type of variables the graph is about to present. The available categories are: <em>Conservation</em>, <em>Center of mass</em>, <em>Deformation</em>, <em>Pairing</em> and <em>Miscellaneous</em>. The last category is for the data types that doesn’t belong to any of previous ones and the users can add their own data types to it. In each category there are 4 available options:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Y axis scale (linear/log)</strong> - radio buttons which set a scale of y axis to linear or logarithmic,</p></li>
+<li><p><strong>Data type</strong> - a dropdown, which sets a variable (data type) for y axis of the graph (data types for each category can be found in section Data types),</p></li>
+<li><p><strong>X axis domain (in time/in distance/as maps)</strong> - radio buttons which set a domain of x axis. Two first categories have only time domain for a choice, while the rest have two available domains (<em>as maps</em> is a plan for future updates of the app and it’s going to create a map graph which will contain an additional z axis),</p></li>
+<li><p><strong>Add</strong> - a butto which adds a graph to the list of graphs. The graphs have settings that were chosen using previous options</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Filters</strong> - this panel has options which allow the user to filter out data sets. There are 7 available options:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>System</strong> - a dropdown which filters the data sets depending on the isotopes used in the experiment (you can select multiple systems),</p></li>
+<li><p><strong>Method</strong> - ???</p></li>
+<li><p><strong>Functional</strong> - idk XD</p></li>
+<li><p><strong>Ecm</strong> - a slider for filtering the data sets depending on the energy of center of mass, you can select a range of energies that you want to be taken into account,</p></li>
+<li><p><strong>Phase</strong> - a slider for filtering the data sets depending on the phase, you can select a range here as well,</p></li>
+<li><p><strong>b</strong> - a slider for filtering the data sets depending on the quadrupol moment, you can select range here too,</p></li>
+<li><p><strong>Apply</strong> - applies the filters to all graphs.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p>3. <strong>List of graphs</strong> - when you first launch the application, this panel has only one <strong>option</strong>, which is <strong>a dropdown whith a list of added graphs</strong>. When you add a graph using graph picker, a new tag representing this graph appears in this dropdown. This option, instead of just showing added graphs, allows to delete graphs from the list as well. You can delete a single graph by clicking a cross next to the tag of corresponding graph or you can delete all graphs by clicking a cross in the right side of the dropdown.
+Another options appear when you add graphs. Each graph has its own options which can modify its settings. Every graph has 6 options:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Y axis</strong> - radiobuttons for setting a scale of y axis, linear or logarithmic,</p></li>
+<li><p><strong>X axis</strong> - radiobuttons for setting a domain of x axis, it can be time, distance or maps (not available, yet),</p></li>
+<li><p><strong>Colorscale</strong> - a dropdown, which can be used to set a colorscale of the data displayed on the graph, this option contains a wide variety of colorscales to choose,</p></li>
+<li><p><strong>Data</strong> - a checkbox for setting wheather the data have to be displayed relatively to the first value in the series of measurements (first value is set to position 0 on y axis),</p></li>
+<li><p><strong>Show</strong> - checkboxes for setting wheather the data have to dispalyed as lines or as points, or both,</p></li>
+<li><p><strong>Hovermode</strong> - radiobuttons, which can be used to set the hovermode when you hover a cursor over the graph. <em>Closest</em> means the label, which will appear next to the cursor, will show a value of the nearest data series, and <em>x unified</em> means the label will show values of all data series at the chosen x position.</p></li>
+</ul>
+</div></blockquote>
+<p>These were all the options you will find while using Lise Analyzer app.</p>
 </section>
 <section id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this heading"></a></h2>
