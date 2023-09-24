@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ntg_data module &mdash; NTGDash 0.0.1 documentation</title>
+  <title>Data types &mdash; Lise Analyzer 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,10 +17,11 @@
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ntg_graph module" href="ntg_graph.html" />
-    <link rel="prev" title="ntg_colors module" href="ntg_colors.html" /> 
+    <link rel="next" title="Source code" href="modules.html" />
+    <link rel="prev" title="Manual" href="manual.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -32,7 +33,7 @@
           
           
           <a href="index.html" class="icon icon-home">
-            NTGDash
+            Lise Analyzer
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -44,13 +45,10 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">utils</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ntg_colors.html">ntg_colors module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ntg_data module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ntg_graph.html">ntg_graph module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ntg_layout.html">ntg_layout module</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manual.html">Manual</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">Source code</a></li>
 </ul>
 
         </div>
@@ -59,7 +57,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">NTGDash</a>
+          <a href="index.html">Lise Analyzer</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -67,10 +65,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="modules.html">utils</a></li>
-      <li class="breadcrumb-item active">ntg_data module</li>
+      <li class="breadcrumb-item active">Data types</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/ntg_data.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/datatypes.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -78,16 +75,45 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ntg-data-module">
-<h1>ntg_data module<a class="headerlink" href="#ntg-data-module" title="Permalink to this heading"></a></h1>
+  <section id="data-types">
+<h1>Data types<a class="headerlink" href="#data-types" title="Permalink to this heading"></a></h1>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">List of available data types in each category</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 71%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Category</p></th>
+<th class="head"><p>Data types</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Conservation</p></td>
+<td><p>Total energy, Number of protons, Number of neutrons</p></td>
+</tr>
+<tr class="row-odd"><td><p>Center of mass</p></td>
+<td><p>X_cm, Y_cm, Z_cm, X_cm for protons, Y_cm for protons, Z_cm for protons, X_cm for neutrons, Y_cm for neutrons, Z_cm for neutrons</p></td>
+</tr>
+<tr class="row-even"><td><p>Deformation</p></td>
+<td><p>Beta, Quadrupol Moment Q20, Octupol Moment Q30, Hexadecupol Moment Q40</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pairing</p></td>
+<td><p>Pairing gap for protons, Pairing gap for neutrons</p></td>
+</tr>
+<tr class="row-even"><td><p>Miscellaneous</p></td>
+<td><p>Users can add their own data types. Check <a class="reference external" href="./manual.html#data">Data section</a> in the manual.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="ntg_colors.html" class="btn btn-neutral float-left" title="ntg_colors module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="ntg_graph.html" class="btn btn-neutral float-right" title="ntg_graph module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="manual.html" class="btn btn-neutral float-left" title="Manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="Source code" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

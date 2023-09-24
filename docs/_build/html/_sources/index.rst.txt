@@ -15,6 +15,7 @@ Below you can find a table of contents for this documentation.
 
    about
    manual
+   datatypes
    modules
 
 Indices and tables

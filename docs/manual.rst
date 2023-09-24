@@ -22,7 +22,7 @@ Each panel contains its own options.
     * **Y axis scale (linear/log)** - radio buttons which set a scale of y axis to linear or logarithmic,
     * **Data type** - a dropdown, which sets a variable (data type) for y axis of the graph (data types for each category can be found in section Data types),
     * **X axis domain (in time/in distance/as maps)** - radio buttons which set a domain of x axis. Two first categories have only time domain for a choice, while the rest have two available domains (*as maps* is a plan for future updates of the app and it's going to create a map graph which will contain an additional z axis),
-    * **Add** - a butto which adds a graph to the list of graphs. The graphs have settings that were chosen using previous options
+    * **Add** - a button which adds a graph to the list of graphs. The graphs have settings that were chosen using previous options
 
 2. **Filters** - this panel has options which allow the user to filter out data sets. There are 7 available options:
 

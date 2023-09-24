@@ -1,7 +1,0 @@
-ntg\_layout module
-==================
-
-.. automodule:: ntg_layout
-   :members:
-   :undoc-members:
-   :show-inheritance:
