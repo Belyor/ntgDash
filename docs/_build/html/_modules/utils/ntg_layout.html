@@ -137,7 +137,7 @@
   <h1>Source code for utils.ntg_layout</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">dash</span> <span class="kn">import</span> <span class="n">Dash</span><span class="p">,</span> <span class="n">dcc</span><span class="p">,</span> <span class="n">html</span>
 <span class="kn">import</span> <span class="nn">math</span>
-<span class="kn">from</span> <span class="nn">utils.ntg_graph</span> <span class="kn">import</span> <span class="n">GraphPickerAIO</span>
+<span class="kn">from</span> <span class="nn">utils.ntg_graph</span> <span class="kn">import</span> <span class="n">GraphPickerAIO</span><span class="p">,</span> <span class="n">groups</span>
 <div class="viewcode-block" id="fun"><a class="viewcode-back" href="../../utils.html#utils.ntg_layout.fun">[docs]</a><span class="k">def</span> <span class="nf">fun</span> <span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="n">one</span><span class="o">=</span><span class="p">[]</span>
     <span class="n">two</span><span class="o">=</span><span class="p">[]</span>
@@ -176,7 +176,7 @@
                         <span class="c1"># Conservation</span>
                         <span class="n">GraphPickerAIO</span><span class="p">(</span>
                             <span class="n">data_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;children&#39;</span><span class="p">:</span><span class="s1">&#39;Conservation&#39;</span><span class="p">},</span>
-                            <span class="n">data_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s2">&quot;Total Energy&quot;</span><span class="p">,</span> <span class="s2">&quot;Number of Protons&quot;</span><span class="p">,</span><span class="s2">&quot;Number of Neutrons&quot;</span><span class="p">]},</span>
+                            <span class="n">data_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;conservation&quot;</span><span class="p">]},</span>
                             <span class="n">x_axis_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s1">&#39;in time&#39;</span><span class="p">]},</span>
                             <span class="n">y_axis_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="s1">&#39;log&#39;</span><span class="p">]},</span>
                             <span class="n">aio_id</span> <span class="o">=</span> <span class="s2">&quot;conservation&quot;</span>
@@ -184,11 +184,7 @@
                         <span class="c1"># Center of mass</span>
                         <span class="n">GraphPickerAIO</span><span class="p">(</span>
                             <span class="n">data_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;children&#39;</span><span class="p">:</span><span class="s1">&#39;Center of mass&#39;</span><span class="p">},</span>
-                            <span class="n">data_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s2">&quot;X_cm&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_cm&quot;</span><span class="p">,</span> <span class="s2">&quot;Z_cm&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;X_cm for Protons&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_cm for Protons&quot;</span><span class="p">,</span> <span class="s2">&quot;Z_cm for Protons&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;X_cm for Neutrons&quot;</span><span class="p">,</span> <span class="s2">&quot;Y_cm for Neutrons&quot;</span><span class="p">,</span> <span class="s2">&quot;Z_cm for Neutrons&quot;</span><span class="p">,</span>
-                                <span class="c1">#&quot;Center of Mass Energy&quot;</span>
-                                <span class="p">]},</span>
+                            <span class="n">data_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;center of mass&quot;</span><span class="p">]},</span>
                             <span class="n">x_axis_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s1">&#39;in time&#39;</span><span class="p">]},</span>
                             <span class="n">y_axis_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s1">&#39;linear&#39;</span><span class="p">]},</span>
                             <span class="n">aio_id</span> <span class="o">=</span> <span class="s2">&quot;center-of-mass&quot;</span>
@@ -196,8 +192,7 @@
                         <span class="c1"># Deformation</span>
                         <span class="n">GraphPickerAIO</span><span class="p">(</span>
                             <span class="n">data_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;children&#39;</span><span class="p">:</span><span class="s1">&#39;Deformation&#39;</span><span class="p">},</span>
-                            <span class="n">data_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s2">&quot;Beta&quot;</span><span class="p">,</span> <span class="s2">&quot;Quadrupole Moment Q20&quot;</span><span class="p">,</span>
-                                <span class="s2">&quot;Octupole Moment Q30&quot;</span><span class="p">,</span> <span class="s2">&quot;Hexadecupole Moment Q40&quot;</span><span class="p">]},</span>
+                            <span class="n">data_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;deformation&quot;</span><span class="p">]},</span>
                             <span class="n">x_axis_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s1">&#39;in time&#39;</span><span class="p">,</span> <span class="s1">&#39;in distance&#39;</span><span class="p">,</span> <span class="s1">&#39;as maps&#39;</span><span class="p">]},</span>
                             <span class="n">y_axis_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span><span class="s1">&#39;log&#39;</span><span class="p">]},</span>
                             <span class="n">aio_id</span> <span class="o">=</span> <span class="s2">&quot;deformation&quot;</span>
@@ -205,8 +200,7 @@
                         <span class="c1"># Pairing</span>
                         <span class="n">GraphPickerAIO</span><span class="p">(</span>
                             <span class="n">data_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;children&#39;</span><span class="p">:</span><span class="s1">&#39;Pairing&#39;</span><span class="p">},</span>
-                            <span class="n">data_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s2">&quot;Pairing gap for Protons&quot;</span><span class="p">,</span>
-                                    <span class="s2">&quot;Pairing gap for Neutrons&quot;</span><span class="p">]},</span>
+                            <span class="n">data_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;pairing&quot;</span><span class="p">]},</span>
                             <span class="n">x_axis_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s1">&#39;in time&#39;</span><span class="p">,</span> <span class="s1">&#39;in distance&#39;</span><span class="p">,</span> <span class="s1">&#39;as maps&#39;</span><span class="p">]},</span>
                             <span class="n">y_axis_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span><span class="s1">&#39;log&#39;</span><span class="p">]},</span>
                             <span class="n">aio_id</span> <span class="o">=</span> <span class="s2">&quot;pairing&quot;</span>
@@ -214,7 +208,7 @@
                         <span class="c1"># Miscellaneous</span>
                         <span class="n">GraphPickerAIO</span><span class="p">(</span>
                             <span class="n">data_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;children&#39;</span><span class="p">:</span><span class="s1">&#39;Miscellaneous&#39;</span><span class="p">},</span>
-                            <span class="n">data_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s2">&quot;?&quot;</span><span class="p">]},</span>
+                            <span class="n">data_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:</span><span class="n">groups</span><span class="p">[</span><span class="s2">&quot;misc&quot;</span><span class="p">]},</span>
                             <span class="n">x_axis_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s1">&#39;in time&#39;</span><span class="p">,</span> <span class="s1">&#39;in distance&#39;</span><span class="p">,</span> <span class="s1">&#39;as maps&#39;</span><span class="p">]},</span>
                             <span class="n">y_axis_type_props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;options&#39;</span><span class="p">:[</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span><span class="s1">&#39;log&#39;</span><span class="p">]},</span>
                             <span class="n">aio_id</span> <span class="o">=</span> <span class="s2">&quot;misc&quot;</span>

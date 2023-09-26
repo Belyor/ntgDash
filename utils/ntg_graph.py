@@ -47,11 +47,10 @@ symbols = {
 #groups of data
 groups = {
     "conservation": ["Total Energy","Number of Protons","Number of Neutrons"],
-    "center of mass": ["X_cm","Y_cm","Z_cm","X_cm for Protons","Y_cm for Protons","Z_cm for Protons",
-                    "X_cm for Neutrons","Y_cm for Neutrons","Z_cm for Neutrons","Center of Mass Energy"],
+    "center of mass": ["X_cm","Y_cm","Z_cm","X_cm for Protons","Y_cm for Protons","Z_cm for Protons", "X_cm for Neutrons","Y_cm for Neutrons","Z_cm for Neutrons","Center of Mass Energy"],
     "deformation": ["Beta","Quadrupole Moment Q20","Octupole Moment Q30","Hexadecupole Moment Q40"],
-    "pairing": ["Pairing gap for Protons","Pairing gap for Neutrons"]
-    #'mics'
+    "pairing": ["Pairing gap for Protons","Pairing gap for Neutrons"],
+    "misc": ["?"]
 }
 
 units = {

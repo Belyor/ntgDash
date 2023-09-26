@@ -1,6 +1,6 @@
 from dash import Dash, dcc, html
 import math
-from utils.ntg_graph import GraphPickerAIO
+from utils.ntg_graph import GraphPickerAIO, groups
 def fun (data):
     one=[]
     two=[]
@@ -39,7 +39,7 @@ def sett(app: Dash,metadata):
                         # Conservation
                         GraphPickerAIO(
                             data_type_props = {'children':'Conservation'},
-                            data_props = {'options':["Total Energy", "Number of Protons","Number of Neutrons"]},
+                            data_props = {'options':groups["conservation"]},
                             x_axis_type_props = {'options':['in time']},
                             y_axis_type_props = {'options':['linear', 'log']},
                             aio_id = "conservation"
@@ -47,11 +47,7 @@ def sett(app: Dash,metadata):
                         # Center of mass
                         GraphPickerAIO(
                             data_type_props = {'children':'Center of mass'},
-                            data_props = {'options':["X_cm", "Y_cm", "Z_cm",
-                                "X_cm for Protons", "Y_cm for Protons", "Z_cm for Protons",
-                                "X_cm for Neutrons", "Y_cm for Neutrons", "Z_cm for Neutrons",
-                                #"Center of Mass Energy"
-                                ]},
+                            data_props = {'options':groups["center of mass"]},
                             x_axis_type_props = {'options':['in time']},
                             y_axis_type_props = {'options':['linear']},
                             aio_id = "center-of-mass"
@@ -59,8 +55,7 @@ def sett(app: Dash,metadata):
                         # Deformation
                         GraphPickerAIO(
                             data_type_props = {'children':'Deformation'},
-                            data_props = {'options':["Beta", "Quadrupole Moment Q20",
-                                "Octupole Moment Q30", "Hexadecupole Moment Q40"]},
+                            data_props = {'options':groups["deformation"]},
                             x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
                             y_axis_type_props = {'options':['linear','log']},
                             aio_id = "deformation"
@@ -68,8 +63,7 @@ def sett(app: Dash,metadata):
                         # Pairing
                         GraphPickerAIO(
                             data_type_props = {'children':'Pairing'},
-                            data_props = {'options':["Pairing gap for Protons",
-                                    "Pairing gap for Neutrons"]},
+                            data_props = {'options':groups["pairing"]},
                             x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
                             y_axis_type_props = {'options':['linear','log']},
                             aio_id = "pairing"
@@ -77,7 +71,7 @@ def sett(app: Dash,metadata):
                         # Miscellaneous
                         GraphPickerAIO(
                             data_type_props = {'children':'Miscellaneous'},
-                            data_props = {'options':["?"]},
+                            data_props = {'options':groups["misc"]},
                             x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
                             y_axis_type_props = {'options':['linear','log']},
                             aio_id = "misc"

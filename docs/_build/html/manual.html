@@ -156,12 +156,12 @@
 <h2>Options<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h2>
 <p>Each panel contains its own options.</p>
 <ol class="arabic">
-<li><p><strong>Graph picker</strong> - on this panel you can find 5 different categories of graphs you can create. Each category is named depending on a type of variables the graph is about to present. The available categories are: <em>Conservation</em>, <em>Center of mass</em>, <em>Deformation</em>, <em>Pairing</em> and <em>Miscellaneous</em>. The last category is for the data types that doesn’t belong to any of previous ones and the users can add their own data types to it. In each category there are 4 available options:</p>
+<li><p><strong>Graph picker</strong> - on this panel you can find 5 different groups of data for graphs you can create. Each group of data is named depending on a type of variables the graph is about to present. The available groups are: <em>Conservation</em>, <em>Center of mass</em>, <em>Deformation</em>, <em>Pairing</em> and <em>Miscellaneous</em>. The last group of data is for the data types that doesn’t belong to any of previous ones and the users can add their own data types to it. In each group of data there are 4 available options:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>Y axis scale (linear/log)</strong> - radio buttons which set a scale of y axis to linear or logarithmic,</p></li>
-<li><p><strong>Data type</strong> - a dropdown, which sets a variable (data type) for y axis of the graph (data types for each category can be found in section Data types),</p></li>
-<li><p><strong>X axis domain (in time/in distance/as maps)</strong> - radio buttons which set a domain of x axis. Two first categories have only time domain for a choice, while the rest have two available domains (<em>as maps</em> is a plan for future updates of the app and it’s going to create a map graph which will contain an additional z axis),</p></li>
+<li><p><strong>Data type</strong> - a dropdown, which sets a variable (data type) for y axis of the graph (data types for each groups of data can be found in section Data types),</p></li>
+<li><p><strong>X axis domain (in time/in distance/as maps)</strong> - radio buttons which set a domain of x axis. Two first groups of data have only time domain for a choice, while the rest have two available domains (<em>as maps</em> is a plan for future updates of the app and it’s going to create a map graph which will contain an additional z axis),</p></li>
 <li><p><strong>Add</strong> - a button which adds a graph to the list of graphs. The graphs have settings that were chosen using previous options</p></li>
 </ul>
 </div></blockquote>
@@ -196,6 +196,19 @@ Another options appear when you add graphs. Each graph has its own options which
 </section>
 <section id="data">
 <h2>Data<a class="headerlink" href="#data" title="Permalink to this heading">¶</a></h2>
+<p>The data used in the application are stored in a <cite>TestData</cite> directory in <cite>.dat</cite> files. Each file is named following a convention which looks like this:</p>
+<p><strong>Convention</strong>: <cite>&lt;System&gt;_&lt;Functional&gt;_&lt;?&gt;_&lt;?&gt;_&lt;Quadrupol moment&gt;_&lt;Phase&gt;_&lt;Energy&gt;_out.dat</cite>
+<strong>Example</strong>: <cite>56Ni+208Pb_SkM-star_gp233_gn260_b0_0PIPhase_248MeV_out.dat</cite></p>
+<p>Each parameter has to be written following the rules listed below. Otherwise, the program will not recognise them properly.</p>
+<ul class="simple">
+<li><p><strong>System</strong> - contains the names of isotopes. The name of the isotope starts with mass number of the isotope followed by symbol of this element. If the system contains diffrent isotopes, their names must be seperated using <cite>+</cite>. For example: <cite>56Ni+208Pb</cite> is a system which contains isotopes of nickel-56 and lead-208.</p></li>
+<li><p><strong>Functional</strong> - ???</p></li>
+<li><p><strong>?</strong> - even more ???</p></li>
+<li><p><strong>?</strong> - <cite>while True: print(“?”)</cite></p></li>
+<li><p><strong>Quadrupol moment</strong> - the name starts with a value of quadrupol moment followed by letter b. The value must be a float. Instead of using <cite>.`</cite> use <cite>-`</cite> i.e. replace <cite>0.5</cite> with <cite>0-5</cite>.</p></li>
+<li><p><strong>Phase</strong> - the value of phase is written as a fraction of pi in decimal. The value needs to be written in the same way as in quadrupol moment using <cite>-</cite> instead of <cite>.</cite> and than is followed by <cite>PIPhase</cite>.</p></li>
+<li><p><strong>Energy</strong> - the energy of the system. It contains a value which is an integer followed by <cite>MeV</cite> unit.</p></li>
+</ul>
 </section>
 <section id="save">
 <h2>Save<a class="headerlink" href="#save" title="Permalink to this heading">¶</a></h2>

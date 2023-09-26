@@ -1,11 +1,11 @@
 Data types
 ==========
 
-.. list-table:: List of available data types in each category
+.. list-table:: List of available data types in each group of data
     :widths: 10, 25
     :header-rows: 1
 
-    * - Category
+    * - Group of data
       - Data types
     * - Conservation
       - Total energy, Number of protons, Number of neutrons
