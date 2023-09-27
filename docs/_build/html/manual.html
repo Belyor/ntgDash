@@ -199,7 +199,7 @@ Another options appear when you add graphs. Each graph has its own options which
 <p>The data used in the application are stored in a <cite>TestData</cite> directory in <cite>.dat</cite> files. Each file is named following a convention which looks like this:</p>
 <p><strong>Convention</strong>: <cite>&lt;System&gt;_&lt;Functional&gt;_&lt;?&gt;_&lt;?&gt;_&lt;Quadrupol moment&gt;_&lt;Phase&gt;_&lt;Energy&gt;_out.dat</cite>
 <strong>Example</strong>: <cite>56Ni+208Pb_SkM-star_gp233_gn260_b0_0PIPhase_248MeV_out.dat</cite></p>
-<p>Each parameter has to be written following the rules listed below. Otherwise, the program will not recognise them properly.</p>
+<p>Each parameter has to be written following the rules listed below. Otherwise, the program will not recognise the files properly.</p>
 <ul class="simple">
 <li><p><strong>System</strong> - contains the names of isotopes. The name of the isotope starts with mass number of the isotope followed by symbol of this element. If the system contains diffrent isotopes, their names must be seperated using <cite>+</cite>. For example: <cite>56Ni+208Pb</cite> is a system which contains isotopes of nickel-56 and lead-208.</p></li>
 <li><p><strong>Functional</strong> - ???</p></li>
@@ -209,6 +209,18 @@ Another options appear when you add graphs. Each graph has its own options which
 <li><p><strong>Phase</strong> - the value of phase is written as a fraction of pi in decimal. The value needs to be written in the same way as in quadrupol moment using <cite>-</cite> instead of <cite>.</cite> and than is followed by <cite>PIPhase</cite>.</p></li>
 <li><p><strong>Energy</strong> - the energy of the system. It contains a value which is an integer followed by <cite>MeV</cite> unit.</p></li>
 </ul>
+<p>After applying new data files the application has to be restarted.</p>
+<p>If the files contain physical quantities (data types) that are not listed in <a class="reference external" href="./datatypes.html">data types list</a> you need to add them in source code of the app. The steps of adding new quantities is as follows:</p>
+<ol class="arabic simple">
+<li><p>Open a <cite>utils</cite> folder, which can be found in the project of the app, and open <cite>ntg_data.py</cite> file in your text editor/IDE.</p></li>
+<li><p>Search for <cite>col_results</cite> and <cite>col_postprocess</cite> lists and add a data type to them.</p></li>
+<li><p>Save the changes and close <cite>ntg_data.py</cite>.</p></li>
+<li><p>Now look for a <cite>ntg_graphs.py</cite> file and open it in your text editor/IDE.</p></li>
+<li><p>In this file search for a <cite>symbols</cite> variable, which is a dictionairy, and add new key and value to it. The key must be a name of the data type, the same as you inserted in previous lists in <cite>ntg_data.py</cite>, and the value is a tag, which will be displayed on the list of graphs when a graph with this data type is added, i.e. <cite>“Total Kinetic Energy”: “Total_k_E”</cite>. You can add your line under the suitable comment, but it’s not obligatory (for example the <cite>Total Kinetic Energy</cite> can be written under <cite>#Conseevation</cite>).</p></li>
+<li><p>Then find <cite>groups</cite> dictionairy and add the data type to the corresponding group. Simply write the name of your data type inside a list (value) that is assigned to a certain group (key), i.e. <cite>Total Kinetic Energy</cite> must be inserted in a list which is assigned to <cite>“conservation”</cite> group. If the data type doesn’t belong to any of four first categories, you can allways add it to <cite>“misc”</cite> group. Remember, to delete <cite>“?”</cite> position.</p></li>
+<li><p>Lastly, in <cite>units</cite> dictionairy you have to assign a unit to your data type. A key is the data type, and a value is a unit, i.e. <cite>“Total Kinetic Energy”: “MeV”</cite>.</p></li>
+</ol>
+<p>These are all changes you need to make if you want to add a new data type to your analysis.</p>
 </section>
 <section id="save">
 <h2>Save<a class="headerlink" href="#save" title="Permalink to this heading">¶</a></h2>

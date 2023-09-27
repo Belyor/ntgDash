@@ -53,7 +53,7 @@ The data used in the application are stored in a `TestData` directory in `.dat` 
 **Convention**: `<System>_<Functional>_<?>_<?>_<Quadrupol moment>_<Phase>_<Energy>_out.dat`
 **Example**: `56Ni+208Pb_SkM-star_gp233_gn260_b0_0PIPhase_248MeV_out.dat`
 
-Each parameter has to be written following the rules listed below. Otherwise, the program will not recognise them properly.
+Each parameter has to be written following the rules listed below. Otherwise, the program will not recognise the files properly.
 
 * **System** - contains the names of isotopes. The name of the isotope starts with mass number of the isotope followed by symbol of this element. If the system contains diffrent isotopes, their names must be seperated using `+`. For example: `56Ni+208Pb` is a system which contains isotopes of nickel-56 and lead-208.
 * **Functional** - ???
@@ -62,6 +62,20 @@ Each parameter has to be written following the rules listed below. Otherwise, th
 * **Quadrupol moment** - the name starts with a value of quadrupol moment followed by letter b. The value must be a float. Instead of using `.`` use `-`` i.e. replace `0.5` with `0-5`.
 * **Phase** - the value of phase is written as a fraction of pi in decimal. The value needs to be written in the same way as in quadrupol moment using `-` instead of `.` and than is followed by `PIPhase`.
 * **Energy** - the energy of the system. It contains a value which is an integer followed by `MeV` unit.
+
+After applying new data files the application has to be restarted.
+
+If the files contain physical quantities (data types) that are not listed in `data types list <./datatypes.html>`_ you need to add them in source code of the app. The steps of adding new quantities is as follows:
+
+1. Open a `utils` folder, which can be found in the project of the app, and open `ntg_data.py` file in your text editor/IDE.
+2. Search for `col_results` and `col_postprocess` lists and add a data type to them.
+3. Save the changes and close `ntg_data.py`.
+4. Now look for a `ntg_graphs.py` file and open it in your text editor/IDE.
+5. In this file search for a `symbols` variable, which is a dictionairy, and add new key and value to it. The key must be a name of the data type, the same as you inserted in previous lists in `ntg_data.py`, and the value is a tag, which will be displayed on the list of graphs when a graph with this data type is added, i.e. `"Total Kinetic Energy": "Total_k_E"`. You can add your line under the suitable comment, but it's not obligatory (for example the `Total Kinetic Energy` can be written under `#Conseevation`).
+6. Then find `groups` dictionairy and add the data type to the corresponding group. Simply write the name of your data type inside a list (value) that is assigned to a certain group (key), i.e. `Total Kinetic Energy` must be inserted in a list which is assigned to `"conservation"` group. If the data type doesn't belong to any of four first categories, you can allways add it to `"misc"` group. Remember, to delete `"?"` position.
+7. Lastly, in `units` dictionairy you have to assign a unit to your data type. A key is the data type, and a value is a unit, i.e. `"Total Kinetic Energy": "MeV"`.
+
+These are all changes you need to make if you want to add a new data type to your analysis.
 
 Save
 ~~~~
