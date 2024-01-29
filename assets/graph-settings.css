@@ -1,35 +1,63 @@
+.graph-settings--title {
+    text-align: center;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
 .graph-settings--container {
     display: flex;
-    margin-left: 200px;
-    margin-right: 200px;
+    margin-left: 10%;
+    margin-right: 10%;
     margin-bottom: 8px;
     margin-top: 8px;
     background-color: lightslategray;
 }
 
 .graph-settings--xAxis {
-    flex: 3;
-    padding: 10px;
+    flex: 1;
+    padding-left:2%;
+    padding-right: 2%;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .graph-settings--yAxis {
-    flex: 2;
-    padding: 10px;
+    flex: 1;
+    padding-left: 2%;
+    padding-right: 2%;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .graph-settings--colorscale {
-    flex: 4;
+    flex: 3;
     height: auto;
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-left: 20px;
-    padding-right: 60px;
+    padding-left: 2%;
+    padding-right: 2%;
 }
 
 .graph-settings--additional {
-    flex: 3;
+    display: flex;
+    flex: 4;
     height: auto;
     padding: 10px;
+}
+
+.graph-settings--additional-data {
+    flex: 1;
+    height: auto;
+}
+
+.graph-settings--additional-show {
+    flex: 1;
+    height: auto;
+}
+
+.graph-settings--additional-hovermode {
+    flex: 1;
+    height: auto;
 }
 
 .graph-settings--updateButton {

@@ -47,17 +47,52 @@ symbols = {
 #groups of data
 groups = {
     "conservation": ["Total Energy","Number of Protons","Number of Neutrons"],
-    "center of mass": ["X_cm","Y_cm","Z_cm","X_cm for Protons","Y_cm for Protons","Z_cm for Protons",
-                    "X_cm for Neutrons","Y_cm for Neutrons","Z_cm for Neutrons","Center of Mass Energy"],
+    "center of mass": ["X_cm","Y_cm","Z_cm","X_cm for Protons","Y_cm for Protons","Z_cm for Protons", "X_cm for Neutrons","Y_cm for Neutrons","Z_cm for Neutrons","Center of Mass Energy"],
     "deformation": ["Beta","Quadrupole Moment Q20","Octupole Moment Q30","Hexadecupole Moment Q40"],
-    "pairing": ["Pairing gap for Protons","Pairing gap for Neutrons"]
-    #'mics'
+    "pairing": ["Pairing gap for Protons","Pairing gap for Neutrons"],
+    "misc": ["?"]
+}
+
+units = {
+    #Conservation
+    "Total Energy": "MeV",
+    "Number of Protons": "",
+    "Number of Neutrons": "",
+    #Center of mass
+    "X_cm": "fm",
+    "Y_cm": "fm",
+    "Z_cm": "fm",
+    "X_cm for Protons": "fm",
+    "Y_cm for Protons": "fm",
+    "Z_cm for Protons": "fm",
+    "X_cm for Neutrons": "fm",
+    "Y_cm for Neutrons": "fm",
+    "Z_cm for Neutrons": "fm",
+    "Center of Mass Energy": "MeV",
+    #Deformation
+    "Beta": "",
+    "Quadrupole Moment Q20": "b",
+    "Octupole Moment Q30": "b^3/2",
+    "Hexadecupole Moment Q40": "b^2",
+    #Pairing
+    "Pairing gap for Protons": "MeV",
+    "Pairing gap for Neutrons": "MeV",
+    #Misc
+    #x axis
+    "Time": "fm/c",
+    "Distance": "fm"
 }
 
 #GraphPickerAIO - a component which stores settings available in Graph Picker panel in main menu
 class GraphPickerAIO(html.Div):
-    graph_id = ""
+    """A class for an All-in-one component whcich stores components for graph settings available in Graph-Picker panel of main menu.
+
+    Args:
+        html.Div (html.Div): the parent component
+    """
     class ids:
+        """A subclass of GraphPickerAIO containing ids of each subcomponent of GraphPickerAIO.
+        """
         data_type = lambda aio_id: {
             'component': 'GraphPickerAIO',
             'subcomponent': 'markdown',
@@ -88,14 +123,23 @@ class GraphPickerAIO(html.Div):
     #Arguments definition
     def __init__(
         self,
-        #properties
-        data_type_props = None, #one of five: conservation, center of mass, deformation, pairing, misc
-        data_props = None, #available datas for certain data type
-        x_axis_type_props = None, #one of three: in time, in distance, as maps
-        y_axis_type_props = None, #one of two: linear, log
-        add_button_props = None, #add button
-        aio_id = None #id of All-in-one component
+        data_type_props = None,
+        data_props = None,
+        x_axis_type_props = None,
+        y_axis_type_props = None,
+        add_button_props = None,
+        aio_id = None
     ):
+        """An init function for GraphPickerAIO component.
+
+        Args:
+            data_type_props (dict, optional): a dictionary with properties for a markdown describing a data type (one of five: conservation, center of mass, deformation, pairing, misc).
+            data_props (dict, optional): a dictionary with properties for a dropdown containing names of datas available for a given data type.
+            x_axis_type_props (dict, optional): a dictionary with properties for radioitems component containing information about what value is on an x axis of a graph (a subset of these three available values: in time, in distance, as maps).
+            y_axis_type_props (dict, optional): a dictionary with properties for radioitems component containng information about what the type of y axis is (linear or logarithmic).
+            add_button_properties (dict, optional): a dictionary with properties for a button which adds a graph to a graph list. Defaults to None.
+            aio_id (string, optional): an id of GraphPickerAIO component. Defaults to None.
+        """
         #set components properties
         data_type_props = data_type_props.copy() if data_type_props else {}
         if 'style' not in data_type_props:
@@ -120,7 +164,7 @@ class GraphPickerAIO(html.Div):
             y_axis_type_props['options'] = {'disabled': False, 'label': 'linear', 'value': 'linear'}
         if 'value' not in y_axis_type_props:
             y_axis_type_props['value'] = y_axis_type_props['options'][0]
-
+        
         add_button_props = add_button_props.copy() if add_button_props else {}
         if 'children' not in add_button_props:
             add_button_props['children'] = 'Add'
@@ -132,6 +176,9 @@ class GraphPickerAIO(html.Div):
         radio_items_class_y = ''
 
         if len(x_axis_type_props['options']) == 3:
+            x_axis_type_props['options'] = [{'label':'in time','value':'in time'},
+                                            {'label':'in distance','value':'in distance'},
+                                            {'label':'as maps','value':'as maps','disabled':True}]
             radio_items_class_x = "graph-picker--radioItemsThreeOptions"
         elif len(x_axis_type_props['options']) == 1:
             radio_items_class_x = "graph-picker--radioItemsOneOption"
@@ -168,6 +215,18 @@ class GraphPickerAIO(html.Div):
 
 #function returning an element for the list of graphs
 def create_element(data, x_type, y_type, list_options, list_values):
+    """A function for creating elements for list of graphs.
+
+    Args:
+        data (string): name of data (the one on y axis).
+        x_type (string): name of x axis (one of three: in time, in distance, as maps).
+        y_type (string): name of y axis type (one of two: linear, log).
+        list_options (list of strings): options from list of graphs, which a function will update.
+        list_values (list of strings): values from list of graphs, which a function will update.
+
+    Returns:
+        tuple of lists of strings: first value is an updated list of options, and second is an updated list of values.
+    """
     options = list_options
     values = list_values
     value = y_type + '|' +  data + '|' + x_type
@@ -188,11 +247,24 @@ def create_element(data, x_type, y_type, list_options, list_values):
 
 
 def get_callbacks(app: Dash, df: pd.DataFrame):
+    """A function storing applications callbacks responsible for updating list of graphs and graphs themselves.
+
+    Args:
+        app (Dash): a Dash application.
+        df (pd.DataFrame): a DataFrame storing all the data from a directory with data files.
+    """
 
     # GraphComponentAIO - a component which stores a graph and its settings.
     # A component is added to the list of graphs by using a Graph Picker panel.
     class GraphComponentAIO(html.Div):
+        """A component which stores both a graph component and components responsible for updating the graph.
+
+        Args:
+            html.Div (html.Div): the parent component
+        """
         class ids:
+            """A subclass of GraphComponentAIO class which stores ids for subcomomponents of GraphComenentAIO.
+            """
             y_axis_type = lambda aio_id: {
                 'component': 'GraphComponentAIO',
                 'subcomponent': 'yRadioItems',
@@ -223,11 +295,6 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 'subcomponent': 'hovermodeRadioItems',
                 'aio_id': aio_id
             }
-            update = lambda aio_id: {
-                'component': 'GraphComponentAIO',
-                'subcomponent': 'button',
-                'aio_id': aio_id
-            }
             graph = lambda aio_id: {
                 'component': 'GraphComponentAIO',
                 'subcomponent': 'graph',
@@ -250,9 +317,25 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             relative_props = None, # relative/normal checkbox
             line_props = None, # lines/markers checklist
             hovermode_props = None, # x unified/closest
-            update_props = None, # update button
+            files = None, # files
             aio_id = None # id of All-in-one component
         ):
+            """An init function for GraphComponentAIO.
+
+            Args:
+                x_axis_type_props (dict, optional): a dictionary with properties for radioitems component storing information about x axis value (one of three available: in time, in distance, as maps).
+                xaxis_type (string, optional): a type of x axis (linear). Defaults to None.
+                xaxis_data_name (string, optional): a data name of x axis (one of three: in time, in distance, as maps). Defaults to None.
+                y_axis_type_props (dict, optional): a dictionary with properties for radioitems component storing information about y axis type (linear or log). Defaults to None.
+                yaxis_type (string, optional): a type of y axis (linear or log). Defaults to None.
+                yaxis_data_name (string, optional): a data name of y axis (depends on data type). Defaults to None.
+                colorscale_props (dict, optional): a dictionary with properties for a dropdown storing available colorscales. Defaults to None.
+                colorscale_type (string, optional): name of colorscale. Defaults to None.
+                relative_props (dict, optional): a dictionary with properties for a checklist component, which sets or unsets relative values on the graph. Defaults to None.
+                line_props (dict, optional): a dictionary with properties for a checklost component storing information about if the data series on the graph should be displayed as lines, points or both. Defaults to None.
+                hovermode_props (dict, optional): a dictionary with properties for a radioitems component responsible for setting the hovermode of a graph (two available: closest, x unified). Defaults to None.
+
+            """
             # Initialize components' properties
             x_axis_type_props = x_axis_type_props.copy() if x_axis_type_props else {}
             if 'options' not in x_axis_type_props:
@@ -302,10 +385,6 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             if 'value' not in hovermode_props:
                 hovermode_props['value'] = 'closest'
     
-            update_props = update_props.copy() if update_props else {}
-            if 'children' not in update_props:
-                update_props['children'] = 'Update'
-    
             if aio_id is None:
                 aio_id = str(uuid.uuid4())
 
@@ -319,33 +398,44 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 xaxis_data_name = 'Maps'
             
             colorscale = ntg_colors.ntg_av
-
-            dff=df
+            
+            unit_x = units[xaxis_data_name]
+            unit_y = units[yaxis_data_name]
+            
+            # filter out keys from dataframe
             xrange_min=-50 if xaxis_data_name == 'Time' else -1
             xrange_max=[]
             fig=go.Figure()
-            for key, it in zip(dff, range(len(dff))):
+
+            if not files: # if files is empty
+                files = df.keys()
+            
+            for key, it in zip(files, range(len(files))):
                 dataname=key.split(".")[0].split(os.sep)[1].split("_")
-                dff_data_x=dff[key][xaxis_data_name]
-                dff_data_y=dff[key][yaxis_data_name]
+                dff_data_x=df[key][xaxis_data_name]
+                dff_data_y=df[key][yaxis_data_name]
 
                 ydata=np.array(dff_data_y)
                 if relative_props['value'] == ['relative']:
                     for i in range(len(ydata)):
                         ydata[i] -= dff_data_y[0]
-                fig.add_trace(go.Scatter(
+                fig.add_trace(go.Scattergl(
                     x=np.array(dff_data_x),
                     y=ydata,
                     mode='lines',
                     line=dict(width=5, color=px.colors.sample_colorscale(
-                        colorscale, it/len(dff))[0]),
+                        colorscale, it/len(files))[0]),
                     name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
-                    hovertemplate = '%{y:12.3f}',
+                    hovertemplate = '%{y:3.2e} ' + unit_y,
+                    xhoverformat='%{x:3.2e} ' + unit_x,
                     hoverlabel=dict(bgcolor=px.colors.sample_colorscale(
-                        colorscale, it/len(dff))[0])
-                    ) # todo hover label color
+                        colorscale, it/len(files))[0])
+                    )
                 )
                 xrange_max.append(max(dff_data_x))
+            
+            if not xrange_max:
+                xrange_max.append(10)
 
             fig.update_layout(title=dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
                                          font=dict(size=22, family="Times New Roman")),
@@ -355,26 +445,29 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                               hovermode='closest',
                               hoverlabel=dict(
                                 font_size=16,
-                                font_family="Times New Roman"), # todo fix hover label. color of the hover title background should be the inverted color of the data, i.e. if colro is black then background is white
+                                font_family="Times New Roman"),
                               )
 
-            fig.update_xaxes(title=dict(text=xaxis_data_name,
+            fig.update_xaxes(title=dict(text=xaxis_data_name + " [" + unit_x + "]",
                                         font=dict(size=20, family="Times New Roman")),
                              range=[xrange_min, max(xrange_max)],
                              type=xaxis_type, linewidth=4, mirror=True, side='bottom',
                              ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
+                             tickformat='%{y:3.2e} ' + unit_x,
                              minor=dict(ticklen=10, tickwidth=2),
                              showspikes=True)
 
-            fig.update_yaxes(title=dict(text=yaxis_data_name,
+            fig.update_yaxes(title=dict(text=yaxis_data_name + " [" + unit_y + "]",
                                         font=dict(size=20, family="Times New Roman")),
                              type=yaxis_type, linewidth=4, mirror=True, side='left',
                              ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
+                             tickformat='f',
                              minor=dict(ticklen=10, tickwidth=2),
                              showspikes=True)
 
             layout = html.Div([
                 html.Div(dcc.Graph(figure=fig, id = self.ids.graph(aio_id) ,className='graph-graph')),
+                html.Div(html.H3("Graph settings"), className="graph-settings--title"),
                 html.Div([
                     html.Div([
                         dcc.Markdown('Y axis:'), 
@@ -389,15 +482,19 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                         dcc.Dropdown(id = self.ids.colorscale(aio_id), **colorscale_props, clearable=False)
                     ], className = "graph-settings--colorscale"),
                     html.Div([
-                        # todo make layout for these components
-                        dcc.Markdown("Data:"),
-                        dcc.Checklist(id = self.ids.relative(aio_id), **relative_props),
-                        dcc.Markdown("Show:"),
-                        dcc.Checklist(id = self.ids.line(aio_id), **line_props),
-                        dcc.Markdown("Hovermode:"),
-                        dcc.RadioItems(id = self.ids.hovermode(aio_id), **hovermode_props)
-                    ], className = "graph-settings--additional"),
-                    html.Button(id = self.ids.update(aio_id), **update_props, className="graph-settings--updateButton")
+                        html.Div([
+                            dcc.Markdown("Data:"),
+                            dcc.Checklist(id = self.ids.relative(aio_id), **relative_props)
+                        ], className="graph-settings--additional-data"),
+                        html.Div([
+                            dcc.Markdown("Show:"),
+                            dcc.Checklist(id = self.ids.line(aio_id), **line_props)
+                        ], className="graph-settings--additional-show"),
+                        html.Div([
+                            dcc.Markdown("Hovermode:"),
+                            dcc.RadioItems(id = self.ids.hovermode(aio_id), **hovermode_props)
+                        ], className="graph-settings--additional-hovermode")
+                    ], className = "graph-settings--additional")
                 ], className = "graph-settings--container")
             ])
     
@@ -405,22 +502,36 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
     
         @callback(
             Output(ids.graph(MATCH), component_property='figure'),
-            Input(ids.update(MATCH),'n_clicks'),
-            State(ids.x_axis_type(MATCH), 'value'),
-            State(ids.y_axis_type(MATCH), 'value'),
-            State(ids.relative(MATCH), 'value'),
-            State(ids.line(MATCH), 'value'),
-            State(ids.hovermode(MATCH), 'value'),
-            State(ids.colorscale(MATCH), 'value'),
-            State(ids.graph(MATCH), component_property='figure'),
+            Input(component_id='files_out', component_property='options'),
+            Input(ids.x_axis_type(MATCH), 'value'),
+            Input(ids.y_axis_type(MATCH), 'value'),
+            Input(ids.relative(MATCH), 'value'),
+            Input(ids.line(MATCH), 'value'),
+            Input(ids.hovermode(MATCH), 'value'),
+            Input(ids.colorscale(MATCH), 'value'),
+            Input(ids.graph(MATCH), component_property='figure'),
             prevent_initial_call = True
         )
         # method for updating a graph in a GraphComponentAIO
-        def update_graph(clicks, x_data, y_type, relative, line, hovermode, colorscale ,figure: go.Figure):
+        def update_graph(files, x_data, y_type, relative, line, hovermode, colorscale ,figure: go.Figure):
+            """A function for updating a graph. The function is a callback assigned to a specific GraphComponentAIO.
 
-            fig = go.Figure(figure)
-            yaxis_data_name = figure['layout']['yaxis']['title']['text']
-            xaxis_data_name = figure['layout']['xaxis']['title']['text']
+            Args:
+                files (list of strings): contains all names of data files after filtering. Only data from these files will be displayed.
+                x_data (string): name of x axis data (one of three: in time, in distance, as maps).
+                y_type (string): type of y axis (one of two: linear, log).
+                relative (list of strings): information whether data are relative or not. If a checkbox for relative is not set, the list is empty, otherwise it contains a string 'relative'.
+                line (list of strings): contains information about how to draw the series on graph (available values: lines, markers. Can be one of these, a combination of these two or none).
+                hovermode (string): name of a hovermode (one of two: closest, x unified).
+                colorscale (string): name of a colorscale.
+                figure (go.Figure): a figure of a graph before an update.
+
+            Returns:
+                go.Figure: a figure of an updated graph.
+            """
+            fig = go.Figure()
+            yaxis_data_name = figure['layout']['yaxis']['title']['text'].split(" [")[0]
+            xaxis_data_name = figure['layout']['xaxis']['title']['text'].split(" [")[0]
 
             # Change x type + colorscale + lines/markers
             if x_data == 'in time':
@@ -433,18 +544,20 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
             if xaxis_data_name != x_data:
                 xaxis_data_name = x_data
             
-            dff=df
+            # filter out keys from dataframe
             xrange_min=-50 if xaxis_data_name == 'Time' else -1
             xrange_max=[]
-            for key, data, it in zip(dff,fig.data,range(len(dff))):
-                data['x'] = np.array(dff[key][xaxis_data_name])
-                dff_data_y = dff[key][yaxis_data_name]
-                y_data = np.array(dff_data_y)
-                if relative == ['relative']:
-                    for i in range(len(y_data)):
-                        y_data[i] -= dff_data_y[0]
-                data['y'] = y_data
-                xrange_max.append(max(data['x']))
+
+            unit_x = units[xaxis_data_name]
+            unit_y = units[yaxis_data_name]
+
+            if not files: # if files is empty
+                files = df.keys()
+
+            for key, it in zip(files, range(len(files))):
+                dataname=key.split(".")[0].split(os.sep)[1].split("_")
+                dff_data_x=df[key][xaxis_data_name]
+                dff_data_y=df[key][yaxis_data_name]
 
                 # Change colorscale
                 if colorscale == 'ntg':
@@ -453,17 +566,56 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                     colorscale = ntg_colors.ntg_map
                 elif colorscale == 'ntg_av':
                     colorscale = ntg_colors.ntg_av
-                # Change lines/markers
-                if 'lines' in line:
-                    data['line'] = dict(width=5, color=px.colors.sample_colorscale(
-                                    colorscale, it/len(dff))[0])
-                else:
-                    data['line'] = dict(width=0)
-                if 'markers' in line:
-                    data['marker'] = dict(size = 5, color=px.colors.sample_colorscale(
-                                    colorscale, it/len(dff))[0])
-                else:
-                    data['marker'] = dict(size = 0)
+
+                ydata=np.array(dff_data_y)
+                if relative == ['relative']:
+                    for i in range(len(ydata)):
+                        ydata[i] -= dff_data_y[0]
+                fig.add_trace(go.Scattergl(
+                    x=np.array(dff_data_x),
+                    y=ydata,
+                    mode='lines',
+                    line=dict(width=5, color=px.colors.sample_colorscale(
+                        colorscale, it/len(files))[0]),
+                    name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
+                    hovertemplate = '%{y:3.2e} ' + unit_y,
+                    xhoverformat='%{x:3.2e} ' + unit_x,
+                    hoverlabel=dict(bgcolor=px.colors.sample_colorscale(
+                        colorscale, it/len(files))[0])
+                    ) # todo hover label color
+                )
+                xrange_max.append(max(dff_data_x))
+            
+            if not xrange_max:
+                xrange_max.append(10)
+
+            fig.update_layout(title=dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
+                                         font=dict(size=22, family="Times New Roman")),
+                              autosize=True,height=540,
+                              template='simple_white',paper_bgcolor='#B4A0AA',plot_bgcolor='#B4A0AA',
+                              margin={'l': 0, 'b': 0, 't': 32, 'r': 0}, 
+                              hovermode=hovermode,
+                              hoverlabel=dict(
+                                font_size=16,
+                                font_family="Times New Roman"), # todo fix hover label. color of the hover title background should be the inverted color of the data, i.e. if colro is black then background is white
+                              )
+
+            fig.update_xaxes(title=dict(text=xaxis_data_name + " [" + unit_x + "]",
+                                        font=dict(size=20, family="Times New Roman")),
+                             range=[xrange_min, max(xrange_max)],
+                             type='linear', linewidth=4, mirror=True, side='bottom',
+                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
+                             tickformat='%{y:3.2e} ' + unit_x,
+                             minor=dict(ticklen=10, tickwidth=2),
+                             showspikes=True)
+            
+            fig.update_yaxes(title=dict(text=yaxis_data_name + " [" + unit_y + "]",
+                                        font=dict(size=20, family="Times New Roman")),
+                             type=y_type, linewidth=4, mirror=True, side='left',
+                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
+                             tickformat='f',
+                             minor=dict(ticklen=10, tickwidth=2),
+                             showspikes=True)
             
             if line == ['lines']:
                 fig.update_traces(mode='lines')
@@ -471,18 +623,6 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 fig.update_traces(mode='markers')
             elif 'lines' in line and 'markers' in line:
                 fig.update_traces(mode='lines+markers')
-
-            #Change title of x axis
-            fig.update_xaxes(title=dict(text=xaxis_data_name,font=dict(size=20, family="Times New Roman")),
-                             range = [xrange_min,max(xrange_max)])
-
-            # Change y type
-            fig.update_yaxes(type=y_type)
-
-            # Change title of graph + change hovermode
-            fig.update_layout(title = dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
-                                font=dict(size=22, family="Times New Roman")),
-                                hovermode=hovermode)
 
             return fig
 
@@ -533,6 +673,34 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                   dx, dy, ddata,
                   px, py, pdata):
         #check which button was trigerred
+        """A callback for updating a list of graphs.
+
+        Args:
+            b1 (int): number of clicks of button 1.
+            b2 (int): number of clicks of button 2.
+            b3 (int): number of clicks of button 3.
+            b4 (int): number of clicks of button 4.
+            list_options (list of strings): list of options of a list of graphs dropdown.
+            list_values (list of string): list of values of a list of graphs dropdown.
+            cx (string): name of x axis data for conservation data type.
+            cy (string): name of y axis type for conservation data type.
+            cdata (string): name of y axis data for conservation data type.
+            cmx (string): name of x axis data for center of mass data type.
+            cmy (string): name of y axis type for center of mass data type.
+            cmdata (string): name of y axis data for center of mass data type.
+            dx (string): name of x axis data for deformation data type.
+            dy (string): name of y axis type for deformation data type.
+            ddata (string): name of y axis data for deformation data type.
+            px (string): name of x axis data for pairing data type.
+            py (string): name of y axis type for pairing data type.
+            pdata (string): name of y axis data for pairing data type.
+
+        Raises:
+            PreventUpdate: prevents from firing a callback when application is opened for the first time.
+
+        Returns:
+            tuple of two lists of strings/empty lists: lists contain options and values for a list of graphs dropdown after adding them by pressing a certain add button on Graph picker panel of main menu. 
+        """
         trigerred_id = ctx.triggered_id
 
         #add new graph to the list
@@ -571,10 +739,21 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
     @app.callback(
         Output(component_id='graphs', component_property='children'),
         Input(component_id='list-of-graphs', component_property='value'),
-        State(component_id='graphs', component_property='children')
+        State(component_id='graphs', component_property='children'),
+        State(component_id='files_out', component_property='options')
     )
     # function for updating graphs
-    def update_graphs(values, graphs):
+    def update_graphs(values, graphs, files):
+        """A callback responsible for updating a div with graphs. The callback can be fired by a) adding a new graph to the list with add button on a graph picker panel, b) removing elements from a list of graphs dropdown by clicking on one specific element or by pressing an x in the right side of the component.
+
+        Args:
+            values (list of strings): a list containing values of list of graphs dropdown.
+            graphs (list of GraphComponentAIOs): the state of a div containing all the graphs before an update.
+            files (list of strings): contains the names of files after filtering. Only data from the files will be displayed on a graph.
+
+        Returns:
+            a div containing GraphComponentAIOs: an updated state of a div storing all graphs that are mentioned in a list of graphs dropdown.
+        """
         graphs_temp = graphs
         #when no graph was added to the list
         if len(graphs_temp) == len(values):
@@ -621,7 +800,9 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 x_options = ['in time']
                 y_options = ['linear']
             elif (yaxis_data_name in groups["deformation"]) or (yaxis_data_name in groups["pairing"]):
-                x_options = ['in time', 'in distance', 'as maps']
+                x_options = [{'label':'in time','value':'in time'},
+                            {'label':'in distance','value':'in distance'},
+                            {'label':'as maps','value':'as maps','disabled':True}]
                 y_options = ['linear', 'log']
             
             aio_id = yaxis_type + '--' + yaxis_data_name.replace(' ', '-') + '--' + info[2].replace(' ', '-')
@@ -634,6 +815,7 @@ def get_callbacks(app: Dash, df: pd.DataFrame):
                 yaxis_type=yaxis_type,
                 yaxis_data_name= yaxis_data_name,
                 colorscale_type='ntg_av',
+                files=files,
                 aio_id=aio_id
             )
 
