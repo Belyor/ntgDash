@@ -16,6 +16,7 @@ Below you can find a table of contents for this documentation.
    about
    manual
    datatypes
+   pipeline
    modules
 
 Indices and tables
