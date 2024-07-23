@@ -7,11 +7,13 @@ import numpy as np
 import os
 import uuid
 
+from utils.ntg_util import fname_to_metadata
+
 from . import ntg_colors
 colorscales=ntg_colors.colorscales
 
 #Types of available data
-symbols = {
+data_labels = {
     #Conservation
     "Total Energy": "Total_E",
     "Number of Protons": "N_p",
@@ -257,14 +259,13 @@ def create_element(data : str,
     if value in list_values: #if option exists return unchanged lists
         return list_options, list_values
     else: #if option doesn't exist add a new option to lists and return them
-        label = symbols[data]
-        option = {'label': label, 'value': value}
+        option = {'label': data_labels[data], 'value': value}
         list_options.append(option)
         list_values.append(value)
         return list_options, list_values
 
 
-def get_callbacks(df: pd.DataFrame):
+def get_callbacks(data: dict):
     """
     A function that stores application callbacks responsible for updating the list of graphs and the graphs themselves.
 
@@ -272,7 +273,7 @@ def get_callbacks(df: pd.DataFrame):
     the list of graph options and the corresponding graph values within a Dash application.
 
     Args:
-        df (pd.DataFrame): A DataFrame containing all the data from the specified directory with data files.
+        df (dict): A DataFrame containing all the data from the specified directory with data files.
     """
 
     # GraphComponentAIO - a component which stores a graph and its settings.
@@ -361,9 +362,8 @@ def get_callbacks(df: pd.DataFrame):
                 line_props (dict, optional): a dictionary with properties for a checklost component storing information about if the data series on the graph should be displayed as lines, points or both.
                 hovermode_props (dict, optional): a dictionary with properties for a radioitems component responsible for setting the hovermode of a graph (two available: closest, x unified).
             """
-            # QUESTION: Do we need to .copy() all the time?
             # Initialize components' properties
-            x_axis_type_props = x_axis_type_props.copy() if x_axis_type_props else {}
+            x_axis_type_props = x_axis_type_props.copy()
             if 'options' not in x_axis_type_props:
                 x_axis_type_props['options'] = {'disabled' : False, 'options' : 'in time', 'value' : 'in time'}
             if 'value' not in x_axis_type_props:
@@ -372,7 +372,7 @@ def get_callbacks(df: pd.DataFrame):
                 else:
                     x_axis_type_props['value'] = xaxis_data_name
 
-            y_axis_type_props = y_axis_type_props.copy() if y_axis_type_props else {}
+            y_axis_type_props = y_axis_type_props.copy()
             if 'options' not in y_axis_type_props:
                 y_axis_type_props['options'] = {'disabled': False, 'label': 'linear', 'value': 'linear'}
             if 'value' not in y_axis_type_props:
@@ -381,7 +381,7 @@ def get_callbacks(df: pd.DataFrame):
                 else:
                     y_axis_type_props['value'] = yaxis_type
 
-            colorscale_props = colorscale_props.copy() if colorscale_props else {}
+            colorscale_props = colorscale_props.copy()
             if 'options' not in colorscale_props:
                 colorscale_props['options'] = colorscales
             if 'value' not in colorscale_props:
@@ -390,7 +390,7 @@ def get_callbacks(df: pd.DataFrame):
                 else:
                     colorscale_props['value'] = colorscale_type
 
-            relative_props = relative_props.copy() if relative_props else {}
+            relative_props = relative_props.copy()
             if 'options' not in relative_props:
                 relative_props['options'] = ['relative']
             if 'value' not in relative_props:
@@ -399,23 +399,20 @@ def get_callbacks(df: pd.DataFrame):
                 else:
                     relative_props['value'] = []
 
-            line_props = line_props.copy() if line_props else {}
+            line_props = line_props.copy()
             if 'options' not in line_props:
                 line_props['options'] = ['lines', 'markers']
             if 'value' not in line_props:
                 line_props['value'] = ['lines']
 
-            hovermode_props = hovermode_props.copy() if hovermode_props else {}
+            hovermode_props = hovermode_props.copy()
             if 'options' not in hovermode_props:
                 hovermode_props['options'] = ['closest', 'x unified']
             if 'value' not in hovermode_props:
                 hovermode_props['value'] = 'closest'
 
-            # if aio_id is None:
-            #     aio_id = str(uuid.uuid4())
-
-            #create a figure
-            #[in time/in distance/as maps]
+            # create a figure
+            # [in time/in distance/as maps]
             if xaxis_data_name == 'in time':
                 xaxis_data_name = 'Time'
             elif xaxis_data_name == 'in distance':
@@ -434,66 +431,109 @@ def get_callbacks(df: pd.DataFrame):
             fig = go.Figure()
 
             if not files: # if files is empty
-                files = df.keys()
+                files = data.keys()
 
-            for key, it in zip(files, range(len(files))):
+            for it, key in enumerate(files):
                 dataname=key.split(".")[0].split(os.sep)[1].split("_")
-                dff_data_x=df[key][xaxis_data_name]
-                dff_data_y=df[key][yaxis_data_name]
+                dff_data_x=data[key][xaxis_data_name]
+                dff_data_y=data[key][yaxis_data_name]
 
                 ydata=np.array(dff_data_y)
                 if relative_props['value'] == ['relative']:
-                    for i in range(len(ydata)):
-                        ydata[i] -= dff_data_y[0]
-                fig.add_trace(go.Scattergl(
-                    x=np.array(dff_data_x),
-                    y=ydata,
-                    mode='lines',
-                    line=dict(width=5, color=px.colors.sample_colorscale(
-                        colorscale, it/len(files))[0]),
-                    name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
-                    hovertemplate = '%{y:3.2e} ' + unit_y,
-                    xhoverformat='%{x:3.2e} ' + unit_x,
-                    hoverlabel=dict(bgcolor=px.colors.sample_colorscale(
-                        colorscale, it/len(files))[0])
+                    ydata -= dff_data_y[0]
+
+                fig.add_trace(
+                    go.Scattergl(
+                        x=np.array(dff_data_x),
+                        y=ydata,
+                        mode='lines',
+                        line=dict(
+                            width=5,
+                            color=px.colors.sample_colorscale(colorscale, it/len(files))[0]
+                        ),
+                        name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
+                        hovertemplate='%{y:3.2e} ' + unit_y,
+                        xhoverformat='%{x:3.2e} ' + unit_x,
+                        hoverlabel={
+                            'bgcolor' : px.colors.sample_colorscale(colorscale, it/len(files))[0]
+                        }
+                    )
                 )
-                              )
                 xrange_max.append(max(dff_data_x))
 
             if not xrange_max:
                 xrange_max.append(10)
 
-            fig.update_layout(title=dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
-                                         font=dict(size=22, family="Times New Roman")),
-                              autosize=True,height=540,
-                              template='simple_white',paper_bgcolor='#B4A0AA',plot_bgcolor='#B4A0AA',
-                              margin={'l': 0, 'b': 0, 't': 32, 'r': 0}, 
-                              hovermode='closest',
-                              hoverlabel=dict(
-                              font_size=16,
-                              font_family="Times New Roman"),
-                              )
+            fig.update_layout(
+                title=dict(
+                    text=yaxis_data_name+" ("+xaxis_data_name+")",
+                    font=dict(size=22, family="Times New Roman")
+                ),
+                autosize=True,
+                height=540,
+                template='simple_white',
+                paper_bgcolor='#B4A0AA',
+                plot_bgcolor='#B4A0AA',
+                margin={'l': 0, 'b': 0, 't': 32, 'r': 0}, 
+                hovermode='closest',
+                hoverlabel=dict(
+                    font_size=16,
+                    font_family="Times New Roman"
+                ),
+            )
 
-            fig.update_xaxes(title=dict(text=xaxis_data_name + " [" + unit_x + "]",
-                                        font=dict(size=20, family="Times New Roman")),
-                             range=[xrange_min, max(xrange_max)],
-                             type=xaxis_type, linewidth=4, mirror=True, side='bottom',
-                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
-                             tickformat='%{y:3.2e} ' + unit_x,
-                             minor=dict(ticklen=10, tickwidth=2),
-                             showspikes=True)
+            fig.update_xaxes(
+                title=dict(
+                    text=xaxis_data_name + " [" + unit_x + "]",
+                    font=dict(size=20, family="Times New Roman")
+                ),
+                range=[xrange_min, max(xrange_max)],
+                type=xaxis_type,
+                linewidth=4,
+                mirror=True,
+                side='bottom',
+                ticklen=15,
+                tickwidth=3,
+                tickfont=dict(size=18, family="Times New Roman"),
+                tickformat='%{y:3.2e} ' + unit_x,
+                minor=dict(ticklen=10, tickwidth=2),
+                showspikes=True,
+            )
 
-            fig.update_yaxes(title=dict(text=yaxis_data_name + " [" + unit_y + "]",
-                                        font=dict(size=20, family="Times New Roman")),
-                             type=yaxis_type, linewidth=4, mirror=True, side='left',
-                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
-                             tickformat='f',
-                             minor=dict(ticklen=10, tickwidth=2),
-                             showspikes=True)
+            fig.update_yaxes(
+                title=dict(
+                    text=yaxis_data_name + " [" + unit_y + "]",
+                    font=dict(
+                        size=20,
+                        family="Times New Roman"
+                    )
+                ),
+                type=yaxis_type,
+                linewidth=4,
+                mirror=True,
+                side='left',
+                ticklen=15,
+                tickwidth=3,
+                tickfont=dict(
+                    size=18,
+                    family="Times New Roman"
+                ),
+                tickformat='f',
+                minor=dict(
+                    ticklen=10,
+                    tickwidth=2
+                ),
+                showspikes=True,
+            )
 
             layout = html.Div([
-                html.Div(dcc.Graph(figure=fig, id = self.ids.graph(aio_id) ,className='graph-graph')),
-                html.Div(html.H3("Graph settings"), className="graph-settings--title"),
+                html.Div(
+                    dcc.Graph(figure=fig, id=self.ids.graph(aio_id), className='graph-graph')
+                ),
+                html.Div(
+                    html.H3("Graph settings"),
+                    className="graph-settings--title"
+                ),
                 html.Div([
                     html.Div([
                         dcc.Markdown('Y axis:'), 
@@ -521,24 +561,24 @@ def get_callbacks(df: pd.DataFrame):
                             dcc.RadioItems(id = self.ids.hovermode(aio_id), **hovermode_props)
                         ], className="graph-settings--additional-hovermode")
                     ], className = "graph-settings--additional")
-                ], className = "graph-settings--container")
+                ], className = "graph-settings--container"),
             ])
 
             super().__init__(layout)
 
         # method for updating a graph in a GraphComponentAIO
         @callback(
-            Output(ids.graph(MATCH), component_property='figure'),
-            Input(component_id='files_out', component_property='options'),
+            Output(ids.graph(MATCH), 'figure'),
+            Input('filtered_files', 'data'),
             Input(ids.x_axis_type(MATCH), 'value'),
             Input(ids.y_axis_type(MATCH), 'value'),
             Input(ids.relative(MATCH), 'value'),
             Input(ids.line(MATCH), 'value'),
             Input(ids.hovermode(MATCH), 'value'),
             Input(ids.colorscale(MATCH), 'value'),
-            Input(ids.graph(MATCH), component_property='figure'),
+            Input(ids.graph(MATCH), 'figure'),
             prevent_initial_call = True)
-        def update_graph(files, x_data, y_type, relative, line, hovermode, colorscale ,figure: go.Figure):
+        def update_graph(files, x_data, y_type, relative, line, hovermode, colorscale, figure: go.Figure):
             """A function for updating a graph. The function is a callback assigned to a specific GraphComponentAIO.
 
             Args:
@@ -554,7 +594,6 @@ def get_callbacks(df: pd.DataFrame):
             Returns:
                 go.Figure: a figure of an updated graph.
             """
-            fig = go.Figure()
             yaxis_data_name = figure['layout']['yaxis']['title']['text'].split(" [")[0]
             xaxis_data_name = figure['layout']['xaxis']['title']['text'].split(" [")[0]
 
@@ -570,78 +609,116 @@ def get_callbacks(df: pd.DataFrame):
                 xaxis_data_name = x_data
 
             # filter out keys from dataframe
-            xrange_min=-50 if xaxis_data_name == 'Time' else -1
-            xrange_max=[]
+            xrange_min = -50 if xaxis_data_name == 'Time' else -1
+            xrange_max = []
 
             unit_x = units[xaxis_data_name]
             unit_y = units[yaxis_data_name]
 
             # TODO: In the files is empty we might want to print info instead of just displaying everything
             if not files: # if files is empty
-                files = df.keys()
+                files = data.keys()
+
+
+            # Change colorscale
+            if colorscale == 'ntg':
+                colorscale = ntg_colors.ntg
+            elif colorscale == 'ntg_map':
+                colorscale = ntg_colors.ntg_map
+            elif colorscale == 'ntg_av':
+                colorscale = ntg_colors.ntg_av
+
+            fig = go.Figure()
 
             for it, key in enumerate(files):
-                dataname=key.split(".")[0].split(os.sep)[1].split("_")
-                dff_data_x = df[key][xaxis_data_name]
-                dff_data_y = df[key][yaxis_data_name]
+                # TODO: Maybe just use metadata instead of splitting names again?
+                dataname = key.split(".")[0].split(os.sep)[1].split("_")
 
-                # Change colorscale
-                if colorscale == 'ntg':
-                    colorscale = ntg_colors.ntg
-                elif colorscale == 'ntg_map':
-                    colorscale = ntg_colors.ntg_map
-                elif colorscale == 'ntg_av':
-                    colorscale = ntg_colors.ntg_av
+                dff_data_x = data[key][xaxis_data_name]
+                dff_data_y = data[key][yaxis_data_name]
 
                 ydata = np.array(dff_data_y)
                 if relative == ['relative']:
-                    for i in range(len(ydata)):
-                        ydata[i] -= dff_data_y[0]
-                fig.add_trace(go.Scattergl(
-                    x=np.array(dff_data_x),
-                    y=ydata,
-                    mode='lines',
-                    line=dict(width=5, color=px.colors.sample_colorscale(
-                        colorscale, it/len(files))[0]),
-                    name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
-                    hovertemplate = '%{y:3.2e} ' + unit_y,
-                    xhoverformat='%{x:3.2e} ' + unit_x,
-                    hoverlabel=dict(bgcolor=px.colors.sample_colorscale(
-                        colorscale, it/len(files))[0])
-                ) # todo hover label color
-                              )
+                    ydata -= dff_data_y[0]
+
+                fig.add_trace(
+                    go.Scattergl(
+                        # QUESTION: Does it have to be converted into np.array?
+                        x=np.array(dff_data_x),
+                        y=ydata,
+                        mode='lines',
+                        line=dict(
+                            width=5,
+                            color=px.colors.sample_colorscale(colorscale, it/len(files))[0]
+                        ),
+                        name=f"{dataname[0]:12} {dataname[4].replace('-','.'):5} {dataname[5].replace('-','/'):10} {dataname[6]:6}",
+                        hovertemplate='%{y:3.2e} ' + unit_y,
+                        xhoverformat='%{x:3.2e} ' + unit_x,
+                        hoverlabel={
+                            'bgcolor' : px.colors.sample_colorscale(colorscale, it/len(files))[0]
+                        }
+                    ) # todo hover label color
+                )
                 xrange_max.append(max(dff_data_x))
 
             if not xrange_max:
                 xrange_max.append(10)
 
-            fig.update_layout(title=dict(text=yaxis_data_name+" ("+xaxis_data_name+")",
-                                         font=dict(size=22, family="Times New Roman")),
-                              autosize=True,height=540,
-                              template='simple_white',paper_bgcolor='#B4A0AA',plot_bgcolor='#B4A0AA',
-                              margin={'l': 0, 'b': 0, 't': 32, 'r': 0}, 
-                              hovermode=hovermode,
-                              hoverlabel=dict(
-                              font_size=16,
-                              font_family="Times New Roman"), # todo fix hover label. color of the hover title background should be the inverted color of the data, i.e. if colro is black then background is white
-                              )
+            fig.update_layout(
+                title=dict(
+                    text=yaxis_data_name+" ("+xaxis_data_name+")",
+                    font=dict(size=22, family="Times New Roman")
+                ),
+                autosize=True,
+                height=540,
+                template='simple_white',
+                paper_bgcolor='#B4A0AA',
+                plot_bgcolor='#B4A0AA',
+                margin={'l': 0, 'b': 0, 't': 32, 'r': 0}, 
+                hovermode=hovermode,
+                hoverlabel=dict(
+                    font_size=16,
+                    font_family="Times New Roman"
+                ), # todo fix hover label. color of the hover title background should be the inverted color of the data, i.e. if colro is black then background is white
+            )
 
-            fig.update_xaxes(title=dict(text=xaxis_data_name + " [" + unit_x + "]",
-                                        font=dict(size=20, family="Times New Roman")),
-                             range=[xrange_min, max(xrange_max)],
-                             type='linear', linewidth=4, mirror=True, side='bottom',
-                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
-                             tickformat='%{y:3.2e} ' + unit_x,
-                             minor=dict(ticklen=10, tickwidth=2),
-                             showspikes=True)
+            fig.update_xaxes(
+                title=dict(
+                    text=xaxis_data_name + " [" + unit_x + "]",
+                    font=dict(size=20, family="Times New Roman")
+                ),
+                range=[xrange_min, max(xrange_max)],
+                type='linear',
+                linewidth=4,
+                mirror=True,
+                side='bottom',
+                ticklen=15,
+                tickwidth=3,
+                tickfont=dict(size=18, family="Times New Roman"),
+                tickformat='%{y:3.2e} ' + unit_x,
+                minor=dict(ticklen=10, tickwidth=2),
+                showspikes=True,
+            )
 
-            fig.update_yaxes(title=dict(text=yaxis_data_name + " [" + unit_y + "]",
-                                        font=dict(size=20, family="Times New Roman")),
-                             type=y_type, linewidth=4, mirror=True, side='left',
-                             ticklen=15, tickwidth=3, tickfont=dict(size=18, family="Times New Roman"),
-                             tickformat='f',
-                             minor=dict(ticklen=10, tickwidth=2),
-                             showspikes=True)
+            fig.update_yaxes(
+                title=dict(
+                    text=yaxis_data_name + " [" + unit_y + "]",
+                    font=dict(
+                        size=20,
+                        family="Times New Roman"
+                    ),
+                ),
+                type=y_type,
+                linewidth=4,
+                mirror=True,
+                side='left',
+                ticklen=15,
+                tickwidth=3,
+                tickfont=dict(size=18, family="Times New Roman"),
+                tickformat='f',
+                minor=dict(ticklen=10, tickwidth=2),
+                showspikes=True,
+            )
 
             if line == ['lines']:
                 fig.update_traces(mode='lines')
@@ -738,7 +815,8 @@ def get_callbacks(df: pd.DataFrame):
             return create_element(ddata, dx, dy, list_options, list_values)
         elif trigerred_id == GraphPickerAIO.ids.add_button('pairing'):
             return create_element(pdata, px, py, list_options, list_values)
-            #delete graphs from the list
+
+        #delete graphs from the list
         elif trigerred_id == 'list-of-graphs':
             if list_values == []:
                 return [], []
@@ -757,6 +835,7 @@ def get_callbacks(df: pd.DataFrame):
 
                 options.remove(to_remove)
                 return options, list_values
+
         #prevent updating when no add button was pressed
         if (b1 and b2 and b3 and b4) is None:
             raise PreventUpdate
@@ -765,7 +844,7 @@ def get_callbacks(df: pd.DataFrame):
         Output(component_id='graphs', component_property='children'),
         Input(component_id='list-of-graphs', component_property='value'),
         State(component_id='graphs', component_property='children'),
-        State(component_id='files_out', component_property='options'))
+        State('filtered_files', 'data'))
     def update_graphs(values, graphs, files):
         """
         A callback responsible for updating a div with graphs. The callback can be fired by 

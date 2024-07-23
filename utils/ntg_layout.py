@@ -121,7 +121,7 @@ def sett(app: Dash, metadata : DataFrame):
         dcc.RangeSlider(
             0, 4, value=[0,4], 
             tooltip={'always_visible': True, "placement": "bottom"},
-            className="filter--slider", id='filter_D',
+            className="filter--slider", id='filter_b',
             marks={
                 0: {'label': '0', 'style': {'color': 'black'}},
                 1: {'label': '1', 'style': {'color': 'black'}},
@@ -157,7 +157,5 @@ def sett(app: Dash, metadata : DataFrame):
             html.Div([], id='graphs', className='graph-div'),
         ]),
 
-        html.Div([
-            dcc.Dropdown([],id = 'files_out')
-        ], style={"display":"none"}),
+        dcc.Store(id = 'filtered_files'),
     ])

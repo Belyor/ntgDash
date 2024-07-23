@@ -3,10 +3,9 @@ import glob
 import pandas as pd
 import os
 from dash.exceptions import PreventUpdate
+from collections import defaultdict
 
-from math import pi
-
-from pathlib import Path
+from utils.ntg_util import fname_to_metadata
 
 DATA = 1  # 1: Test Data, 0: All NTG data
 global col_results
@@ -32,29 +31,6 @@ col_postprocess = ["Time", "Total Energy", "Total Fermi Energy", "Total Fermi En
                    "Pairing gap for Neutrons", "Pairing gap for Protons", "Gradient of Delta for Protons", "Gradient of Delta for Neutrons",
                    "Coulomb Force", "Total Kinetic Energy", "Total Excitation Energy", "Distance"]
 
-def fname_to_metadata(fname : str):
-    fname_split = Path(fname).stem.split('_')
-
-    # The most work is with phase, it will be convinient to have both
-    # fractional string and numeric value
-    phase_fraction = fname_split[5].replace('PIPhase', '').replace('-', '/')
-    phase_split = phase_fraction.split('/')
-    phase_val = float(phase_split[0]) * pi
-    if len(phase_split) > 1:
-        phase_val /= float(phase_split[1])
-
-    md = {
-        'filename'       : fname,
-        'system'         : fname_split[0],
-        'functional'     : fname_split[1],
-        'b'              : float(fname_split[4].replace('b', '').replace('-', '.')),
-        'phase_fraction' : phase_fraction,
-        'phase_value'    : phase_val,
-        'energy'         : int(fname_split[6].replace('MeV', '')),
-    }
-
-    return md
-
 # FIXME: This returns data as dictionary, but some other function requires DataFrame (huh?)
 def load_data():
     project_dir = os.path.join("TestData", "*.dat")
@@ -62,7 +38,7 @@ def load_data():
         project_dir = os.path.join("Data", "*.dat")
 
     files = sorted(glob.glob(project_dir, ))
-    data = {}
+    data = defaultdict(pd.DataFrame)
 
     for file in files:
         data_tmp = pd.read_csv(file, sep=",", names=col_postprocess)
@@ -82,17 +58,15 @@ def pipe_data(metadata : pd.DataFrame):
     Args:
         df (DataFrame):
     """
-    # TODO: Having hidden component 'files_out' (droupdown) does not seem like a good solution,
-    # there must be a better approach
     @callback(
-        Output(component_id='files_out', component_property='options'),
-        Input(component_id='apply', component_property='n_clicks'),
-        State(component_id='filter_system', component_property='value'),
-        State(component_id='filter_method', component_property='value'),
-        State(component_id='filter_functional', component_property='value'),
-        State(component_id='filter_phase', component_property='value'),
-        State(component_id='filter_ecms', component_property='value'),
-        State(component_id='filter_D', component_property='value'),
+        Output('filtered_files', 'data'),
+        Input('apply', 'n_clicks'),
+        State('filter_system', 'value'),
+        State('filter_method', 'value'),
+        State('filter_functional', 'value'),
+        State('filter_phase', 'value'),
+        State('filter_ecms', 'value'),
+        State('filter_b', 'value'),
     )
     def filter(n_clicks, system, method, functional, phase, ecms, b):
         """
