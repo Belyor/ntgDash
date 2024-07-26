@@ -58,6 +58,29 @@ def pipe_data(metadata : pd.DataFrame):
     Args:
         df (DataFrame):
     """
+    
+    @callback(
+        Output('filter_system', 'value'),
+        Input('filter_system', 'value')
+    )
+    def filter_system_cleanup(system):
+        if 'All' in system:
+            if system[-1] == 'All':
+                return ['All']
+            system.remove('All')
+        return system
+
+    @callback(
+        Output('filter_functional', 'value'),
+        Input('filter_functional', 'value')
+    )
+    def filter_functional_cleanup(functional):
+        if 'All' in functional:
+            if functional[-1] == 'All':
+                return ['All']
+            functional.remove('All')
+        return functional
+
     @callback(
         Output('filtered_files', 'data'),
         Input('apply', 'n_clicks'),
@@ -81,7 +104,7 @@ def pipe_data(metadata : pd.DataFrame):
             functional (list): lista funkcjonałów
             phase (list): lista z minimalną i maksymalną wartością filtra fazy
             ecms (list): lista z minimalną i maksymalną wartością filtra energii
-            b (list): lista z minimalną i maksymalną wartością filtra prametru b
+            b (list): lista z minimalną i maksymalną wartością filtra parametru b
 
         Raises:
             PreventUpdate: Przciwdziała uruchomieniu przycisku przy uruchamianiu programu
@@ -92,12 +115,14 @@ def pipe_data(metadata : pd.DataFrame):
         if n_clicks == 0:
             raise PreventUpdate
 
-        filtered_filenames = metadata['filename'][
-            metadata['system'].isin(system) &
-            metadata['functional'].isin(functional) &
-            metadata['phase_value'].between(phase[0], phase[1]) &
-            metadata['b'].between(b[0], b[1]) &
-            metadata['energy'].between(ecms[0], ecms[1])
-        ]
+        mask = metadata['phase_value'].between(phase[0], phase[1]) \
+            & metadata['b'].between(b[0], b[1]) \
+            & metadata['energy'].between(ecms[0], ecms[1])
 
-        return filtered_filenames
+        if system != ['All']:
+            mask &= metadata['system'].isin(system) 
+
+        if functional != ['All']:
+            mask &= metadata['functional'].isin(functional)
+
+        return metadata['filename'][mask]
