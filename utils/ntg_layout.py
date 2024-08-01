@@ -1,6 +1,7 @@
 from dash import dcc, html
+import json
 import math
-from utils.ntg_graph import GraphPickerAIO, groups
+from utils.ntg_graph import GraphPickerAIO, groups, create_help_tip
 
 # from utils.querystring_methods import encode_state
 # from utils.querystring_methods import parse_state
@@ -13,66 +14,137 @@ def create_layout(metadata : DataFrame, params):
     menu_graph_picker = html.Div([
         # Conservation
         GraphPickerAIO(
-            data_type_props = {'children':'Conservation'},
-            data_props = {'options':groups["conservation"]},
-            x_axis_type_props = {'options': ['in time']},
-            y_axis_type_props = {'options': ['linear', 'log']},
+            data_type_props = {'children': 'Conservation'},
+            data_props = {'options': groups["conservation"]},
+            x_axis_type_props = {
+                'options': [{'label':'in time','value':'in time'}],
+                'value': 'in time',
+            },
+            y_axis_type_props = {
+                'options': ['linear', 'log'],
+                'value': 'linear'
+            },
+            tooltip_head = "FILL ME IN",
+            tooltip_body = "FILL ME IN",
             aio_id = "conservation"
         ),
         # Center of mass
         GraphPickerAIO(
-            data_type_props = {'children':'Center of mass'},
-            data_props = {'options':groups['center of mass']},
-            x_axis_type_props = {'options':['in time']},
-            y_axis_type_props = {'options':['linear']},
+            data_type_props = {'children': 'Center of mass'},
+            data_props = {'options': groups['center of mass']},
+            x_axis_type_props = {
+                'options': [{'label':'in time','value':'in time'}],
+                'value': 'in time',
+            },
+            y_axis_type_props = {
+                'options': ['linear'],
+                'value': 'linear'
+            },
+            tooltip_head = "FILL ME IN",
+            tooltip_body = "FILL ME IN",
             aio_id = "center-of-mass"
         ),
         # Deformation
         GraphPickerAIO(
             data_type_props = {'children':'Deformation'},
-            data_props = {'options':groups["deformation"]},
-            x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
-            y_axis_type_props = {'options':['linear','log']},
+            data_props = {'options': groups["deformation"]},
+            x_axis_type_props = {
+                'options':[
+                    {'label':'in time','value':'in time'},
+                    {'label':'in distance','value':'in distance'},
+                    {'label':'as maps','value':'as maps','disabled':True}
+                ],
+                'value': 'in time',
+            },
+            y_axis_type_props = {
+                'options': ['linear', 'log'],
+                'value': 'linear'
+            },
+            tooltip_head = "FILL ME IN",
+            tooltip_body = "FILL ME IN",
             aio_id = 'deformation'
         ),
         # Pairing
         GraphPickerAIO(
             data_type_props = {'children':'Pairing'},
             data_props = {'options':groups["pairing"]},
-            x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
-            y_axis_type_props = {'options':['linear','log']},
+            x_axis_type_props = {
+                'options':[
+                    {'label':'in time','value':'in time'},
+                    {'label':'in distance','value':'in distance'},
+                    {'label':'as maps','value':'as maps','disabled':True}
+                ],
+                'value': 'in time',
+            },
+            y_axis_type_props = {
+                'options': ['linear', 'log'],
+                'value': 'linear'
+            },
+            tooltip_head = "FILL ME IN",
+            tooltip_body = "FILL ME IN",
             aio_id = "pairing"
         ),
         # Miscellaneous
         GraphPickerAIO(
             data_type_props = {'children':'Miscellaneous'},
             data_props = {'options':groups["misc"]},
-            x_axis_type_props = {'options':['in time', 'in distance', 'as maps']},
-            y_axis_type_props = {'options':['linear','log']},
+            x_axis_type_props = {
+                'options':[
+                    {'label':'in time','value':'in time'},
+                    {'label':'in distance','value':'in distance'},
+                    {'label':'as maps','value':'as maps','disabled':True}
+                ],
+                'value': 'in time',
+            },
+            y_axis_type_props = {
+                'options': ['linear', 'log'],
+                'value': 'linear'
+            },
+            tooltip_head = "FILL ME IN",
+            tooltip_body = "FILL ME IN",
             aio_id = "misc"
         )
     ], className="graph-picker")
 
+    custom_opt = ['All Data']
+    with open('./custom_filters.json') as file:
+        for entry in json.load(file):
+            custom_opt.append(entry['label'])
 
     menu_filter = html.Div([
         # headline
-        html.Div([html.H2("Filters")], className="filters--header"),
+        html.H2("Filters", className="filters--header"),
+
+        # Custom set filter
+        html.H3("Dataset"),
+        apply_value_from_querystring(params)(dcc.Dropdown)(
+            options=custom_opt,
+            value='All Data',
+            id='filter_set',
+        ),
 
         # options
         html.Div([
             html.Div([
-                html.H3("System"),
+                html.Div([
+                    html.H3("System"),
+                    create_help_tip("FILL ME IN", "FILL ME IN"),
+                ], className='filters--row'),
                 html.Div(
                     apply_value_from_querystring(params)(dcc.Dropdown)(
-                        options=list(metadata['system'].unique()) + ['All'],
-                        value=['All'],
+                        options=metadata['system'].unique(),
+                        value=[],
+                        placeholder='All',
                         id='filter_system',
                         multi=True
                     ), className="filters--list"),
             ], className="filters--column"),
 
             html.Div([
-                html.H3("Method"),
+                html.Div([
+                    html.H3("Method"),
+                    create_help_tip("FILL ME IN", "FILL ME IN"),
+                ], className='filters--row'),
                 html.Div(
                     dcc.Checklist(
                         [
@@ -85,10 +157,14 @@ def create_layout(metadata : DataFrame, params):
             ], className="filters--column"),
 
             html.Div([
-                html.H3("Functional"),
+                html.Div([
+                    html.H3("Functional"),
+                    create_help_tip("FILL ME IN", "FILL ME IN"),
+                ], className='filters--row'),
                 apply_value_from_querystring(params)(dcc.Dropdown)(
-                    options=list(metadata['functional'].unique()) + ['All'],
-                    value=['All'],
+                    options=metadata['functional'].unique(),
+                    value=[],
+                    placeholder='All',
                     id='filter_functional',
                     multi=True
                 ),
@@ -96,7 +172,10 @@ def create_layout(metadata : DataFrame, params):
         ], className="filters--options"),
 
         # Slider for energy
-        html.H3("Ecm [MeV]", className="filters--text"),
+        html.Div([
+            html.H3("Ecm [MeV]", className="filters--text"),
+            create_help_tip("FILL ME IN", "FILL ME IN"),
+        ], className='filters--row'),
         apply_value_from_querystring(params)(dcc.RangeSlider)(
             min=metadata['energy'].min(),
             max=metadata['energy'].max(),
@@ -107,7 +186,10 @@ def create_layout(metadata : DataFrame, params):
         ),
 
         # Slider for phase
-        html.H3("Phase", className="filters--text"), 
+        html.Div([
+            html.H3("Phase", className="filters--text"), 
+            create_help_tip("FILL ME IN", "FILL ME IN"),
+        ], className='filters--row'),
         apply_value_from_querystring(params)(dcc.RangeSlider)(
             min=0,
             max=2*math.pi,
@@ -126,7 +208,10 @@ def create_layout(metadata : DataFrame, params):
         ),
 
         # Slider for impact parameter
-        html.H3("b", className="filters--text"),
+        html.Div([
+            html.H3("b", className="filters--text"),
+            create_help_tip("FILL ME IN", "FILL ME IN"),
+        ], className='filters--row'),
         apply_value_from_querystring(params)(dcc.RangeSlider)(
             min=0,
             max=4,
@@ -142,16 +227,15 @@ def create_layout(metadata : DataFrame, params):
             },
         ),
 
-        html.Button('Apply', id='apply', n_clicks=0, className="filters--button")
+        html.Button('Apply', id='apply', n_clicks=0, className="filters--button"),
+        dcc.Store(id='filtered_files'),
     ], className="filters")
 
 
 
     # Fit together everything
     layout = html.Div([
-        html.Div([
-            html.Div([html.H1("LISE Analyzer")], className="app-header--title"),
-        ], className="app-header"),
+        html.Div([html.H1("LISE Analyzer")], className="app-header"),
         html.Div([
             # Menu
             html.Div([
@@ -161,10 +245,21 @@ def create_layout(metadata : DataFrame, params):
 
             # List of selected graphs from graph_pickers menu
             html.Div([
+                html.Button(
+                    'Update and copy URL',
+                    id='URL-copy',
+                    className='list-of-graphs--button',
+                ),
+                dcc.Clipboard(
+                    id='clipboard',
+                    n_clicks=0,
+                    style={ 'display' : 'none' },
+                ),
                 html.H2("List of graphs", className="list-of-graphs--header"),
                 apply_value_from_querystring(params)(dcc.Dropdown)(
                     options=[],
                     value=[],
+                    placeholder='',
                     id='list-of-graphs',
                     multi=True,
                     className='list-of-graphs--list'
@@ -172,7 +267,6 @@ def create_layout(metadata : DataFrame, params):
             ]),
             html.Div([], id='graphs', className='graph-div'),
         ]),
-        dcc.Store(id = 'filtered_files'),
     ], id='page-layout')
 
     return layout

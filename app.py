@@ -1,4 +1,4 @@
-from dash import Dash, Output, Input, State, dcc, html
+from dash import Dash, Output, Input, State, dcc, html, callback
 
 # Project
 import utils.ntg_data as ntg_data
@@ -20,11 +20,8 @@ app.layout = html.Div([
 #create data frame
 data, metadata = ntg_data.load_data()
 
-#get graphs callbacks
-ntg_data.pipe_data(metadata)
-ntg_graph.get_callbacks(data)
-
 component_ids = [
+    ('filter_set', 'value'),
     ('filter_system', 'value'),
     ('filter_functional', 'value'),
     ('filter_ecms', 'value'),
@@ -35,9 +32,9 @@ component_ids = [
 ]
 component_ids_zipped= list(zip(*component_ids))
 
-@app.callback(
+@callback(
     Output('page-layout', 'children'),
-    Input('url', 'href')
+    Input('url', 'href'),
 )
 def page_load(href):
     """
@@ -46,17 +43,13 @@ def page_load(href):
     """
     if not href:
         return []
-    #print(href)
     state = parse_state(href)
-    # print("Loaded state:")
-    # if state:
-    #     for key in state:
-    #         print(key, ":", state[key])
     return ntg_layout.create_layout(metadata, state)
 
-@app.callback(
+@callback(
     Output('url', 'search'),
-    Input('apply', 'n_clicks'),
+    Input('URL-copy', 'n_clicks'),
+    State('filter_set', 'value'),
     State('filter_system', 'value'),
     State('filter_functional', 'value'),
     State('filter_ecms', 'value'),
@@ -64,8 +57,9 @@ def page_load(href):
     State('filter_b', 'value'),
     State('list-of-graphs', 'options'),
     State('list-of-graphs', 'value'),
+    prevent_initial_call = True, # Leaves the URL clean for the first application run
 )
-def update_url_state(n_clicks, fsys, ffunc, fecms, fphase, fb, list_graphs_opt, list_graphs_val):
+def update_url_state(_, fset, fsys, ffunc, fecms, fphase, fb, list_graphs_opt, list_graphs_val):
     """
     When any of the (id, param) values changes, this callback gets triggered.
 
@@ -73,9 +67,21 @@ def update_url_state(n_clicks, fsys, ffunc, fecms, fphase, fb, list_graphs_opt, 
     (zipped together in component_ids_zipped), and the value to encode_state()
     and return a properly formed querystring.
     """
-    values = (fsys, ffunc, fecms, fphase, fb, list_graphs_opt, list_graphs_val)
+    values = (fset, fsys, ffunc, fecms, fphase, fb, list_graphs_opt, list_graphs_val)
     return encode_state(component_ids_zipped, values)
 
+@callback(
+    Output('clipboard', 'content'),
+    Output('clipboard', 'n_clicks'),
+    Input('URL-copy', 'n_clicks'),
+    State('url', 'href'),
+    State('clipboard', 'n_clicks'),
+    prevent_initial_call = True,
+)
+def custom_copy(_, url, clpbrd_clicks):
+    return url, clpbrd_clicks+1
+
+ntg_graph.get_callbacks(data)
 
 if __name__ == '__main__':
     app.run(debug=True)

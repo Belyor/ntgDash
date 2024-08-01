@@ -1,52 +1,13 @@
 from dash import dcc, html, callback, ctx, Input, Output, State, MATCH, Patch
-from pandas.core.arrays import boolean
 import plotly.express as px
-import pandas as pd
-from dash.exceptions import PreventUpdate
 import plotly.graph_objects as go
 import numpy as np
 import os
 import uuid
-
-from utils.ntg_util import fname_to_metadata
+import dash_bootstrap_components as dbc
 
 from . import ntg_colors
 colorscales=ntg_colors.colorscales
-
-#Types of available data
-data_labels = {
-    #Conservation
-    "Total Energy": "Total_E",
-    "Number of Protons": "N_p",
-    "Number of Neutrons": "N_n",
-    #Center of mass
-    "X_cm": "X_rcm",
-    "Y_cm": "X_rcm",
-    "Z_cm": "Z_rcm",
-    "X_cm for Protons": "X_rcm_p",
-    "Y_cm for Protons": "Y_rcm_p",
-    "Z_cm for Protons": "Z_rcm_p",
-    "X_cm for Neutrons": "X_rcm_n",
-    "Y_cm for Neutrons": "Y_rcm_n",
-    "Z_cm for Neutrons": "Z_rcm_n",
-    "Center of Mass Energy": "E_cm",
-    #Deformation
-    "Beta": "Beta",
-    "Quadrupole Moment Q20": "Q20",
-    "Octupole Moment Q30": "Q30",
-    "Hexadecupole Moment Q40": "Q40",
-    #Pairing
-    "Pairing gap for Protons": "av_delta_p",
-    "Pairing gap for Neutrons": "av_delta_n",
-    #Misc
-    #x axis
-    "in time": "(t)",
-    "in distance": "(dist)",
-    "as maps": "map",
-    #y axis
-    "linear": "lin",
-    "log": "log",
-}
 
 #groups of data
 groups = {
@@ -110,6 +71,29 @@ units = {
     "Distance": "fm"
 }
 
+# Button with popover text
+def create_help_tip(header_text, body_text):
+    id = str(uuid.uuid4())
+    tooltip = html.Div([
+        dbc.Button(
+            "?",
+            id=id,
+            className = 'help-tip',
+        ),
+        dbc.Popover(
+            [
+                dbc.PopoverHeader(header_text, className='popover-head'),
+                dbc.PopoverBody(body_text, className='popoever-body'),
+            ],
+            target=id,
+            body=True,
+            placement='right',
+            trigger="hover",
+            className='popover'
+        ),
+    ])
+    return tooltip
+
 # GraphPickerAIO - a component which stores settings available in Graph Picker panel in main menu
 class GraphPickerAIO(html.Div):
     """
@@ -157,6 +141,8 @@ class GraphPickerAIO(html.Div):
         x_axis_type_props : dict = {},
         y_axis_type_props : dict = {},
         add_button_props  : dict = {},
+        tooltip_head = None,
+        tooltip_body = None,
         aio_id : str = str(uuid.uuid4())
         ):
         """
@@ -199,45 +185,40 @@ class GraphPickerAIO(html.Div):
         if 'children' not in add_button_props:
             add_button_props['children'] = 'Add'
 
-        radio_items_class_x = ''
-        radio_items_class_y = ''
+        layout = [
+            dcc.Markdown(
+                id = self.ids.data_type(aio_id),
+                className = "graph-picker--header",
+                **data_type_props,
+            ),
+            create_help_tip(tooltip_head, tooltip_body),
+            html.H3('Plot', className="graph-picker--text"),
+            dcc.RadioItems(
+                id = self.ids.y_axis_type(aio_id),
+                className = 'graph-picker--radioItems',
+                **y_axis_type_props
+            ),
+            html.Div(
+                dcc.Dropdown(
+                    id = self.ids.data(aio_id),
+                    **data_props,
+                    clearable=False
+                ),
+                className="graph-picker--list",
+            ),
+            dcc.RadioItems(
+                id=self.ids.x_axis_type(aio_id),
+                className='graph-picker--radioItems',
+                **x_axis_type_props
+            ),
+            html.Button(
+                'Add',
+                id=self.ids.add_button(aio_id),
+                className="graph-picker--addButton"
+            )
+        ]
 
-        # TODO: This seems a bit weird, might need some redesigning
-        if len(x_axis_type_props['options']) == 3:
-            x_axis_type_props['options'] = [{'label':'in time','value':'in time'},
-                                            {'label':'in distance','value':'in distance'},
-                                            {'label':'as maps','value':'as maps','disabled':True}]
-            radio_items_class_x = "graph-picker--radioItemsThreeOptions"
-        elif len(x_axis_type_props['options']) == 1:
-            radio_items_class_x = "graph-picker--radioItemsOneOption"
-
-        if len(y_axis_type_props['options']) == 3:
-            radio_items_class_y = "graph-picker--radioItemsThreeOptions"
-        elif len(x_axis_type_props['options']) == 2:
-            radio_items_class_y = "graph-picker--radioItemsTwoOptions"
-        elif len(x_axis_type_props['options']) == 1:
-            radio_items_class_y = "graph-picker--radioItemsOneOption"
-
-        layout = html.Div([
-            html.Div([
-                dcc.Markdown(id = self.ids.data_type(aio_id), **data_type_props)
-            ], className = "graph-picker--header"),
-            html.Div([
-                html.H3('Plot')
-            ], className="graph-picker--text"),
-            html.Div([
-                dcc.RadioItems(id = self.ids.y_axis_type(aio_id), **y_axis_type_props)
-            ], className = radio_items_class_y),
-            html.Div([
-                dcc.Dropdown(id = self.ids.data(aio_id), **data_props, clearable=False)
-            ], className="graph-picker--list"),
-            html.Div([
-                dcc.RadioItems(id = self.ids.x_axis_type(aio_id), **x_axis_type_props)
-            ], className = radio_items_class_x),
-            html.Button('Add', id=self.ids.add_button(aio_id), className="graph-picker--addButton")
-        ], className='graph-picker--settings')
-
-        super().__init__(layout)
+        super().__init__(layout, className='graph-picker--settings')
 
 
 
@@ -268,7 +249,7 @@ def create_element(
     if value in list_values: #if option exists return unchanged lists
         return list_options, list_values
     else: #if option doesn't exist add a new option to lists and return them
-        option = {'label': data_labels[data], 'value': value}
+        option = {'label': data + f' ({x_type}) [{y_type}]', 'value': value}
         list_options.append(option)
         list_values.append(value)
         return list_options, list_values
@@ -441,10 +422,8 @@ def get_callbacks(data: dict):
 
         def __init__(
             self,
-            x_axis_type_props : dict = {}, # one of three: in time, in distance, as maps
-            xaxis_type        : str  = '', # type of x axis
+            xaxis_type        : str  = 'linear', # type of x axis
             xaxis_data_name   : str  = '', # data name of x axis
-            y_axis_type_props : dict = {}, # one of two: linear, log
             yaxis_type        : str  = 'linear', # type of y axis
             yaxis_data_name   : str  = '', # data name of y axis
             colorscale_props  : dict = {}, # dropdown with available colorscales in ntg_colors
@@ -459,37 +438,17 @@ def get_callbacks(data: dict):
             An init function for GraphComponentAIO.
 
             Args:
-                x_axis_type_props (dict, optional): a dictionary with properties for radioitems component storing information about x axis value (one of three available: in time, in distance, as maps).
-                xaxis_type (string, optional): a type of x axis (linear).
-                xaxis_data_name (string, optional): a data name of x axis (one of three: in time, in distance, as maps).
-                y_axis_type_props (dict, optional): a dictionary with properties for radioitems component storing information about y axis type (linear or log).
-                yaxis_type (string, optional): a type of y axis (linear or log).
-                yaxis_data_name (string, optional): a data name of y axis (depends on data type).
+                xaxis_type (str, optional): a type of x axis (linear).
+                xaxis_data_name (str, optional): a data name of x axis (one of three: in time, in distance, as maps).
+                yaxis_type (str, optional): a type of y axis (linear or log).
+                yaxis_data_name (str, optional): a data name of y axis (depends on data type).
                 colorscale_props (dict, optional): a dictionary with properties for a dropdown storing available colorscales.
-                colorscale_type (string, optional): name of colorscale.
+                colorscale_type (str, optional): name of colorscale.
                 relative_props (dict, optional): a dictionary with properties for a checklist component, which sets or unsets relative values on the graph.
                 line_props (dict, optional): a dictionary with properties for a checklost component storing information about if the data series on the graph should be displayed as lines, points or both.
                 hovermode_props (dict, optional): a dictionary with properties for a radioitems component responsible for setting the hovermode of a graph (two available: closest, x unified).
             """
             # Initialize components' properties
-            x_axis_type_props = x_axis_type_props.copy()
-            if 'options' not in x_axis_type_props:
-                x_axis_type_props['options'] = {'disabled' : False, 'options' : 'in time', 'value' : 'in time'}
-            if 'value' not in x_axis_type_props:
-                if xaxis_data_name == '':
-                    x_axis_type_props['value'] = x_axis_type_props['options']
-                else:
-                    x_axis_type_props['value'] = xaxis_data_name
-
-            y_axis_type_props = y_axis_type_props.copy()
-            if 'options' not in y_axis_type_props:
-                y_axis_type_props['options'] = {'disabled': False, 'label': 'linear', 'value': 'linear'}
-            if 'value' not in y_axis_type_props:
-                if yaxis_type == '':
-                    y_axis_type_props['value'] = y_axis_type_props['options']
-                else:
-                    y_axis_type_props['value'] = yaxis_type
-
             colorscale_props = colorscale_props.copy()
             if 'options' not in colorscale_props:
                 colorscale_props['options'] = colorscales
@@ -546,18 +505,13 @@ def get_callbacks(data: dict):
                 mode = 'lines'
             )
 
-            layout = html.Div([
-                html.Div(
-                    dcc.Graph(
-                        figure=fig,
-                        id=self.ids.graph(aio_id),
-                        className='graph-graph'
-                    )
+            layout = [
+                dcc.Graph(
+                    figure=fig,
+                    id=self.ids.graph(aio_id),
+                    className='graph-graph'
                 ),
-                html.Div(
-                    html.H3("Graph settings"),
-                    className="graph-settings--title"
-                ),
+                html.H3("Graph settings", className="graph-settings--title"),
                 html.Div([
                     html.Div([
                         dcc.Markdown("Colorscale"),
@@ -578,11 +532,11 @@ def get_callbacks(data: dict):
                         ], className="graph-settings--additional-hovermode")
                     ], className = "graph-settings--additional")
                 ], className = "graph-settings--container"),
-            ])
+            ]
 
             super().__init__(layout)
 
-        # Updating graph based on options user selects in 'Graph settings' menu
+        # Callback fired when user changes settings or filters are updated
         @callback(
             Output(ids.graph(MATCH), 'figure'),
             # Options for user
@@ -590,6 +544,7 @@ def get_callbacks(data: dict):
             Input(ids.line(MATCH), 'value'),
             Input(ids.hovermode(MATCH), 'value'),
             Input(ids.colorscale(MATCH), 'value'),
+            # Files from filter
             Input('filtered_files', 'data'),
             State(ids.graph(MATCH), 'figure'),
             prevent_initial_call = True
@@ -612,7 +567,6 @@ def get_callbacks(data: dict):
             xaxis_data_name = figure['layout']['xaxis']['title']['text'].split(" [")[0]
             yaxis_data_name = figure['layout']['yaxis']['title']['text'].split(" [")[0]
 
-            # Determine the colorscale
             if colorscale == 'ntg':
                 colorscale = ntg_colors.ntg
             elif colorscale == 'ntg_map':
@@ -651,9 +605,11 @@ def get_callbacks(data: dict):
                 fig.update_layout(hovermode = hovermode)
                 return fig
 
+            # Simpler settings can use patching funcionality,
+            # we do not have to create figure from scrach,
+            # TODO: Maybe filters can also use Patch() ?
             patched_figure = Patch()
             patched_figure.layout.hovermode = hovermode
-
 
             for it, key in enumerate(files):
                 data_x = data[key][xaxis_data_name]
@@ -763,13 +719,15 @@ def get_callbacks(data: dict):
         list_options.remove(to_remove)
         return list_options, list_values
 
+
     @callback(
         Output('graphs', 'children'),
         Input('list-of-graphs', 'value'),
+        Input('filtered_files', 'data'),
         State('graphs', 'children'),
-        State('filtered_files', 'data')
+        prevent_initial_call=True,
     )
-    def update_graphs(values, graphs, files):
+    def update_graphs(values, files, graphs):
         """
         A callback responsible for updating a div with graphs. The callback can be fired by 
         a) adding a new graph to the list with add button on a graph picker panel,
@@ -777,73 +735,46 @@ def get_callbacks(data: dict):
            specific element or by pressing an x in the right side of the component.
 
         Args:
-            values (list of strings): a list containing values of list of graphs dropdown.
-            graphs (list of GraphComponentAIOs): the state of a div containing all the graphs before an update.
-            files (list of strings): contains the names of files after filtering. Only data from the files will be displayed on a graph.
+            values (list[str]): a list containing values of list of graphs dropdown.
+            graphs (list[GraphComponentAIOs]): the state of a div containing all the graphs before an update.
+            files (list[str]): contains the names of files after filtering. Only data from the files will be displayed on a graph.
 
         Returns:
             a div containing GraphComponentAIOs: an updated state of a div storing all graphs that are mentioned in a list of graphs dropdown.
         """
-        graphs_temp = graphs
+        if len(graphs) == len(values):
+            return Patch()
 
-        # When a graph was deleted from the list
-        if len(graphs_temp) > len(values):
-            #if list of graphs is empty
+        # When a graph was deleted from the list.
+        if len(graphs) > len(values):
             if len(values) == 0:
-                graphs_temp.clear()
-                #if one graph was deleted from the list
-            else:
-                for graph in graphs_temp:
-                    id = graph['props']['id']
-                    id = id.replace('-container','')
-                    id = id.replace('--','|')
-                    id = id.replace('-',' ')
+                return []
 
-                    delete = True
+            for gcomp_aio in graphs:
+                # GraphComponentAIO's first child is a graph, take it's aio_id
+                id = gcomp_aio['props']['children'][0]['props']['id']['aio_id']
 
-                    for value in values:
-                        if id == value:
-                            delete = False
-                            break
+                if id not in values:
+                    graphs.remove(gcomp_aio)
 
-                    if delete:
-                        graphs_temp.remove(graph)
-                        break
+            return graphs
 
-            return graphs_temp
-
-        # If a graph was added
-        for i in range(len(graphs_temp), len(values)):
-            value = values[i] # Last added value
+        # When pressing add user adds only one graph at the end of list,
+        # and this for loop is equvalent to just taking i = -1,
+        # but when loading from url this just len(values) graphs,
+        for i in range(len(graphs), len(values)):
+            value = values[i]
             info = value.split('|')
             yaxis_type = info[0] # [linear/log]
             xaxis_type = 'linear'
             yaxis_data_name = info[1]
             xaxis_data_name = info[2]
 
-            x_options = []
-            y_options = []
-            if yaxis_data_name in groups["conservation"]:
-                x_options = ['in time']
-                y_options = ['linear','log']
-            elif yaxis_data_name in groups["center of mass"]:
-                x_options = ['in time']
-                y_options = ['linear']
-            elif (yaxis_data_name in groups["deformation"]) or (yaxis_data_name in groups["pairing"]):
-                x_options = [
-                    {'label':'in time','value':'in time'},
-                    {'label':'in distance','value':'in distance'},
-                    {'label':'as maps','value':'as maps','disabled':True}
-                ]
-                y_options = ['linear', 'log']
-
-            aio_id = yaxis_type + '--' + yaxis_data_name.replace(' ', '-') + '--' + info[2].replace(' ', '-')
+            aio_id = yaxis_type + '|' + yaxis_data_name + '|' + info[2]
 
             graph_component = GraphComponentAIO(
-                x_axis_type_props={'options' : x_options},
                 xaxis_type=xaxis_type,
                 xaxis_data_name=xaxis_data_name,
-                y_axis_type_props={'options' : y_options},
                 yaxis_type=yaxis_type,
                 yaxis_data_name= yaxis_data_name,
                 colorscale_type='ntg_av',
@@ -851,11 +782,6 @@ def get_callbacks(data: dict):
                 aio_id=aio_id
             )
 
-            div = html.Div(
-                graph_component,
-                id = aio_id + '-container'
-            )
+            graphs.append(graph_component)
 
-            graphs_temp.append(div)
-
-        return graphs_temp
+        return graphs

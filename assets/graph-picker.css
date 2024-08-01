@@ -14,7 +14,7 @@
 
 .graph-picker--settings{
     display: flex;
-    height: auto;
+    height: 80px;
 }
 
 .graph-picker--header{
@@ -33,6 +33,14 @@
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 10px;
+}
+
+.graph-picker--radioItems{
+        flex: 2;
+        display: block;
+        padding-left: 20px;
+        padding-right: 10px;
+        padding-top: 10px;
 }
 
 .graph-picker--radioItemsOneOption{
@@ -64,5 +72,5 @@
 
 .graph-picker--addButton {
     flex: 1;
-    height: auto;
+    height: 50px;
 }

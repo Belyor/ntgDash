@@ -1,0 +1,15 @@
+[
+        {
+                "label": "Example nr 1",
+                "files": [
+                        "TestData/56Ni+208Pb_SkM-star_gp233_gn260_b0_0PIPhase_248MeV_out.dat",
+                        "TestData/56Ni+208Pb_SkM-star_gp233_gn260_b1_0PIPhase_263MeV_out.dat"
+                ]
+        },
+        {
+                "label": "Example nr 2",
+                "files": [
+                        "TestData/120Sn+60Ni_SkM-star_gp233_gn250_b0-0_2-3PIPhase_155MeV_out.dat"
+                ]
+        }
+]
