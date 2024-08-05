@@ -9,7 +9,6 @@
 
 .filters--header{
     text-align: center;
-    color: white;
 }
 
 .filters--options {
@@ -30,6 +29,10 @@
 
 .filters--column {
     flex: 2
+}
+
+.filters--row {
+        display: flex;
 }
 
 .filters--radio-items{

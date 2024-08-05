@@ -1,0 +1,44 @@
+.help-tip {
+        display: inline-block;
+        outline: none;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 20px;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 0px;
+        margin-top: 15px;
+        height: 30px;
+        width: 30px;
+        margin-left: 10px;
+        margin-right: 10px;
+        text-align: center;
+        border: 2px solid #222222;
+        transition: box-shadow 0.2s ease 0s, -ms-transform 0.1s ease 0s, -webkit-transform 0.1s ease 0s, transform 0.1s ease 0s;
+        background: #fff;
+        color: #222222;
+}
+
+.help-tip:hover {
+        background: var(--plum);
+}
+
+.popover {
+        border-radius: 8px;
+        border: 2px solid #222222;
+        background: #fff;
+}
+
+.popover-head {
+        margin: 5px;
+        font-size: 20px;
+        color: black;
+}
+
+.popover-body {
+        margin: 5px;
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 600;
+        color: #666666;
+}

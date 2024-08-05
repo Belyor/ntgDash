@@ -6,3 +6,7 @@
     margin-left: 20%;
     margin-right: 20%;
 }
+
+.list-of-graphs--button {
+        float: right;
+}
